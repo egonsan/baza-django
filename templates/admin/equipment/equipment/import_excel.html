@@ -37,4 +37,21 @@
     <p style="color: red;"><strong>{{ error }}</strong></p>
 {% endif %}
 
+<hr>
+<h2>Eksport danych do Excela</h2>
+
+<p>
+    Kliknij przycisk poniżej, aby pobrać plik XLSX z aktualnymi kartami sprzętu
+    w takim samym formacie, jak plik używany do importu
+    (<strong>NR_INWENTARZOWY</strong>, <strong>BUDYNEK</strong>, <strong>POMIESZCZENIE</strong>, itd.).
+</p>
+
+<form method="get" action="{% url 'equipment:equipment_export' %}">
+    <p>
+        <button type="submit" class="default">
+            Eksportuj dane do Excela
+        </button>
+    </p>
+</form>
+
 {% endblock %}

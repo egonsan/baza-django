@@ -3,13 +3,13 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, UpdateView
 
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 
 from .models import Equipment, EquipmentAttachment
 
@@ -140,7 +140,7 @@ def admin_equipment_import_view(request):
     Widok importu danych z pliku XLSX wywoływany z panelu admina.
 
     Adres (zgodnie z urls.py):
-    /baza/admin-import/
+    /baza/admin-import/ lub /baza/import/
 
     Szablon:
     templates/admin/equipment/equipment/import_excel.html
@@ -288,6 +288,87 @@ def equipment_import_view(request):
     Zostawiona na wszelki wypadek.
     """
     return admin_equipment_import_view(request)
+
+
+# ============================================================
+# EKSPORT DO EXCELA – WERSJA DLA ADMINA
+# ============================================================
+
+
+@staff_member_required(login_url="/admin/login/")
+def admin_equipment_export_view(request):
+    """
+    Eksport danych do pliku XLSX w formacie zgodnym z używanym Excelem
+    (polskie nagłówki: NR_INWENTARZOWY, BUDYNEK, POMIESZCZENIE, itd.).
+
+    Widok przeznaczony do wywoływania z panelu admina / strony importu.
+    """
+
+    # Tworzymy nowy skoroszyt
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sprzet"
+
+    # Nagłówki w dokładnie takiej formie, jak w pliku importu
+    headers = [
+        "NR_INWENTARZOWY",
+        "BUDYNEK",
+        "POMIESZCZENIE",
+        "TYP_SPRZETU",
+        "NAZWA",
+        "NAZWISKO",
+        "NR_FABR",
+        "NR_SERYJNY_MONITORA",
+        "DATA_ZAKUP",
+        "UWAGI",
+        "KLUCZ_WINDOWS",
+        "KLUCZ_OFFICE",
+        "MAC_JEDNOSTKI",
+        "NAZWA_DOMENOWA",
+        "ADRES_IP",
+    ]
+    ws.append(headers)
+
+    # Pobieramy wszystkie rekordy sprzętu, posortowane po numerze inwentarzowym
+    queryset = Equipment.objects.all().order_by("inventory_number")
+
+    for eq in queryset:
+        row = [
+            eq.inventory_number or "",
+            eq.building or "",
+            eq.room or "",
+            eq.equipment_type or "",
+            eq.equipment_name or "",
+            eq.user_full_name or "",
+            eq.unit_serial_number or "",
+            eq.monitor_serial_number or "",
+            eq.purchase_date.strftime("%Y-%m-%d") if eq.purchase_date else "",
+            eq.notes or "",
+            eq.os_serial_key or "",
+            eq.office_serial_key or "",
+            eq.mac_address or "",
+            eq.hostname or "",
+            eq.ip_address or "",
+        ]
+        ws.append(row)
+
+    # Przygotowujemy odpowiedź HTTP z plikiem XLSX
+    response = HttpResponse(
+        content_type=(
+            "application/vnd."
+            "openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
+    )
+    response["Content-Disposition"] = 'attachment; filename="karty_sprzetu.xlsx"'
+
+    from io import BytesIO
+
+    output = BytesIO()
+    wb.save(output)
+    response.write(output.getvalue())
+
+    return response
 
 
 # ============================================================

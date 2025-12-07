@@ -1,29 +1,17 @@
 {% extends "admin/change_list.html" %}
 {% load static %}
 
-{% block content %}
+{# 
+  Nadpisujemy blok object-tools-items, żeby obok przycisku "ADD KARTA SPRZĘTU"
+  dodać dodatkowy przycisk "IMPORT/EKSPORT", który prowadzi do widoku
+  /baza/import/ (equipment:equipment_import).
+#}
+
+{% block object-tools-items %}
     {{ block.super }}
-
-    <div class="module">
-        <h2>📥 Import danych z pliku Excel (.xlsx)</h2>
-
-        <div class="form-row">
-            <form action="{% url 'equipment:equipment_import' %}"
-                  method="post"
-                  enctype="multipart/form-data"
-                  style="margin-top: 10px;">
-                {% csrf_token %}
-
-                <p>
-                    <input type="file" name="file" accept=".xlsx" required />
-                </p>
-
-                <p>
-                    <button type="submit" class="button default">
-                        Importuj plik Excel
-                    </button>
-                </p>
-            </form>
-        </div>
-    </div>
+    <li>
+        <a href="{% url 'equipment:equipment_import' %}" class="addlink">
+            IMPORT/EKSPORT
+        </a>
+    </li>
 {% endblock %}

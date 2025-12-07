@@ -7,6 +7,7 @@ from .views import (
     equipment_import_view,
     attachment_upload_view,
     attachment_delete_view,
+    admin_equipment_export_view,
 )
 
 app_name = "equipment"
@@ -24,6 +25,10 @@ urlpatterns = [
     # IMPORT Z EXCELA /baza/import/
     # <- to naprawia błąd "Reverse for 'equipment_import' not found"
     path("import/", equipment_import_view, name="equipment_import"),
+
+    # EKSPORT DO EXCELA /baza/export/
+    # Widok admin_equipment_export_view generuje plik XLSX
+    path("export/", admin_equipment_export_view, name="equipment_export"),
 
     # Upload załącznika /baza/<pk>/upload/
     path("<int:pk>/upload/", attachment_upload_view, name="attachment_upload"),
