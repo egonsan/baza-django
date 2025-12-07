@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Import sprzętu z Excela</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 24px;
+            background: #020617;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(15,23,42,0.7);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        p {
+            margin-top: 0;
+            color: #9ca3af;
+        }
+        .box {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .box-info {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.4);
+        }
+        .box-success {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.5);
+        }
+        .box-error {
+            background: rgba(248,113,113,0.12);
+            border: 1px solid rgba(248,113,113,0.5);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input[type="file"] {
+            display: block;
+            margin-bottom: 12px;
+        }
+        button {
+            background: #22c55e;
+            color: #020617;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 22px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #16a34a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #1f2937;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        th {
+            background: #111827;
+        }
+        tr:nth-child(even) td {
+            background: #020617;
+        }
+        .small {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+        .badge-tag {
+            background: rgba(148,163,184,0.18);
+            border: 1px solid rgba(148,163,184,0.5);
+        }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 12px; }
+        .mt-4 { margin-top: 16px; }
+        .mt-6 { margin-top: 24px; }
+        .code {
+            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            background: #020617;
+            padding: 6px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .top-links {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-links">
+        <a href="/baza/" class="small">← Wróć do listy sprzętu</a>
+    </div>
+
+    <h1>Import sprzętu z pliku Excel</h1>
+    <p>To jest bezpieczny import – za każdym razem rekord jest <strong>tworzony lub aktualizowany</strong> po numerze inwentarzowym.</p>
+
+    <div class="box box-info">
+        <strong>Instrukcja:</strong>
+        <ul class="small">
+            <li>Użyj pliku: <code class="code">A_Wojnowski_merged_final_v2.xlsx</code>.</li>
+            <li>Pierwszy wiersz musi zawierać nagłówki (NR_INWENTARZOWY, NAZWA_SPRZETU, BUDYNEK, POMIESZCZENIE, …).</li>
+            <li>Każdy kolejny wiersz = jedna karta sprzętu (na razie bez łączenia zestawów 0000/0001).</li>
+        </ul>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="{{ form.file.id_for_label }}">Wybierz plik Excel (.xlsx):</label>
+        {{ form.file }}
+        {% if form.file.help_text %}
+            <div class="small">{{ form.file.help_text }}</div>
+        {% endif %}
+        <div class="mt-3">
+            <button type="submit">Wyślij i zrób podgląd importu</button>
+        </div>
+    </form>
+
+    {% if errors %}
+        <div class="box box-error mt-4">
+            <strong>Błędy podczas importu:</strong>
+            <ul>
+                {% for e in errors %}
+                    <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if raw_headers %}
+        <div class="box box-success mt-4">
+            <strong>Plik został odczytany.</strong>
+            <div class="mt-2 small">
+                Zaimportowane: <span class="badge badge-tag">{{ imported_count }}</span>
+                Zaktualizowane: <span class="badge badge-tag">{{ updated_count }}</span>
+                Pominięte: <span class="badge badge-tag">{{ skipped_count }}</span>
+            </div>
+            <div class="mt-2 small">
+                Pokazuję podgląd nagłówków i pierwszych wierszy z Excela.  
+                Jeśli poniżej jest pusto – dane w pliku mogą być w innych kolumnach / arkuszu.
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h3>Nagłówki z Excela (surowe)</h3>
+            <p class="small">To jest pierwszy wiersz z pliku (dokładnie tak, jak go widzi Django):</p>
+            <table>
+                <tr>
+                    {% for h in raw_headers %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+
+        {% if preview_rows %}
+            <div class="mt-4">
+                <h3>Podgląd pierwszych {{ preview_rows|length }} wierszy</h3>
+                <p class="small">To są surowe dane z Excela (bez mapowania do pól modeli – tylko kontrola).</p>
+                <table>
+                    <tr>
+                        {% for h in raw_headers %}
+                            <th>{{ h }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in preview_rows %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div class="mt-4 box box-info">
+                <strong>Brak danych do podglądu.</strong>
+                <p class="small">
+                    Plik został odczytany, ale nie znaleziono żadnych wierszy z danymi (albo wszystkie były puste).
+                </p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="mt-4 box box-info">
+            <strong>Jeszcze nic nie importowałeś.</strong>
+            <p class="small">
+                Wybierz plik Excela powyżej i kliknij przycisk, żeby zobaczyć podgląd nagłówków i pierwszych wierszy.
+            </p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>

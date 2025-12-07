@@ -1,0 +1,29 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="module">
+        <h2>📥 Import danych z pliku Excel (.xlsx)</h2>
+
+        <div class="form-row">
+            <form action="{% url 'equipment:equipment_import' %}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  style="margin-top: 10px;">
+                {% csrf_token %}
+
+                <p>
+                    <input type="file" name="file" accept=".xlsx" required />
+                </p>
+
+                <p>
+                    <button type="submit" class="button default">
+                        Importuj plik Excel
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

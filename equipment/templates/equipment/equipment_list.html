@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <title>Lista sprzętu – Baza</title>
+</head>
+<body>
+    <h1>Lista sprzętu – Baza</h1>
+
+    {% if items %}
+        <table border="1" cellspacing="0" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nr inwentarzowy</th>
+                    <th>Typ</th>
+                    <th>Nazwa sprzętu</th>
+                    <th>Budynek</th>
+                    <th>Pomieszczenie</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for eq in items %}
+                    <tr>
+                        <td>{{ eq.id }}</td>
+                        <td>{{ eq.inventory_number }}</td>
+                        <td>{{ eq.equipment_type }}</td>
+                        <td>{{ eq.device_name }}</td>
+                        <td>{{ eq.building }}</td>
+                        <td>{{ eq.room }}</td>
+                        <td>{{ eq.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Brak sprzętu w bazie (na razie pusto – dodamy import z Excela później).</p>
+    {% endif %}
+</body>
+</html>

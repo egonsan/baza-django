@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista sprzętu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 3px;
+            text-decoration: none;
+            border: 1px solid #333;
+            font-size: 13px;
+            background-color: #f4f4f4;
+        }
+
+        .btn-primary {
+            background-color: #e0e0e0;
+        }
+
+        .btn-small {
+            padding: 3px 7px;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 4px 6px;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .status-col {
+            white-space: nowrap;
+        }
+
+        .actions-col {
+            white-space: nowrap;
+        }
+
+        a {
+            color: #0645ad;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .no-data {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Lista sprzętu</h1>
+        <div class="buttons">
+            <a href="{% url 'equipment:equipment_import' %}" class="btn btn-primary">📥 Import z Excela</a>
+        </div>
+    </div>
+
+    {% if equipments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Numer inwentarzowy</th>
+                    <th>Nazwa sprzętu</th>
+                    <th>Użytkownik</th>
+                    <th>Budynek</th>
+                    <th>Pokój</th>
+                    <th>Hostname</th>
+                    <th>Adres IP</th>
+                    <th class="status-col">Status</th>
+                    <th class="actions-col">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for eq in equipments %}
+                    <tr>
+                        <td>{{ eq.id }}</td>
+                        <td>{{ eq.inventory_number }}</td>
+                        <td>{{ eq.equipment_name }}</td>
+                        <td>{{ eq.user_full_name }}</td>
+                        <td>{{ eq.building }}</td>
+                        <td>{{ eq.room }}</td>
+                        <td>{{ eq.hostname }}</td>
+                        <td>{{ eq.ip_address }}</td>
+                        <td class="status-col">{{ eq.status }}</td>
+                        <td class="actions-col">
+                            <a href="{% url 'equipment:equipment_detail' eq.pk %}" class="btn btn-small">
+                                Szczegóły
+                            </a>
+                            <a href="{% url 'equipment:equipment_edit' eq.pk %}" class="btn btn-small">
+                                Edytuj
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-data">
+            Brak wpisów w bazie sprzętu.
+        </p>
+    {% endif %}
+</body>
+</html>

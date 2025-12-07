@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Import danych z Excela</h1>
+
+<p>
+    Wybierz plik XLSX, którego nagłówki odpowiadają polom w modelu
+    (np. <strong>inventory_number</strong>, <strong>equipment_name</strong>,
+    <strong>DATA_ZAKUP</strong> itd.).
+</p>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        <label for="id_file"><strong>Plik Excel (.xlsx):</strong></label><br>
+        <input type="file" id="id_file" name="file" accept=".xlsx" required>
+    </p>
+
+    <p>
+        <button type="submit" class="default">Importuj dane</button>
+    </p>
+</form>
+
+{% if import_done %}
+    <hr>
+    <h2>Wynik importu</h2>
+    <p>Przetworzono wierszy: <strong>{{ processed_rows }}</strong></p>
+    <p>Dodano nowych rekordów: <strong>{{ created_count }}</strong></p>
+    <p>Zaktualizowano istniejące: <strong>{{ updated_count }}</strong></p>
+{% endif %}
+
+{% if error %}
+    <hr>
+    <h2>Błąd importu</h2>
+    <p style="color: red;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+{% endblock %}

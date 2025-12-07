@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Szczegóły sprzętu {{ equipment.inventory_number }}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f5f5f5;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 16px 20px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #999;
+            font-size: 13px;
+            text-decoration: none;
+            background: #f8f8f8;
+            color: #222;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .btn:hover {
+            background: #e9e9e9;
+        }
+
+        .btn-primary {
+            border-color: #0b5ed7;
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-danger {
+            border-color: #b02a37;
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #bb2d3b;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-xs {
+            padding: 2px 6px;
+            font-size: 11px;
+        }
+
+        .btn-copy {
+            margin-left: 6px;
+        }
+
+        .btn-copy-ok {
+            background: #198754 !important;
+            border-color: #198754 !important;
+            color: #fff !important;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 14px;
+            background: #fafafa;
+        }
+
+        .card h2 {
+            font-size: 16px;
+            margin: 0 0 10px;
+        }
+
+        table.details-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table.details-table th,
+        table.details-table td {
+            padding: 4px 6px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        table.details-table th {
+            width: 180px;
+            text-align: left;
+            color: #555;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        table.details-table td {
+            color: #111;
+        }
+
+        .muted {
+            color: #888;
+            font-style: italic;
+        }
+
+        .value-mono {
+            font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .status-OK {
+            background: #198754;
+        }
+
+        .status-ISSUE {
+            background: #fd7e14;
+        }
+
+        .status-OUT {
+            background: #6c757d;
+        }
+
+        .equipment-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .photo-box {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fdfdfd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .photo-box h2 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .equipment-image {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        .photo-placeholder {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 13px;
+            background: repeating-linear-gradient(
+                45deg,
+                #f3f3f3,
+                #f3f3f3 10px,
+                #e9e9e9 10px,
+                #e9e9e9 20px
+            );
+            border-radius: 4px;
+        }
+
+        .attachments-card h2 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .attachments-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0 0 10px;
+            font-size: 13px;
+        }
+
+        .attachments-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attachment-main {
+            font-weight: 600;
+        }
+
+        .attachment-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .attachment-desc-main {
+            color: #111;
+        }
+
+        .attachment-desc {
+            color: #555;
+            font-style: italic;
+            margin-left: 4px;
+        }
+
+        .attachment-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .attachment-form {
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .attachment-form .field-line {
+            margin-bottom: 6px;
+        }
+
+        .attachment-form label {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .attachment-form input[type="file"],
+        .attachment-form input[type="text"] {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+
+        .notes-box {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+
+    <div class="page-header">
+        <h1>
+            Sprzęt: {{ equipment.inventory_number }}
+        </h1>
+        <div>
+            <a href="{% url 'equipment:equipment_list' %}" class="btn">⟵ Powrót do listy</a>
+            <a href="{% url 'equipment:equipment_edit' equipment.pk %}" class="btn btn-primary">✏️ Edytuj</a>
+        </div>
+    </div>
+
+    <div class="layout">
+        <!-- LEWA KOLUMNA – SZCZEGÓŁY SPRZĘTU -->
+        <div>
+            <div class="card">
+                <h2>Dane podstawowe</h2>
+                <table class="details-table">
+                    <tr>
+                        <th>Numer inwentarzowy</th>
+                        <td class="value-mono">{{ equipment.inventory_number|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nazwa sprzętu</th>
+                        <td>{{ equipment.equipment_name|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Typ sprzętu</th>
+                        <td>{{ equipment.equipment_type|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            {% if equipment.status %}
+                                {% if equipment.status|lower == "sprawny" %}
+                                    <span class="status-badge status-OK">{{ equipment.status }}</span>
+                                {% elif equipment.status|lower == "uszkodzony" %}
+                                    <span class="status-badge status-ISSUE">{{ equipment.status }}</span>
+                                {% else %}
+                                    <span class="status-badge status-OUT">{{ equipment.status }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Budynek / pokój</th>
+                        <td>
+                            {% if equipment.building or equipment.room %}
+                                {{ equipment.building|default:"" }}{% if equipment.building and equipment.room %}, {% endif %}{{ equipment.room|default:"" }}
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Użytkownik</th>
+                        <td>{{ equipment.user_full_name|default_if_none:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Wypożyczono do</th>
+                        <td>{{ equipment.borrowed_to|default_if_none:"-" }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <h2>Parametry sieciowe i licencje</h2>
+                <table class="details-table">
+                    <tr>
+                        <th>Nazwa hosta</th>
+                        <td class="value-mono">{{ equipment.hostname|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Adres IP</th>
+                        <td>
+                            {% if equipment.ip_address %}
+                                <span class="value-mono">{{ equipment.ip_address }}</span>
+                                <button type="button" class="btn btn-xs btn-copy" data-copy="{{ equipment.ip_address }}">
+                                    Kopiuj
+                                </button>
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Adres MAC</th>
+                        <td class="value-mono">{{ equipment.mac_address|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>System operacyjny</th>
+                        <td>
+                            {{ equipment.os_name|default:"-" }}
+                            {% if equipment.os_version %}
+                                ({{ equipment.os_version }})
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Klucz systemu (OS)</th>
+                        <td>
+                            {% if equipment.os_serial_key %}
+                                <span class="value-mono">{{ equipment.os_serial_key }}</span>
+                                <button type="button" class="btn btn-xs btn-copy" data-copy="{{ equipment.os_serial_key }}">
+                                    Kopiuj
+                                </button>
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Office</th>
+                        <td>
+                            {{ equipment.office_name|default:"-" }}
+                            {% if equipment.office_version %}
+                                ({{ equipment.office_version }})
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Klucz Office</th>
+                        <td>
+                            {% if equipment.office_serial_key %}
+                                <span class="value-mono">{{ equipment.office_serial_key }}</span>
+                                <button type="button" class="btn btn-xs btn-copy" data-copy="{{ equipment.office_serial_key }}">
+                                    Kopiuj
+                                </button>
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Nr seryjny jednostki</th>
+                        <td class="value-mono">{{ equipment.unit_serial_number|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nr seryjny monitora</th>
+                        <td class="value-mono">{{ equipment.monitor_serial_number|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Dostawca</th>
+                        <td>{{ equipment.supplier|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Data zakupu</th>
+                        <td>
+                            {% if equipment.purchase_date %}
+                                {{ equipment.purchase_date }}
+                            {% else %}
+                                <span class="muted">brak danych</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Gwarancja</th>
+                        <td>
+                            {% if equipment.warranty_until %}
+                                {{ equipment.warranty_until }}
+                                –
+                                {% with ws=equipment.warranty_status %}
+                                    {% if ws == "na gwarancji" %}
+                                        <span class="status-badge status-OK">Aktywna</span>
+                                    {% elif ws == "po gwarancji" %}
+                                        <span class="status-badge status-ISSUE">Wygasła</span>
+                                    {% else %}
+                                        <span class="muted">{{ ws }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <span class="muted">brak danych</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Uwagi</th>
+                        <td class="notes-box">
+                            {% if equipment.notes %}
+                                {{ equipment.notes }}
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- PRAWA KOLUMNA – ZDJĘCIE + ZAŁĄCZNIKI -->
+        <div class="equipment-sidebar">
+            <div class="photo-box">
+                <h2>Zdjęcie sprzętu</h2>
+                {% comment %}
+                    Na razie jako zdjęcie pokazujemy pierwszy załącznik (np. JPG/PNG),
+                    jeśli istnieją jakiekolwiek załączniki.
+                {% endcomment %}
+
+                {% if attachments %}
+                    {% with main_attachment=attachments.0 %}
+                        <a href="{{ main_attachment.file.url }}" target="_blank">
+                            <img src="{{ main_attachment.file.url }}" alt="Zdjęcie sprzętu" class="equipment-image" />
+                        </a>
+                    {% endwith %}
+                {% else %}
+                    <div class="photo-placeholder">
+                        Brak zdjęcia – dodaj jako załącznik
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card attachments-card">
+                <h2>Załączniki</h2>
+
+                {% if attachments %}
+                    <ul class="attachments-list">
+                        {% for attachment in attachments %}
+                            <li {% if forloop.first %}class="attachment-main"{% endif %}>
+                                <div class="attachment-info">
+                                    {% if attachment.description %}
+                                        <span class="attachment-desc-main">{{ attachment.description }}</span>
+                                    {% else %}
+                                        <span class="attachment-desc-main">
+                                            {{ attachment.file.name|cut:"equipment_attachments/" }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="attachment-actions">
+                                    <a href="{{ attachment.file.url }}" target="_blank" class="btn btn-xs">
+                                        Podgląd
+                                    </a>
+                                    <form method="post"
+                                          action="{% url 'equipment:attachment_delete' attachment.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="btn btn-xs btn-danger"
+                                                onclick="return confirm('Na pewno usunąć załącznik?');">
+                                            Usuń
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="muted">Brak załączników.</p>
+                {% endif %}
+
+                <form method="post"
+                      action="{% url 'equipment:attachment_upload' equipment.pk %}"
+                      enctype="multipart/form-data"
+                      class="attachment-form">
+                    {% csrf_token %}
+                    <div class="field-line">
+                        <label for="id_file">Dodaj załącznik (np. zdjęcie, PDF):</label>
+                        <input type="file" name="file" id="id_file" required />
+                    </div>
+                    <div class="field-line">
+                        <label for="id_desc">Opis (opcjonalnie):</label>
+                        <input type="text" name="description" id="id_desc" maxlength="255" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">➕ Dodaj załącznik</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".btn-copy[data-copy]");
+
+    buttons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const text = btn.getAttribute("data-copy");
+            if (!text) {
+                return;
+            }
+
+            const onSuccess = function () {
+                const oldText = btn.textContent;
+                btn.textContent = "Skopiowano";
+                btn.classList.add("btn-copy-ok");
+                setTimeout(function () {
+                    btn.textContent = oldText;
+                    btn.classList.remove("btn-copy-ok");
+                }, 1500);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
+                    alert("Nie udało się skopiować do schowka.");
+                });
+            } else {
+                const temp = document.createElement("textarea");
+                temp.value = text;
+                document.body.appendChild(temp);
+                temp.select();
+                try {
+                    document.execCommand("copy");
+                    onSuccess();
+                } catch (err) {
+                    alert("Nie udało się skopiować do schowka.");
+                }
+                document.body.removeChild(temp);
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
