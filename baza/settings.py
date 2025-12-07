@@ -138,3 +138,17 @@ import os
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Statyczne pliki (CSS, JS, obrazki)
+STATIC_URL = "static/"
+
+# Katalog z plikami statycznymi w czasie developmentu
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# (Opcjonalnie, na przyszłość – dla collectstatic na serwerze produkcyjnym)
+STATIC_ROOT = BASE_DIR / "staticfiles"

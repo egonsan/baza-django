@@ -1,0 +1,29 @@
+{% extends "sprzet/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div style="
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 24px 28px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 12px;
+    color: #ffffff;
+">
+    <h1 style="margin-top: 0; margin-bottom: 10px; font-size: 26px;">
+        {% trans "Oprogramowanie" %}
+    </h1>
+
+    <p style="margin-bottom: 10px;">
+        {% trans "To jest strona startowa po zalogowaniu (zarówno dla administratora, jak i gościa)." %}
+    </p>
+
+    <p style="margin-bottom: 6px; font-size: 0.95em; opacity: 0.9;">
+        {% trans "Docelowo pojawi się tutaj lista systemów, aplikacji i licencji oraz szybki dostęp do najważniejszych funkcji." %}
+    </p>
+
+    <p style="margin-top: 18px; font-size: 0.85em; opacity: 0.75;">
+        {% trans "Na tym etapie to wersja robocza (placeholder), aby przetestować logowanie i przekierowania." %}
+    </p>
+</div>
+{% endblock %}
