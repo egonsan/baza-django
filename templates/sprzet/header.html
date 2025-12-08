@@ -95,24 +95,46 @@
 
         <nav class="nav-links">
 
+            {# GOŚĆ – widzi tylko Oprogramowanie #}
             {% if request.session.guest %}
                 <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link nav-link-active">Oprogramowanie</a>
+                   class="nav-link nav-link-active">
+                    Oprogramowanie
+                </a>
 
+            {# ADMIN (is_staff) – widzi wszystkie zakładki #}
             {% elif user.is_authenticated and user.is_staff %}
 
+                {# OPROGRAMOWANIE #}
                 <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link nav-link-active">Oprogramowanie</a>
+                   class="nav-link{% if '/baza/oprogramowanie/' in request.path %} nav-link-active{% endif %}">
+                    Oprogramowanie
+                </a>
 
-                <span class="nav-link nav-link-disabled">Pomieszczenia / Sale</span>
-                <span class="nav-link nav-link-disabled">Pracownik</span>
+                {# POMIESZCZENIA / SALE – dashboard kategorii #}
+                <a href="{% url 'equipment:rooms_dashboard' %}"
+                   class="nav-link{% if '/baza/pomieszczenia/' in request.path %} nav-link-active{% endif %}">
+                    Pomieszczenia / Sale
+                </a>
 
+                {# PRACOWNIK – TERAZ AKTYWNY LINK #}
+                <a href="{% url 'equipment:workers_list' %}"
+                   class="nav-link{% if '/baza/pracownicy/' in request.path %} nav-link-active{% endif %}">
+                    Pracownik
+                </a>
+
+                {# MAGAZYN – lista kart sprzętu #}
                 <a href="{% url 'equipment:equipment_list' %}"
-                   class="nav-link">Magazyn</a>
+                   class="nav-link{% if '/baza/magazyn/' in request.path %} nav-link-active{% endif %}">
+                    Magazyn
+                </a>
 
+            {# Inni użytkownicy (np. zalogowany ale nie-staff) – traktujemy jak gościa #}
             {% else %}
                 <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link nav-link-active">Oprogramowanie</a>
+                   class="nav-link nav-link-active">
+                    Oprogramowanie
+                </a>
             {% endif %}
 
         </nav>

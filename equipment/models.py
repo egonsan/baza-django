@@ -6,6 +6,18 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+# ============================================================
+# KATEGORIE POMIESZCZEŃ
+# ============================================================
+
+ROOM_CATEGORY_CHOICES = [
+    ("LAB", "Lab. komputerowe"),
+    ("SALA", "Sala wykładowa"),
+    ("POKOJ", "Pokój"),
+    ("INNE", "Inne"),
+    ("MAGAZYN", "Magazyn"),
+]
+
 
 class Equipment(models.Model):
     """
@@ -39,6 +51,15 @@ class Equipment(models.Model):
         blank=True,
         default="",
     )
+
+    # 🔹 NOWE POLE – Kategoria pomieszczenia (nad "Pomieszczenie")
+    room_category = models.CharField(
+        "Kategoria pomieszczenia",
+        max_length=20,
+        choices=ROOM_CATEGORY_CHOICES,
+        default="MAGAZYN",  # domyślnie wszystko ląduje w Magazynie
+    )
+
     room = models.CharField(
         "Pomieszczenie",
         max_length=100,

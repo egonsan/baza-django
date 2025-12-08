@@ -1,0 +1,107 @@
+{% extends "sprzet/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1 style="margin-bottom: 25px;">Pomieszczenia i Sale</h1>
+
+<style>
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 25px;
+}
+
+.room-tile {
+    background: #1d3b6b;
+    background: linear-gradient(135deg, #1d3b6b 0%, #2b5fa7 100%);
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    color: #fff;
+    transition: 0.2s ease;
+}
+
+.room-tile:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.35);
+}
+
+.room-title {
+    font-size: 1.35em;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.room-count {
+    margin: 8px 0;
+    font-size: 1.05em;
+}
+
+.tile-btn {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.tile-btn:hover {
+    background: rgba(255,255,255,0.45);
+}
+</style>
+
+<div class="rooms-grid">
+
+    <!-- LABORATORIA KOMPUTEROWE -->
+    <div class="room-tile">
+        <div class="room-title">Laboratoria komputerowe</div>
+        <div class="room-count">Liczba pomieszczeń: <strong>{{ lab_rooms_count }}</strong></div>
+        <div class="room-count">Liczba kart sprzętu: <strong>{{ lab_equipment_count }}</strong></div>
+
+        <a href="{% url 'equipment:rooms_category' 'LAB' %}" class="tile-btn">
+            Szczegóły →
+        </a>
+    </div>
+
+    <!-- SALE WYKŁADOWE -->
+    <div class="room-tile">
+        <div class="room-title">Sale wykładowe</div>
+        <div class="room-count">Liczba pomieszczeń: <strong>{{ lecture_rooms_count }}</strong></div>
+        <div class="room-count">Liczba kart sprzętu: <strong>{{ lecture_equipment_count }}</strong></div>
+
+        <a href="{% url 'equipment:rooms_category' 'SALA' %}" class="tile-btn">
+            Szczegóły →
+        </a>
+    </div>
+
+    <!-- POKOJE -->
+    <div class="room-tile">
+        <div class="room-title">Pokoje</div>
+        <div class="room-count">Liczba pomieszczeń: <strong>{{ room_rooms_count }}</strong></div>
+        <div class="room-count">Liczba kart sprzętu: <strong>{{ room_equipment_count }}</strong></div>
+
+        <a href="{% url 'equipment:rooms_category' 'POKOJ' %}" class="tile-btn">
+            Szczegóły →
+        </a>
+    </div>
+
+    <!-- INNE -->
+    <div class="room-tile">
+        <div class="room-title">Inne</div>
+        <div class="room-count">Liczba pomieszczeń: <strong>{{ other_rooms_count }}</strong></div>
+        <div class="room-count">Liczba kart sprzętu: <strong>{{ other_equipment_count }}</strong></div>
+
+        <a href="{% url 'equipment:rooms_category' 'INNE' %}" class="tile-btn">
+            Szczegóły →
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

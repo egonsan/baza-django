@@ -1,13 +1,39 @@
 from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path
+from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 
-from .models import Equipment, EquipmentAttachment
+from .models import Equipment, EquipmentAttachment, ROOM_CATEGORY_CHOICES
 
 
-class EquipmentAttachmentInline(admin.TabularInline):
-    model = EquipmentAttachment
-    extra = 0
+# =====================================================================
+# Akcje administracyjne: Move to Pomieszczenia / Sale, Move to Magazyn
+# =====================================================================
+
+
+def _confirm_move_action(request, queryset, action_name, action_verbose, target_label, target_value):
+    """
+    Wspólny helper do akcji z potwierdzeniem.
+    - action_name: nazwa akcji (string, np. 'action_move_to_rooms')
+    - action_verbose: etykieta akcji (np. 'Move to Pomieszczenia / Sale')
+    - target_label: tekst w nagłówku (np. 'Pomieszczenia / Sale', 'Magazyn')
+    - target_value: wartość room_category, np. 'INNE', 'MAGAZYN'
+    """
+    if request.POST.get("confirm") == "yes":
+        # Użytkownik potwierdził operację
+        updated_count = queryset.update(room_category=target_value)
+        msg = f"Zmieniono kategorię pomieszczenia dla {updated_count} kart na: {target_label}."
+        admin.ModelAdmin.message_user = admin.ModelAdmin.message_user  # tylko dla type checkera
+        # message_user wywołamy na instancji ModelAdmin w metodzie action_xxx
+        return updated_count
+    else:
+        # Pierwsze wywołanie – pokaż stronę potwierdzenia
+        context = {
+            "title": f"Potwierdź akcję: {action_verbose}",
+            "queryset": queryset,
+            "action_name": action_name,
+            "target_label": target_label,
+        }
+        return context
 
 
 @admin.register(Equipment)
@@ -15,15 +41,14 @@ class EquipmentAdmin(admin.ModelAdmin):
     list_display = (
         "inventory_number",
         "equipment_name",
-        "user_full_name",
         "building",
+        "room_category",
         "room",
+        "user_full_name",
         "status",
-        "warranty_until",
         "warranty_status",
-        "last_modified_by",
-        "last_modified_at",
     )
+    list_filter = ("building", "room_category", "status")
     search_fields = (
         "inventory_number",
         "equipment_name",
@@ -32,47 +57,97 @@ class EquipmentAdmin(admin.ModelAdmin):
         "building",
         "room",
     )
-    list_filter = ("status", "building", "supplier")
-    inlines = [EquipmentAttachmentInline]
 
-    # Nie pokazujemy pola użytkownika w formularzu – ustawiamy je automatycznie
-    exclude = ("last_modified_by",)
+    actions = ["action_move_to_rooms", "action_move_to_magazyn", "delete_selected"]
 
-    # Własny template listy – żeby dodać przycisk "Import z Excela"
-    change_list_template = "admin/equipment/equipment/change_list.html"
+    # -------------------------------
+    # Akcja: Move to Pomieszczenia / Sale
+    # -------------------------------
 
-    def save_model(self, request, obj, form, change):
+    def action_move_to_rooms(self, request, queryset):
         """
-        Ustawiamy last_modified_by zawsze na aktualnego użytkownika.
+        Ustawia room_category = 'INNE' dla zaznaczonych kart,
+        co logicznie przenosi je do zakładki 'Pomieszczenia / Sale'.
         """
-        if request.user.is_authenticated:
-            obj.last_modified_by = request.user
-        super().save_model(request, obj, form, change)
+        context_or_count = _confirm_move_action(
+            request=request,
+            queryset=queryset,
+            action_name="action_move_to_rooms",
+            action_verbose="Move to Pomieszczenia / Sale",
+            target_label="Pomieszczenia / Sale",
+            target_value="INNE",
+        )
 
-    def get_urls(self):
-        """
-        Dodajemy własny URL w obrębie admina:
-        /admin/equipment/equipment/import-excel/
-        """
-        urls = super().get_urls()
-        custom_urls = [
-            path(
-                "import-excel/",
-                self.admin_site.admin_view(self.import_excel_view),
-                name="equipment_import_excel",
-            ),
-        ]
-        return custom_urls + urls
+        if isinstance(context_or_count, int):
+            # Akcja została wykonana (confirm = yes)
+            updated_count = context_or_count
+            self.message_user(
+                request,
+                f"Przeniesiono {updated_count} kart do kategorii: Pomieszczenia / Sale (INNE).",
+            )
+            return None
 
-    def import_excel_view(self, request):
+         # Pierwsze wywołanie – pokaż stronę potwierdzenia
+        context = context_or_count
+        context.update(
+            {
+                "opts": self.model._meta,
+                "action": "action_move_to_rooms",
+            }
+        )
+        return TemplateResponse(
+            request,
+            "admin/equipment/equipment/confirm_move.html",
+            context,
+        )
+
+    action_move_to_rooms.short_description = "Move to Pomieszczenia / Sale"
+
+    # -------------------------------
+    # Akcja: Move to Magazyn
+    # -------------------------------
+
+    def action_move_to_magazyn(self, request, queryset):
         """
-        Proste przekierowanie do istniejącego widoku importu:
-        /baza/import/
+        Ustawia room_category = 'MAGAZYN' dla zaznaczonych kart,
+        co logicznie przenosi je do zakładki 'Magazyn'.
         """
-        return redirect("/baza/import/")
+        context_or_count = _confirm_move_action(
+            request=request,
+            queryset=queryset,
+            action_name="action_move_to_magazyn",
+            action_verbose="Move to Magazyn",
+            target_label="Magazyn",
+            target_value="MAGAZYN",
+        )
+
+        if isinstance(context_or_count, int):
+            # Akcja została wykonana (confirm = yes)
+            updated_count = context_or_count
+            self.message_user(
+                request,
+                f"Przeniesiono {updated_count} kart do kategorii: Magazyn.",
+            )
+            return None
+
+        # Pierwsze wywołanie – pokaż stronę potwierdzenia
+        context = context_or_count
+        context.update(
+            {
+                "opts": self.model._meta,
+                "action": "action_move_to_magazyn",
+            }
+        )
+        return TemplateResponse(
+            request,
+            "admin/equipment/equipment/confirm_move.html",
+            context,
+        )
+
+    action_move_to_magazyn.short_description = "Move to Magazyn"
 
 
 @admin.register(EquipmentAttachment)
 class EquipmentAttachmentAdmin(admin.ModelAdmin):
     list_display = ("file", "equipment", "uploaded_at")
-    search_fields = ("file", "equipment__inventory_number")
+    search_fields = ("file", "equipment__inventory_number", "equipment__equipment_name")
