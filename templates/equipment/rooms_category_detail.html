@@ -1,0 +1,194 @@
+{% extends "sprzet/base.html" %}
+
+{% block content %}
+<style>
+    .rooms-cat-page {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 16px;
+        border-radius: 16px;
+        background: radial-gradient(circle at top left, #f4f9ff 0, #e3edf9 45%, #d7e0f0 100%);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+    }
+
+    .rooms-cat-header-main {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #111827;
+    }
+
+    .rooms-cat-header-sub {
+        margin: 0 0 16px 0;
+        color: #4b5563;
+        font-size: 0.95rem;
+    }
+
+    .rooms-cat-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 8px;
+    }
+
+    .rooms-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #9ca3af;
+        background: rgba(255, 255, 255, 0.9);
+        color: #111827;
+        text-decoration: none;
+        font-size: 0.86rem;
+        font-weight: 500;
+    }
+
+    .rooms-back-btn:hover {
+        background: #f3f4f6;
+    }
+
+    .rooms-cat-count-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #e5f0ff;
+        color: #1d4ed8;
+        font-size: 0.86rem;
+        font-weight: 600;
+    }
+
+    .rooms-cat-table-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: #ffffff;
+    }
+
+    .rooms-cat-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.94rem;
+    }
+
+    .rooms-cat-table thead {
+        background: #f9fafb;
+    }
+
+    .rooms-cat-table th,
+    .rooms-cat-table td {
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        color: #111827;
+    }
+
+    .rooms-cat-table th {
+        font-weight: 600;
+        font-size: 0.88rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6b7280;
+    }
+
+    .rooms-cat-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .rooms-cat-table tbody tr:hover {
+        background: #f3f4f6;
+    }
+
+    .rooms-cat-actions {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .rooms-cat-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 11px;
+        border-radius: 999px;
+        border: 1px solid #2563eb;
+        color: #1d4ed8;
+        background: transparent;
+        text-decoration: none;
+        font-size: 0.86rem;
+        font-weight: 500;
+    }
+
+    .rooms-cat-btn:hover {
+        background: #eff6ff;
+    }
+
+    .rooms-cat-empty {
+        padding: 18px 14px;
+        color: #4b5563;
+    }
+
+    @media (max-width: 768px) {
+        .rooms-cat-page {
+            margin: 16px;
+            padding: 12px;
+        }
+    }
+</style>
+
+<div class="rooms-cat-page">
+    <h2 class="rooms-cat-header-main">Pomieszczenia – {{ category_label }}</h2>
+    <p class="rooms-cat-header-sub">
+        Lista pomieszczeń (budynek + numer sali) dla wybranej kategorii.
+        Dla każdej sali pokazana jest liczba kart sprzętu.
+    </p>
+
+    <div class="rooms-cat-topbar">
+        <a href="{% url 'equipment:rooms_dashboard' %}" class="rooms-back-btn">
+            &larr; Wróć do kategorii
+        </a>
+
+        <span class="rooms-cat-count-pill">
+            Liczba pomieszczeń: {{ rooms|length }}
+        </span>
+    </div>
+
+    <div class="rooms-cat-table-wrapper">
+        {% if rooms %}
+            <table class="rooms-cat-table">
+                <thead>
+                    <tr>
+                        <th>Budynek</th>
+                        <th>Pomieszczenie</th>
+                        <th>Liczba kart</th>
+                        <th class="rooms-cat-actions">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rooms %}
+                        <tr>
+                            <td>{{ r.building }}</td>
+                            <td>{{ r.room }}</td>
+                            <td>
+                                {{ r.equipment_count }}
+                            </td>
+                            <td class="rooms-cat-actions">
+                                <a href="{% url 'equipment:room_equipment_list' category_code r.building r.room %}"
+                                   class="rooms-cat-btn">
+                                    Sprzęt w tej sali
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="rooms-cat-empty">
+                Brak pomieszczeń w tej kategorii.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
