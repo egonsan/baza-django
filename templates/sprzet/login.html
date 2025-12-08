@@ -4,34 +4,34 @@
 
 {% block content %}
 <style>
-    /* TŁO DLA STRONY LOGOWANIA */
+    /* TŁO tylko dla strony logowania – pewne, że będzie widać */
     #main-bg {
+        min-height: 100vh;
         background: url("{% static 'sprzet/wallpaper.jpg' %}") no-repeat center center fixed;
         background-size: cover;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 90px;
-        padding-bottom: 40px;
     }
 
     .login-wrapper {
+        position: fixed;
+        top: 120px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 100%;
         max-width: 380px;
         padding: 28px 32px 38px 32px;
         border-radius: 18px;
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 8px 28px rgba(0,0,0,0.55);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.65);
         color: #fff;
-        animation: fadeIn 0.6s ease-out;
         text-align: center;
+        animation: fadeIn 0.5s ease-out;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(12px); }
-        to   { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; }
+        to   { opacity: 1; }
     }
 
     .login-big-logo {
@@ -112,7 +112,7 @@
 
 <div class="login-wrapper">
 
-    <!-- 🔵 DUŻE LOGO NAD FORMULARZEM -->
+    <!-- DUŻE LOGO NAD FORMULARZEM -->
     <img src="{% static 'sprzet/logo.png' %}" class="login-big-logo" alt="Logo aplikacji">
 
     {# Formularz normalnego logowania (login + hasło) #}

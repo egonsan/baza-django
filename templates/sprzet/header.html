@@ -1,0 +1,121 @@
+{% load static %}
+
+<style>
+
+    /* HEADER z mocniejszym gradientem poziomym LEFT → RIGHT */
+    .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+
+        background: linear-gradient(
+            90deg,
+            #08101d 0%,     /* bardzo ciemny granat */
+            #152234 50%,   /* dużo jaśniejszy ten sam odcień */
+            #233247 100%   /* jasny granat, mocno widoczne przejście */
+        );
+
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* LEWA STRONA – logo + tytuł */
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .nav-logo-img {
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        object-fit: contain;
+    }
+
+    .nav-logo-title {
+        font-size: 1.10em;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: 0.5px;
+    }
+
+    /* LINKI */
+    .nav-links {
+        display: flex;
+        gap: 26px;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: #d4dbee;
+        text-decoration: none;
+        font-size: 0.97em;
+        font-weight: 500;
+        padding: 4px 2px;
+        transition: color 0.15s ease;
+    }
+
+    /* Hover – lekko jaśniejszy */
+    .nav-link:hover {
+        color: #ffffff;
+    }
+
+    /* AKTYWNA ZAKŁADKA = biały tekst */
+    .nav-link-active {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    /* Disabled */
+    .nav-link-disabled {
+        color: rgba(255,255,255,0.38);
+        cursor: default;
+        pointer-events: none;
+    }
+
+</style>
+
+<header class="top-nav">
+    <div class="nav-container">
+
+        <div class="nav-left">
+            <img src="{% static 'sprzet/logo1.png' %}" class="nav-logo-img" alt="Logo">
+            <div class="nav-logo-title">Baza Sprzętu WIMiO</div>
+        </div>
+
+        <nav class="nav-links">
+
+            {% if request.session.guest %}
+                <a href="{% url 'equipment:oprogramowanie' %}"
+                   class="nav-link nav-link-active">Oprogramowanie</a>
+
+            {% elif user.is_authenticated and user.is_staff %}
+
+                <a href="{% url 'equipment:oprogramowanie' %}"
+                   class="nav-link nav-link-active">Oprogramowanie</a>
+
+                <span class="nav-link nav-link-disabled">Pomieszczenia / Sale</span>
+                <span class="nav-link nav-link-disabled">Pracownik</span>
+
+                <a href="{% url 'equipment:equipment_list' %}"
+                   class="nav-link">Magazyn</a>
+
+            {% else %}
+                <a href="{% url 'equipment:oprogramowanie' %}"
+                   class="nav-link nav-link-active">Oprogramowanie</a>
+            {% endif %}
+
+        </nav>
+
+    </div>
+</header>

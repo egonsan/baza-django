@@ -11,149 +11,19 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            background: #0b1120;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
         }
+
         #main-bg {
             min-height: 100vh;
-            animation: contentFadeIn 0.6s ease-out;
-        }
-        @keyframes contentFadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* HEADER */
-        .top-nav {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: linear-gradient(120deg, rgba(15,23,42,0.95) 0%, rgba(30,64,175,0.9) 50%, rgba(15,23,42,0.95) 100%);
-            border-bottom: 1px solid rgba(148,163,184,0.35);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-        }
-
-        .nav-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 10px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-logo-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            object-fit: contain;
-            background: rgba(15,23,42,0.8);
-        }
-
-        .nav-logo-title {
-            font-weight: 600;
-            letter-spacing: 0.9px;
-            font-size: 1.05em;
-            color: #e5edff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.55);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            font-size: 0.94em;
-        }
-
-        .nav-link {
-            color: #e5edff;
-            text-decoration: none;
-            padding: 6px 11px;
-            border-radius: 999px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.12s;
-            border-bottom: 2px solid transparent;
-        }
-
-        .nav-link:hover {
-            background: rgba(191,219,254,0.20);
-            transform: translateY(-1px);
-        }
-
-        .nav-link-active {
-            background: rgba(148,163,184,0.30);
-            border-bottom-color: rgba(248,250,252,0.95);
-        }
-
-        .nav-link-disabled {
-            opacity: 0.45;
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .nav-icon svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
         }
     </style>
 </head>
 <body>
 
-<header class="top-nav">
-    <div class="nav-container">
-
-        <div class="nav-left">
-            <img src="{% static 'sprzet/logo1.png' %}" class="nav-logo-img">
-            <div class="nav-logo-title">Baza Sprzętu WIMiO</div>
-        </div>
-
-        <nav class="nav-links">
-
-            {% if request.session.guest %}
-                <a href="{% url 'equipment:oprogramowanie' %}" class="nav-link nav-link-active">
-                    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></span>
-                    Oprogramowanie
-                </a>
-
-            {% elif user.is_authenticated and user.is_staff %}
-                <a href="{% url 'equipment:oprogramowanie' %}" class="nav-link nav-link-active">
-                    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></span>
-                    Oprogramowanie
-                </a>
-
-                <a class="nav-link nav-link-disabled">
-                    Pomieszczenia / Sale
-                </a>
-
-                <a class="nav-link nav-link-disabled">
-                    Pracownik
-                </a>
-
-                <a href="{% url 'equipment:equipment_list' %}" class="nav-link">
-                    Magazyn
-                </a>
-
-            {% else %}
-                <a href="{% url 'equipment:oprogramowanie' %}" class="nav-link nav-link-active">
-                    Oprogramowanie
-                </a>
-            {% endif %}
-
-        </nav>
-
-    </div>
-</header>
+{% include "sprzet/header.html" %}
 
 <div id="main-bg">
     {% block content %}{% endblock %}
