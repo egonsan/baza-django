@@ -15,15 +15,18 @@ from .models import Equipment, EquipmentAttachment
 
 
 # ============================================================
-# LISTA SPRZĘTU
+# LISTA SPRZĘTU – MAGAZYN
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/admin/login/"), name="dispatch")
+@method_decorator(login_required(login_url="/baza/"), name="dispatch")
 class EquipmentListView(ListView):
     """
-    Lista sprzętu /baza/
-    Z prostym wyszukiwaniem po numerze inwentarzowym, nazwie, użytkowniku itd.
+    Lista sprzętu w MAGAZYNIE – /baza/magazyn/
+
+    Logika:
+    - pokazuje wyłącznie sprzęt z room_category = "MAGAZYN",
+    - proste wyszukiwanie po numerze inwentarzowym, nazwie, użytkowniku, budynku, pokoju.
     """
 
     model = Equipment
@@ -32,7 +35,10 @@ class EquipmentListView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        qs = Equipment.objects.all().order_by("inventory_number")
+        # Tylko sprzęt z kategorii MAGAZYN
+        qs = Equipment.objects.filter(room_category="MAGAZYN").order_by(
+            "inventory_number"
+        )
         q = self.request.GET.get("q", "").strip()
 
         if q:
@@ -52,10 +58,10 @@ class EquipmentListView(ListView):
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/admin/login/"), name="dispatch")
+@method_decorator(login_required(login_url="/baza/"), name="dispatch")
 class EquipmentDetailView(DetailView):
     """
-    Szczegóły sprzętu /baza/<pk>/
+    Szczegóły sprzętu /baza/magazyn/<pk>/
     Pokazuje też listę załączników.
     """
 
@@ -79,10 +85,10 @@ class EquipmentDetailView(DetailView):
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/admin/login/"), name="dispatch")
+@method_decorator(login_required(login_url="/baza/"), name="dispatch")
 class EquipmentUpdateView(UpdateView):
     """
-    Edycja sprzętu /baza/<pk>/edit/
+    Edycja sprzętu /baza/magazyn/<pk>/edit/
     """
 
     model = Equipment
@@ -281,7 +287,7 @@ def admin_equipment_import_view(request):
 # (Opcjonalnie) stara wersja importu dostępna pod /baza/import/
 # Jeżeli gdzieś jeszcze używasz tego adresu, możesz zostawić ten widok
 # i dodać do urls.py odpowiednią ścieżkę.
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/baza/")
 def equipment_import_view(request):
     """
     STARSZA wersja importu (nie używana przez admin change_list).
@@ -376,11 +382,11 @@ def admin_equipment_export_view(request):
 # ============================================================
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/baza/")
 def attachment_upload_view(request, pk):
     """
     Upload pojedynczego załącznika do sprzętu.
-    Adres: /baza/<pk>/upload/
+    Adres: /baza/magazyn/<pk>/upload/
     """
 
     equipment = get_object_or_404(Equipment, pk=pk)
@@ -406,7 +412,7 @@ def attachment_upload_view(request, pk):
 # ============================================================
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/baza/")
 def attachment_delete_view(request, attachment_id):
     """
     Usuwanie pojedynczego załącznika.
