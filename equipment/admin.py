@@ -10,34 +10,52 @@ from .models import Equipment, EquipmentAttachment, ROOM_CATEGORY_CHOICES
 # =====================================================================
 
 
-def _confirm_move_action(request, queryset, action_name, action_verbose, target_label, target_value):
+def _confirm_move_action(
+    request,
+    queryset,
+    action_name,
+    action_verbose,
+    target_label,
+    target_value,
+):
     """
     Wspólny helper do akcji z potwierdzeniem.
     - action_name: nazwa akcji (string, np. 'action_move_to_rooms')
     - action_verbose: etykieta akcji (np. 'Move to Pomieszczenia / Sale')
     - target_label: tekst w nagłówku (np. 'Pomieszczenia / Sale', 'Magazyn')
     - target_value: wartość room_category, np. 'INNE', 'MAGAZYN'
+
+    Zwraca:
+    - int (liczbę zaktualizowanych rekordów), jeśli użytkownik potwierdził akcję,
+    - dict (context) – jeśli trzeba wyświetlić stronę potwierdzenia.
     """
+
+    # Użytkownik kliknął drugi raz (potwierdzenie)
     if request.POST.get("confirm") == "yes":
-        # Użytkownik potwierdził operację
         updated_count = queryset.update(room_category=target_value)
-        msg = f"Zmieniono kategorię pomieszczenia dla {updated_count} kart na: {target_label}."
-        admin.ModelAdmin.message_user = admin.ModelAdmin.message_user  # tylko dla type checkera
-        # message_user wywołamy na instancji ModelAdmin w metodzie action_xxx
         return updated_count
-    else:
-        # Pierwsze wywołanie – pokaż stronę potwierdzenia
-        context = {
-            "title": f"Potwierdź akcję: {action_verbose}",
-            "queryset": queryset,
-            "action_name": action_name,
-            "target_label": target_label,
-        }
-        return context
+
+    # Pierwsze wywołanie – pokaż stronę potwierdzenia
+    context = {
+        "title": f"Potwierdź akcję: {action_verbose}",
+        "queryset": queryset,
+        "action_name": action_name,
+        "target_label": target_label,
+    }
+    return context
 
 
 @admin.register(Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
+    """
+    Admin dla modelu Equipment:
+    - lista sprzętu,
+    - akcje z potwierdzeniem:
+        * Move to Pomieszczenia / Sale (room_category = INNE),
+        * Move to Magazyn (room_category = MAGAZYN),
+    - opcjonalnie: własny change_list_template z przyciskiem IMPORT/EKSPORT.
+    """
+
     list_display = (
         "inventory_number",
         "equipment_name",
@@ -58,6 +76,10 @@ class EquipmentAdmin(admin.ModelAdmin):
         "room",
     )
 
+    # Jeśli masz szablon z przyciskiem IMPORT/EKSPORT:
+    # templates/admin/equipment/equipment/change_list.html
+    change_list_template = "admin/equipment/equipment/change_list.html"
+
     actions = ["action_move_to_rooms", "action_move_to_magazyn", "delete_selected"]
 
     # -------------------------------
@@ -69,6 +91,7 @@ class EquipmentAdmin(admin.ModelAdmin):
         Ustawia room_category = 'INNE' dla zaznaczonych kart,
         co logicznie przenosi je do zakładki 'Pomieszczenia / Sale'.
         """
+
         context_or_count = _confirm_move_action(
             request=request,
             queryset=queryset,
@@ -83,11 +106,12 @@ class EquipmentAdmin(admin.ModelAdmin):
             updated_count = context_or_count
             self.message_user(
                 request,
-                f"Przeniesiono {updated_count} kart do kategorii: Pomieszczenia / Sale (INNE).",
+                f"Przeniesiono {updated_count} kart do kategorii: "
+                f"Pomieszczenia / Sale (INNE).",
             )
             return None
 
-         # Pierwsze wywołanie – pokaż stronę potwierdzenia
+        # Pierwsze wywołanie – pokaż stronę potwierdzenia
         context = context_or_count
         context.update(
             {
@@ -112,6 +136,7 @@ class EquipmentAdmin(admin.ModelAdmin):
         Ustawia room_category = 'MAGAZYN' dla zaznaczonych kart,
         co logicznie przenosi je do zakładki 'Magazyn'.
         """
+
         context_or_count = _confirm_move_action(
             request=request,
             queryset=queryset,
@@ -150,4 +175,8 @@ class EquipmentAdmin(admin.ModelAdmin):
 @admin.register(EquipmentAttachment)
 class EquipmentAttachmentAdmin(admin.ModelAdmin):
     list_display = ("file", "equipment", "uploaded_at")
-    search_fields = ("file", "equipment__inventory_number", "equipment__equipment_name")
+    search_fields = (
+        "file",
+        "equipment__inventory_number",
+        "equipment__equipment_name",
+    )
