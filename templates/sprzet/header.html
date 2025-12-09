@@ -1,8 +1,6 @@
 {% load static %}
 
 <style>
-
-    /* HEADER z mocniejszym gradientem poziomym LEFT → RIGHT */
     .top-nav {
         position: sticky;
         top: 0;
@@ -10,13 +8,13 @@
 
         background: linear-gradient(
             90deg,
-            #08101d 0%,     /* bardzo ciemny granat */
-            #152234 50%,   /* dużo jaśniejszy ten sam odcień */
-            #233247 100%   /* jasny granat, mocno widoczne przejście */
+            #08101d 0%,
+            #152234 50%,
+            #233247 100%
         );
 
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
     }
 
     .nav-container {
@@ -28,7 +26,6 @@
         justify-content: space-between;
     }
 
-    /* LEWA STRONA – logo + tytuł */
     .nav-left {
         display: flex;
         align-items: center;
@@ -49,7 +46,6 @@
         letter-spacing: 0.5px;
     }
 
-    /* LINKI */
     .nav-links {
         display: flex;
         gap: 26px;
@@ -62,27 +58,27 @@
         font-size: 0.97em;
         font-weight: 500;
         padding: 4px 2px;
-        transition: color 0.15s ease;
+        transition: color 0.15s ease, border-color 0.15s ease;
+        border-bottom: 2px solid transparent;
     }
 
-    /* Hover – lekko jaśniejszy */
     .nav-link:hover {
         color: #ffffff;
+        border-bottom-color: rgba(255, 255, 255, 0.35);
     }
 
-    /* AKTYWNA ZAKŁADKA = biały tekst */
     .nav-link-active {
         color: #ffffff !important;
         font-weight: 600 !important;
+        border-bottom-color: #ffffff;
     }
 
-    /* Disabled */
     .nav-link-disabled {
-        color: rgba(255,255,255,0.38);
+        color: rgba(255, 255, 255, 0.38);
         cursor: default;
         pointer-events: none;
+        border-bottom-color: transparent;
     }
-
 </style>
 
 <header class="top-nav">
@@ -94,49 +90,56 @@
         </div>
 
         <nav class="nav-links">
+            {% comment %}
+                Logika:
+                - Gość: tylko Oprogramowanie.
+                - Admin/staff: wszystkie zakładki.
+                - Aktywna zakładka rozpoznawana po fragmencie request.path.
+            {% endcomment %}
 
-            {# GOŚĆ – widzi tylko Oprogramowanie #}
             {% if request.session.guest %}
+                {# GOŚĆ – tylko Oprogramowanie #}
                 <a href="{% url 'equipment:oprogramowanie' %}"
                    class="nav-link nav-link-active">
                     Oprogramowanie
                 </a>
 
-            {# ADMIN (is_staff) – widzi wszystkie zakładki #}
             {% elif user.is_authenticated and user.is_staff %}
+                {% with path=request.path %}
 
-                {# OPROGRAMOWANIE #}
-                <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link{% if '/baza/oprogramowanie/' in request.path %} nav-link-active{% endif %}">
-                    Oprogramowanie
-                </a>
+                    {# OPROGRAMOWANIE #}
+                    <a href="{% url 'equipment:oprogramowanie' %}"
+                       class="nav-link {% if '/baza/oprogramowanie' in path %}nav-link-active{% endif %}">
+                        Oprogramowanie
+                    </a>
 
-                {# POMIESZCZENIA / SALE – dashboard kategorii #}
-                <a href="{% url 'equipment:rooms_dashboard' %}"
-                   class="nav-link{% if '/baza/pomieszczenia/' in request.path %} nav-link-active{% endif %}">
-                    Pomieszczenia / Sale
-                </a>
+                    {# POMIESZCZENIA / SALE #}
+                    <a href="{% url 'equipment:rooms_dashboard' %}"
+                       class="nav-link {% if '/baza/pomieszczenia' in path %}nav-link-active{% endif %}">
+                        Pomieszczenia / Sale
+                    </a>
 
-                {# PRACOWNIK – TERAZ AKTYWNY LINK #}
-                <a href="{% url 'equipment:workers_list' %}"
-                   class="nav-link{% if '/baza/pracownicy/' in request.path %} nav-link-active{% endif %}">
-                    Pracownik
-                </a>
+                    {# PRACOWNIK #}
+                    <a href="{% url 'equipment:workers_list' %}"
+                       class="nav-link {% if '/baza/pracownicy' in path %}nav-link-active{% endif %}">
+                        Pracownik
+                    </a>
 
-                {# MAGAZYN – lista kart sprzętu #}
-                <a href="{% url 'equipment:equipment_list' %}"
-                   class="nav-link{% if '/baza/magazyn/' in request.path %} nav-link-active{% endif %}">
-                    Magazyn
-                </a>
+                    {# MAGAZYN #}
+                    <a href="{% url 'equipment:equipment_list' %}"
+                       class="nav-link {% if '/baza/magazyn' in path %}nav-link-active{% endif %}">
+                        Magazyn
+                    </a>
 
-            {# Inni użytkownicy (np. zalogowany ale nie-staff) – traktujemy jak gościa #}
+                {% endwith %}
+
             {% else %}
+                {# Domyślnie – użytkownik zalogowany, ale nie-staff: tylko Oprogramowanie #}
                 <a href="{% url 'equipment:oprogramowanie' %}"
                    class="nav-link nav-link-active">
                     Oprogramowanie
                 </a>
             {% endif %}
-
         </nav>
 
     </div>
