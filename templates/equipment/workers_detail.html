@@ -1,212 +1,88 @@
 {% extends "sprzet/base.html" %}
-
 {% block content %}
+
 <style>
-    .worker-detail-page {
-        max-width: 1200px;
-        margin: 24px auto;
-        padding: 16px;
-        border-radius: 16px;
-        background: radial-gradient(circle at top left, #f8fafc 0, #e5ecf7 45%, #dde3f0 100%);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+    .panel {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        margin-bottom: 40px;
     }
 
-    .worker-detail-header-main {
+    .panel h1 {
+        margin: 0 0 20px;
         font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-        color: #111827;
+        font-weight: 600;
+        color: #1d2a3a;
     }
 
-    .worker-detail-header-sub {
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin: 0 0 10px 0;
-        color: #1f2933;
+    table.worker-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
     }
 
-    .worker-detail-desc {
-        margin: 0 0 16px 0;
-        color: #4b5563;
+    table.worker-table th, table.worker-table td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e3e6ec;
         font-size: 0.95rem;
     }
 
-    .worker-detail-topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        gap: 8px;
+    table.worker-table th {
+        background: #f1f3f7;
+        font-weight: 600;
+        color: #1b2636;
     }
 
-    .worker-back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        border: 1px solid #9ca3af;
-        background: rgba(255, 255, 255, 0.9);
-        color: #111827;
+    .eq-link {
+        color: #1d3e6b;
         text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 500;
-    }
-
-    .worker-back-btn:hover {
-        background: #f3f4f6;
-    }
-
-    .worker-count-pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 12px;
-        border-radius: 999px;
-        background: #e5f0ff;
-        color: #1d4ed8;
-        font-size: 0.86rem;
         font-weight: 600;
     }
 
-    .worker-table-wrapper {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(15, 23, 42, 0.12);
-        background: #ffffff;
-    }
-
-    .worker-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.94rem;
-    }
-
-    .worker-table thead {
-        background: #f9fafb;
-    }
-
-    .worker-table th,
-    .worker-table td {
-        padding: 10px 12px;
-        text-align: left;
-        border-bottom: 1px solid #e5e7eb;
-        color: #111827;
-    }
-
-    .worker-table th {
-        font-weight: 600;
-        font-size: 0.88rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #6b7280;
-    }
-
-    .worker-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .worker-table tbody tr:hover {
-        background: #f3f4f6;
-    }
-
-    .worker-table-actions {
-        text-align: right;
-        white-space: nowrap;
-    }
-
-    .worker-btn-outline-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 11px;
-        border-radius: 999px;
-        border: 1px solid #2563eb;
-        color: #1d4ed8;
-        background: transparent;
-        text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 500;
-    }
-
-    .worker-btn-outline-primary:hover {
-        background: #eff6ff;
-    }
-
-    .worker-empty {
-        padding: 18px 14px;
-        color: #4b5563;
-    }
-
-    @media (max-width: 768px) {
-        .worker-detail-page {
-            margin: 16px;
-            padding: 12px;
-        }
-
-        .worker-table th:nth-child(4),
-        .worker-table td:nth-child(4),
-        .worker-table th:nth-child(5),
-        .worker-table td:nth-child(5) {
-            display: none; /* budynek/pomieszczenie można ukryć na małych ekranach */
-        }
+    .eq-link:hover {
+        text-decoration: underline;
     }
 </style>
 
-<div class="worker-detail-page">
-    <h2 class="worker-detail-header-main">Sprzęt przypisany do pracownika</h2>
-    <h4 class="worker-detail-header-sub">{{ worker_name }}</h4>
+<div class="panel">
+    <h1>Pracownik: {{ worker_name }}</h1>
 
-    <p class="worker-detail-desc">
-        Zestawienie wszystkich kart sprzętu, na których ten pracownik widnieje w polu
-        <code>Użytkownik</code>. Możesz przejść do konkretnej karty sprzętu, aby zobaczyć pełne szczegóły.
-    </p>
+    {% if items %}
+        <table class="worker-table">
+            <thead>
+                <tr>
+                    <th>Nr inwentarzowy</th>
+                    <th>Nazwa sprzętu</th>
+                    <th>Budynek</th>
+                    <th>Pokój</th>
+                    <th>Status</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for eq in items %}
+                <tr>
+                    <td>{{ eq.inventory_number }}</td>
+                    <td>{{ eq.equipment_name }}</td>
+                    <td>{{ eq.building }}</td>
+                    <td>{{ eq.room }}</td>
+                    <td>{{ eq.status }}</td>
+                    <td>
+                        <a href="{% url 'equipment:equipment_detail' pk=eq.pk %}" class="eq-link">
+                            Szczegóły sprzętu
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <div class="worker-detail-topbar">
-        <a href="{% url 'equipment:workers_list' %}" class="worker-back-btn">
-            &larr; Wróć do listy pracowników
-        </a>
-
-        <span class="worker-count-pill">
-            Łączna liczba kart: {{ equipment_list|length }}
-        </span>
-    </div>
-
-    <div class="worker-table-wrapper">
-        {% if equipment_list %}
-            <table class="worker-table">
-                <thead>
-                    <tr>
-                        <th>Nr inwentarzowy</th>
-                        <th>Nazwa sprzętu</th>
-                        <th>Typ sprzętu</th>
-                        <th>Budynek</th>
-                        <th>Pomieszczenie</th>
-                        <th class="worker-table-actions">Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for eq in equipment_list %}
-                        <tr>
-                            <td>{{ eq.inventory_number }}</td>
-                            <td>{{ eq.equipment_name }}</td>
-                            <td>{{ eq.equipment_type }}</td>
-                            <td>{{ eq.building }}</td>
-                            <td>{{ eq.room }}</td>
-                            <td class="worker-table-actions">
-                                <a href="{% url 'equipment:equipment_detail' eq.pk %}"
-                                   class="worker-btn-outline-primary">
-                                    Otwórz kartę
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="worker-empty">
-                Dla tego pracownika nie znaleziono żadnych kart sprzętu.
-            </div>
-        {% endif %}
-    </div>
+    {% else %}
+        <p>Ten pracownik nie ma przypisanego żadnego sprzętu.</p>
+    {% endif %}
 </div>
+
 {% endblock %}

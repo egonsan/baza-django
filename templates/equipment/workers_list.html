@@ -1,168 +1,92 @@
 {% extends "sprzet/base.html" %}
-
 {% block content %}
+
 <style>
-    .workers-page {
-        max-width: 1200px;
-        margin: 24px auto;
-        padding: 16px;
-        border-radius: 16px;
-        background: radial-gradient(circle at top left, #f7fbff 0, #e6ecf5 40%, #d7dde8 100%);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+    .panel {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        margin-bottom: 40px;
     }
 
-    .workers-header-title {
+    .panel h1 {
+        margin: 0 0 20px;
         font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-        color: #111827; /* ciemny grafit – wyraźny tekst */
+        font-weight: 600;
+        color: #1d2a3a;
     }
 
-    .workers-header-subtitle {
-        margin: 0 0 18px 0;
-        color: #4b5563;
+    table.worker-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    table.worker-table th, table.worker-table td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e3e6ec;
         font-size: 0.95rem;
     }
 
-    .workers-table-wrapper {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(15, 23, 42, 0.12);
-        background: #ffffff;
-    }
-
-    .workers-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.94rem;
-    }
-
-    .workers-table thead {
-        background: #f9fafb;
-    }
-
-    .workers-table th,
-    .workers-table td {
-        padding: 10px 12px;
-        text-align: left;
-        border-bottom: 1px solid #e5e7eb;
-        color: #111827; /* ciemny tekst */
-    }
-
-    .workers-table th {
+    table.worker-table th {
+        background: #f1f3f7;
         font-weight: 600;
-        font-size: 0.88rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #6b7280;
+        color: #1b2636;
     }
 
-    .workers-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .workers-table tbody tr:hover {
-        background: #f3f4f6;
-    }
-
-    .workers-badge-count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 32px;
-        padding: 3px 10px;
-        border-radius: 999px;
-        background: #e5f0ff;
-        color: #1d4ed8;
+    .worker-name {
         font-weight: 600;
-        font-size: 0.82rem;
+        color: #1b2738;
     }
 
-    .workers-actions-cell {
-        text-align: right;
-        white-space: nowrap;
-    }
-
-    .workers-btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+    .btn-details {
+        display: inline-block;
         padding: 6px 12px;
-        border-radius: 999px;
-        border: none;
+        background: #193b6b;
+        color: white;
         text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 500;
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        color: #ffffff;
-        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
-        cursor: pointer;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        transition: background 0.2s;
     }
 
-    .workers-btn-primary:hover {
-        background: linear-gradient(135deg, #1d4ed8, #1e40af);
-    }
-
-    .workers-empty {
-        padding: 18px 14px;
-        color: #4b5563;
-    }
-
-    @media (max-width: 768px) {
-        .workers-page {
-            margin: 16px;
-            padding: 12px;
-        }
-
-        .workers-table th:nth-child(2),
-        .workers-table td:nth-child(2) {
-            text-align: center;
-        }
+    .btn-details:hover {
+        background: #102947;
     }
 </style>
 
-<div class="workers-page">
-    <h2 class="workers-header-title">Pracownicy – przypisany sprzęt</h2>
-    <p class="workers-header-subtitle">
-        Zestawienie pracowników na podstawie pola <code>Użytkownik</code> na kartach sprzętu.
-        Dla każdego pracownika podana jest liczba przypisanych urządzeń.
-    </p>
+<div class="panel">
+    <h1>Pracownicy</h1>
 
-    <div class="workers-table-wrapper">
-        {% if workers %}
-            <table class="workers-table">
-                <thead>
-                    <tr>
-                        <th style="width: 55%;">Pracownik</th>
-                        <th style="width: 20%;">Liczba kart</th>
-                        <th style="width: 25%; text-align: right;">Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for worker in workers %}
-                        <tr>
-                            <td>{{ worker.user_full_name }}</td>
-                            <td>
-                                <span class="workers-badge-count">
-                                    {{ worker.equipment_count }}
-                                </span>
-                            </td>
-                            <td class="workers-actions-cell">
-                                <a href="{% url 'equipment:worker_detail' worker.user_full_name %}"
-                                   class="workers-btn-primary">
-                                    Szczegóły
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="workers-empty">
-                Brak pracowników w bazie sprzętu
-                (pole <code>Użytkownik</code> jest puste we wszystkich kartach).
-            </div>
-        {% endif %}
-    </div>
+    {% if workers %}
+        <table class="worker-table">
+            <thead>
+                <tr>
+                    <th>Pracownik</th>
+                    <th>Liczba kart sprzętu</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in workers %}
+                <tr>
+                    <td class="worker-name">{{ w.display_name }}</td>
+                    <td>{{ w.item_count }}</td>
+                    <td>
+                        <a href="{% url 'equipment:worker_detail' worker_name=w.key %}"
+                           class="btn-details">
+                            Szczegóły
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Brak pracowników w bazie.</p>
+    {% endif %}
 </div>
+
 {% endblock %}

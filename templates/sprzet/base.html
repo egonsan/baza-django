@@ -11,13 +11,17 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            background: #0b1120;
             font-family: 'Segoe UI', Arial, sans-serif;
-            color: #fff;
+            background: #f5f7fa; /* jasne tło strony */
+            color: #111; /* naturalny tekst, nie biały */
         }
 
-        #main-bg {
-            min-height: 100vh;
+        /* kontener na treść wszystkich zakładek */
+        .page-container {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 20px;
+            min-height: 70vh;
         }
     </style>
 </head>
@@ -25,7 +29,7 @@
 
 {% include "sprzet/header.html" %}
 
-<div id="main-bg">
+<div class="page-container">
     {% block content %}{% endblock %}
 </div>
 
