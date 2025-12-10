@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, UpdateView
 
@@ -72,8 +73,6 @@ class EquipmentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Załączniki powiązane z tym sprzętem
-        # USTALAMY KOLEJNOŚĆ: najstarszy jako pierwszy (do zdjęcia),
-        # kolejne pliki dopisywane NA KOŃCU listy
         context["attachments"] = EquipmentAttachment.objects.filter(
             equipment=self.object
         ).order_by("uploaded_at")
@@ -106,6 +105,7 @@ class EquipmentUpdateView(UpdateView):
         "borrowed_to",
         "building",
         "room",
+        "room_category",  # wybór kategorii pomieszczenia
         "ip_address",
         "mac_address",
         "unit_serial_number",
@@ -126,11 +126,12 @@ class EquipmentUpdateView(UpdateView):
 
     def form_valid(self, form):
         """
-        Ustawiamy last_modified_by automatycznie na aktualnie zalogowanego użytkownika.
+        Ustawiamy last_modified_by i last_modified_at automatycznie.
         """
         obj = form.save(commit=False)
         user = self.request.user if self.request.user.is_authenticated else None
         obj.last_modified_by = user
+        obj.last_modified_at = timezone.now()
         obj.save()
         return redirect(self.get_success_url())
 
@@ -150,14 +151,6 @@ def admin_equipment_import_view(request):
 
     Szablon:
     templates/admin/equipment/equipment/import_excel.html
-
-    Założenia Excela:
-    - Pierwszy wiersz = nagłówki kolumn
-    - Standardowo: nagłówki odpowiadają nazwom pól modelu Equipment
-      (inventory_number, equipment_name, itp.)
-    - Dodatkowo obsługujemy nagłówek 'DATA_ZAKUP', który mapujemy na
-      pole 'purchase_date' (Data zakupu).
-    - Rekordy identyfikujemy po 'inventory_number'.
     """
 
     context = {}
@@ -284,9 +277,6 @@ def admin_equipment_import_view(request):
     )
 
 
-# (Opcjonalnie) stara wersja importu dostępna pod /baza/import/
-# Jeżeli gdzieś jeszcze używasz tego adresu, możesz zostawić ten widok
-# i dodać do urls.py odpowiednią ścieżkę.
 @login_required(login_url="/baza/")
 def equipment_import_view(request):
     """
@@ -304,10 +294,7 @@ def equipment_import_view(request):
 @staff_member_required(login_url="/admin/login/")
 def admin_equipment_export_view(request):
     """
-    Eksport danych do pliku XLSX w formacie zgodnym z używanym Excelem
-    (polskie nagłówki: NR_INWENTARZOWY, BUDYNEK, POMIESZCZENIE, itd.).
-
-    Widok przeznaczony do wywoływania z panelu admina / strony importu.
+    Eksport danych do pliku XLSX w formacie zgodnym z używanym Excelem.
     """
 
     # Tworzymy nowy skoroszyt
@@ -315,7 +302,6 @@ def admin_equipment_export_view(request):
     ws = wb.active
     ws.title = "Sprzet"
 
-    # Nagłówki w dokładnie takiej formie, jak w pliku importu
     headers = [
         "NR_INWENTARZOWY",
         "BUDYNEK",
@@ -335,7 +321,6 @@ def admin_equipment_export_view(request):
     ]
     ws.append(headers)
 
-    # Pobieramy wszystkie rekordy sprzętu, posortowane po numerze inwentarzowym
     queryset = Equipment.objects.all().order_by("inventory_number")
 
     for eq in queryset:
@@ -358,7 +343,8 @@ def admin_equipment_export_view(request):
         ]
         ws.append(row)
 
-    # Przygotowujemy odpowiedź HTTP z plikiem XLSX
+    from io import BytesIO
+
     response = HttpResponse(
         content_type=(
             "application/vnd."
@@ -366,9 +352,7 @@ def admin_equipment_export_view(request):
             "spreadsheetml.sheet"
         )
     )
-    response["Content-Disposition"] = 'attachment; filename="karty_sprzetu.xlsx"'
-
-    from io import BytesIO
+    response["Content-Disposition"] = 'attachment; filename=\"karty_sprzetu.xlsx\"'
 
     output = BytesIO()
     wb.save(output)
@@ -395,7 +379,6 @@ def attachment_upload_view(request, pk):
         return HttpResponseForbidden("Niedozwolone żądanie.")
 
     if "file" not in request.FILES:
-        # Brak pliku – wracamy do szczegółów
         return redirect("equipment:equipment_detail", pk=pk)
 
     EquipmentAttachment.objects.create(

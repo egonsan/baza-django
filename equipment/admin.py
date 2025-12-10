@@ -1,29 +1,19 @@
 from django.contrib import admin
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .models import Equipment, EquipmentAttachment, ROOM_CATEGORY_CHOICES
 
 
-# =====================================================================
-# Helper do akcji przenoszenia pomiędzy kategoriami pomieszczeń
-# =====================================================================
-
-
 def _confirm_move_action(request, queryset, action_name, action_verbose, target_label, target_value):
     """
-    Wspólny helper do akcji z potwierdzeniem zmiany room_category.
-    - action_name: nazwa akcji (string, np. 'action_move_to_rooms')
-    - action_verbose: etykieta akcji (np. 'Move to Pomieszczenia / Sale')
-    - target_label: tekst w nagłówku (np. 'Pomieszczenia / Sale', 'Magazyn')
-    - target_value: wartość room_category, np. 'INNE', 'MAGAZYN'
+    Helper do prostych akcji zmiany room_category (np. Move to Magazyn).
     """
     if request.POST.get("confirm") == "yes":
-        # Użytkownik potwierdził operację
         updated_count = queryset.update(room_category=target_value)
         return updated_count
     else:
-        # Pierwsze wywołanie – pokaż stronę potwierdzenia
         context = {
             "title": f"Potwierdź akcję: {action_verbose}",
             "queryset": queryset,
@@ -62,48 +52,100 @@ class EquipmentAdmin(admin.ModelAdmin):
         "delete_selected",
     ]
 
+    # Pola tylko do odczytu w adminie – nieedytowalne ręcznie
+    readonly_fields = ("last_modified_by", "last_modified_at")
+
+    def save_model(self, request, obj, form, change):
+        """
+        Przy każdym zapisie w adminie:
+        - last_modified_by = aktualnie zalogowany użytkownik
+        - last_modified_at = aktualny czas
+        """
+        if request.user.is_authenticated:
+            obj.last_modified_by = request.user
+        obj.last_modified_at = timezone.now()
+        super().save_model(request, obj, form, change)
+
     # -------------------------------
-    # Akcja: Move to Pomieszczenia / Sale
+    # Akcja: Move to Pomieszczenia / Sale (kategoria + budynek + pomieszczenie)
     # -------------------------------
 
     def action_move_to_rooms(self, request, queryset):
         """
-        Ustawia room_category = 'INNE' dla zaznaczonych kart,
-        co logicznie przenosi je do zakładki 'Pomieszczenia / Sale'.
-        """
-        context_or_count = _confirm_move_action(
-            request=request,
-            queryset=queryset,
-            action_name="action_move_to_rooms",
-            action_verbose="Move to Pomieszczenia / Sale",
-            target_label="Pomieszczenia / Sale",
-            target_value="INNE",
-        )
+        Hurtowe przenoszenie zaznaczonych kart do wybranej kategorii pomieszczeń
+        ORAZ ustawienie budynku i numeru pomieszczenia.
 
-        if isinstance(context_or_count, int):
-            # Akcja została wykonana (confirm = yes)
-            updated_count = context_or_count
+        Ustawia:
+        - room_category (LAB / SALA / POKOJ / INNE),
+        - building,
+        - room.
+        """
+
+        if request.POST.get("confirm") == "yes":
+            selected_category = request.POST.get("room_category", "").strip()
+            building = request.POST.get("building", "").strip()
+            room = request.POST.get("room", "").strip()
+
+            valid_codes = [code for code, _ in ROOM_CATEGORY_CHOICES if code != "MAGAZYN"]
+
+            errors = []
+            if selected_category not in valid_codes:
+                errors.append("Musisz wybrać poprawną kategorię pomieszczenia.")
+            if not building:
+                errors.append("Musisz podać budynek.")
+            if not room:
+                errors.append("Musisz podać numer pomieszczenia.")
+
+            if errors:
+                choices = [(c, l) for c, l in ROOM_CATEGORY_CHOICES if c != "MAGAZYN"]
+                context = {
+                    "title": "Przenieś zaznaczone karty do kategorii Pomieszczenia / Sale",
+                    "queryset": queryset,
+                    "opts": self.model._meta,
+                    "action": "action_move_to_rooms",
+                    "room_category_choices": choices,
+                    "error_list": errors,
+                    "building": building,
+                    "room": room,
+                }
+                return TemplateResponse(
+                    request,
+                    "admin/equipment/equipment/confirm_move_to_rooms.html",
+                    context,
+                )
+
+            updated_count = queryset.update(
+                room_category=selected_category,
+                building=building,
+                room=room,
+            )
+
+            label_dict = dict(ROOM_CATEGORY_CHOICES)
+            label = label_dict.get(selected_category, selected_category)
+
             self.message_user(
                 request,
-                f"Przeniesiono {updated_count} kart do kategorii: Pomieszczenia / Sale (INNE).",
+                f"Przeniesiono {updated_count} kart do kategorii: {label}, budynek: {building}, pomieszczenie: {room}.",
             )
             return None
 
-        # Pierwsze wywołanie – pokaż stronę potwierdzenia
-        context = context_or_count
-        context.update(
-            {
-                "opts": self.model._meta,
-                "action": "action_move_to_rooms",
-            }
-        )
+        # Pierwsze wywołanie – pokazujemy formularz
+        choices = [(c, l) for c, l in ROOM_CATEGORY_CHOICES if c != "MAGAZYN"]
+
+        context = {
+            "title": "Przenieś zaznaczone karty do kategorii Pomieszczenia / Sale",
+            "queryset": queryset,
+            "opts": self.model._meta,
+            "action": "action_move_to_rooms",
+            "room_category_choices": choices,
+        }
         return TemplateResponse(
             request,
-            "admin/equipment/equipment/confirm_move.html",
+            "admin/equipment/equipment/confirm_move_to_rooms.html",
             context,
         )
 
-    action_move_to_rooms.short_description = "Move to Pomieszczenia / Sale"
+    action_move_to_rooms.short_description = "Move to Pomieszczenia / Sale (wybierz kategorię + budynek + pomieszczenie)"
 
     # -------------------------------
     # Akcja: Move to Magazyn
@@ -111,8 +153,7 @@ class EquipmentAdmin(admin.ModelAdmin):
 
     def action_move_to_magazyn(self, request, queryset):
         """
-        Ustawia room_category = 'MAGAZYN' dla zaznaczonych kart,
-        co logicznie przenosi je do zakładki 'Magazyn'.
+        Ustawia room_category = 'MAGAZYN' dla zaznaczonych kart.
         """
         context_or_count = _confirm_move_action(
             request=request,
@@ -124,7 +165,6 @@ class EquipmentAdmin(admin.ModelAdmin):
         )
 
         if isinstance(context_or_count, int):
-            # Akcja została wykonana (confirm = yes)
             updated_count = context_or_count
             self.message_user(
                 request,
@@ -132,7 +172,6 @@ class EquipmentAdmin(admin.ModelAdmin):
             )
             return None
 
-        # Pierwsze wywołanie – pokaż stronę potwierdzenia
         context = context_or_count
         context.update(
             {
@@ -149,20 +188,17 @@ class EquipmentAdmin(admin.ModelAdmin):
     action_move_to_magazyn.short_description = "Move to Magazyn"
 
     # -------------------------------
-    # NOWA AKCJA: Przypisz do użytkownika
+    # Akcja: Przypisz do użytkownika
     # -------------------------------
 
     def action_assign_user(self, request, queryset):
         """
         Hurtowa zmiana pola user_full_name dla zaznaczonych kart sprzętu.
-        Krok 1: wyświetla stronę z polem tekstowym „Nowy użytkownik”.
-        Krok 2: po zatwierdzeniu ustawia user_full_name na podaną wartość.
         """
         if request.POST.get("apply") == "yes":
             new_user = request.POST.get("new_user_full_name", "").strip()
 
             if not new_user:
-                # Brak nazwy – ponownie wyświetlamy formularz z komunikatem
                 context = {
                     "title": "Przypisz do użytkownika – podaj nazwę użytkownika",
                     "queryset": queryset,
@@ -183,7 +219,6 @@ class EquipmentAdmin(admin.ModelAdmin):
             )
             return None
 
-        # Pierwsze wywołanie akcji – pokazujemy formularz z polem tekstowym
         context = {
             "title": "Przypisz zaznaczone karty do użytkownika",
             "queryset": queryset,

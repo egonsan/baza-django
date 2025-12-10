@@ -288,6 +288,20 @@
         .notes-box {
             white-space: pre-wrap;
         }
+
+        /* Stopka z informacją o ostatniej modyfikacji */
+        .meta-footer {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .meta-footer span {
+            display: inline-block;
+            margin-right: 16px;
+        }
     </style>
 </head>
 <body>
@@ -332,6 +346,16 @@
                                 {% else %}
                                     <span class="status-badge status-OUT">{{ equipment.status }}</span>
                                 {% endif %}
+                            {% else %}
+                                <span class="muted">brak</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Kategoria pomieszczenia</th>
+                        <td>
+                            {% if equipment.room_category %}
+                                {{ equipment.get_room_category_display }}
                             {% else %}
                                 <span class="muted">brak</span>
                             {% endif %}
@@ -558,6 +582,25 @@
                 </form>
             </div>
         </div>
+    </div>
+
+    <div class="meta-footer">
+        <span>
+            Ostatnio modyfikował:
+            {% if equipment.last_modified_by %}
+                {{ equipment.last_modified_by }}
+            {% else %}
+                brak danych
+            {% endif %}
+        </span>
+        <span>
+            Data modyfikacji:
+            {% if equipment.last_modified_at %}
+                {{ equipment.last_modified_at }}
+            {% else %}
+                brak danych
+            {% endif %}
+        </span>
     </div>
 </div>
 

@@ -70,6 +70,10 @@ def rooms_category_detail(request, category_code):
     Widok POZIOM 2:
     Dla danej kategorii (LAB / SALA / POKOJ / INNE) pokazuje listę
     pomieszczeń (building + room) oraz liczbę kart sprzętu w każdym.
+
+    Pokazujemy tylko te wpisy, które mają NIEPUSTE:
+    - building
+    - room
     """
 
     # Mapa kod → etykieta, np. "LAB" → "Lab. komputerowe"
@@ -81,9 +85,11 @@ def rooms_category_detail(request, category_code):
 
     label = code_to_label[category_code]
 
+    # TYLKO rekordy z niepustym building i room
     qs = (
         Equipment.objects.filter(room_category=category_code)
-        .exclude(building="", room="")
+        .exclude(building="")
+        .exclude(room="")
     )
 
     # Grupujemy po (building, room) i liczymy ilość kart
