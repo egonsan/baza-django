@@ -1,151 +1,127 @@
 {% extends "sprzet/base.html" %}
-
 {% block content %}
+
 <style>
-    .rooms-page {
-        max-width: 1200px;
-        margin: 24px auto;
-        padding: 16px;
-        border-radius: 16px;
-        background: radial-gradient(circle at top left, #f4f9ff 0, #e3edf9 45%, #d7e0f0 100%);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
-    }
-
-    .rooms-header-main {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-        color: #111827;
-    }
-
-    .rooms-header-sub {
-        margin: 0 0 20px 0;
-        color: #4b5563;
-        font-size: 0.95rem;
-    }
-
-    /* ZAMIANA GRIDA NA LISTĘ PIONOWĄ */
-    .rooms-list {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .rooms-card {
-        border-radius: 14px;
-        padding: 16px 18px;
-        background: rgba(255, 255, 255, 0.96);
-        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.18);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+    .panel {
+        background: #ffffff;
+        padding: 25px 24px;
         width: 100%;
+        margin: 20px 0;
+        border: 1px solid #e5e7eb;
         box-sizing: border-box;
+        max-width: 100%;
+        overflow-x: auto;
     }
 
-    .rooms-card-title {
+    .panel-header {
+        margin-bottom: 18px;
+    }
+
+    .panel-header h1 {
+        margin: 0 0 4px;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #1d2a3a;
+    }
+
+    .panel-subtitle {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .category-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid #e3e6ec;
+        background: #f9fafb;
+    }
+
+    .category-main {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .category-name {
         font-size: 1.05rem;
         font-weight: 600;
         color: #111827;
     }
 
-    .rooms-card-sub {
-        font-size: 0.88rem;
-        color: #6b7280;
+    .category-meta {
+        font-size: 0.9rem;
+        color: #4b5563;
     }
 
-    .rooms-metrics {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: center;
-        margin: 8px 0;
-        gap: 10px;
+    .category-meta span {
+        margin-right: 14px;
     }
 
-    .rooms-metric-pill {
-        border-radius: 999px;
-        padding: 4px 10px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        background: #e5f0ff;
-        color: #1d4ed8;
-        white-space: nowrap;
-    }
-
-    .rooms-metric-pill.secondary {
-        background: #e5e7eb;
-        color: #374151;
-    }
-
-    .rooms-card-actions {
-        margin-top: 6px;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .rooms-card-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+    .btn-category {
+        display: inline-block;
         padding: 6px 14px;
-        border-radius: 999px;
-        border: 1px solid #2563eb;
-        color: #1d4ed8;
-        background: transparent;
+        background: #193b6b;
+        color: #ffffff;
         text-decoration: none;
-        font-size: 0.86rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
         font-weight: 500;
+        white-space: nowrap;
+        transition: background 0.2s;
     }
 
-    .rooms-card-btn:hover {
-        background: #eff6ff;
-    }
-
-    @media (max-width: 640px) {
-        .rooms-page {
-            margin: 16px;
-            padding: 12px;
-        }
-
-        .rooms-card-actions {
-            justify-content: flex-start;
-        }
+    .btn-category:hover {
+        background: #102947;
     }
 </style>
 
-<div class="rooms-page">
-    <h1 class="rooms-header-main">Pomieszczenia / Sale</h1>
-    <p class="rooms-header-sub">
-        Przegląd sprzętu według kategorii pomieszczeń. Wybierz kategorię, aby zobaczyć listę sal
-        i liczbę kart sprzętu w każdej z nich.
-    </p>
-
-    <div class="rooms-list">
-        {% for cat in categories %}
-            <div class="rooms-card">
-                <div class="rooms-card-title">{{ cat.label }}</div>
-                <div class="rooms-card-sub">
-                    Kategoria: {{ cat.code }}
-                </div>
-
-                <div class="rooms-metrics">
-                    <span class="rooms-metric-pill">
-                        Pomieszczeń: {{ cat.rooms_count }}
-                    </span>
-                    <span class="rooms-metric-pill secondary">
-                        Kart sprzętu: {{ cat.equipment_count }}
-                    </span>
-                </div>
-
-                <div class="rooms-card-actions">
-                    <a href="{% url 'equipment:rooms_category_detail' cat.code %}"
-                       class="rooms-card-btn">
-                        Przejdź do listy
-                    </a>
-                </div>
-            </div>
-        {% endfor %}
+<div class="panel">
+    <div class="panel-header">
+        <h1>Pomieszczenia / Sale</h1>
+        <p class="panel-subtitle">
+            Zestawienie kategorii pomieszczeń. Dla każdej kategorii widać liczbę sal
+            oraz liczbę kart sprzętu przypisanych do tej kategorii.
+        </p>
     </div>
+
+    {% if categories %}
+        <div class="category-list">
+            {% for cat in categories %}
+                <div class="category-item">
+                    <div class="category-main">
+                        <div class="category-name">
+                            {{ cat.label }}
+                        </div>
+                        <div class="category-meta">
+                            <span>Pomieszczeń: <strong>{{ cat.rooms_count }}</strong></span>
+                            <span>Kart sprzętu: <strong>{{ cat.equipment_count }}</strong></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a href="{% url 'equipment:rooms_category_detail' cat.code %}"
+                           class="btn-category">
+                            Przejdź do listy
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Brak danych o pomieszczeniach w kategoriach.</p>
+    {% endif %}
 </div>
+
 {% endblock %}

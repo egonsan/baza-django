@@ -1,214 +1,179 @@
 {% extends "sprzet/base.html" %}
-
 {% block content %}
+
 <style>
-    .room-eq-page {
-        max-width: 1200px;
-        margin: 24px auto;
-        padding: 16px;
-        border-radius: 16px;
-        background: radial-gradient(circle at top left, #f8fafc 0, #e5ecf7 45%, #dde3f0 100%);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+    .panel {
+        background: #ffffff;
+        padding: 25px 24px;
+        width: 100%;
+        margin: 20px 0;
+        border: 1px solid #e5e7eb;
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow-x: auto;
     }
 
-    .room-eq-header-main {
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-        color: #111827;
-    }
-
-    .room-eq-header-sub {
-        font-size: 1.05rem;
-        font-weight: 500;
-        margin: 0 0 8px 0;
-        color: #1f2933;
-    }
-
-    .room-eq-desc {
-        margin: 0 0 16px 0;
-        color: #4b5563;
-        font-size: 0.95rem;
-    }
-
-    .room-eq-topbar {
+    .panel-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
-        gap: 8px;
+        gap: 16px;
+        margin-bottom: 18px;
     }
 
-    .room-eq-back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        border: 1px solid #9ca3af;
-        background: rgba(255, 255, 255, 0.9);
-        color: #111827;
-        text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 500;
+    .panel-title-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
-    .room-eq-back-btn:hover {
-        background: #f3f4f6;
-    }
-
-    .room-eq-count-pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 12px;
-        border-radius: 999px;
-        background: #e5f0ff;
-        color: #1d4ed8;
-        font-size: 0.86rem;
+    .panel-header h1 {
+        margin: 0;
+        font-size: 1.6rem;
         font-weight: 600;
+        color: #1d2a3a;
     }
 
-    .room-eq-table-wrapper {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(15, 23, 42, 0.12);
-        background: #ffffff;
-    }
-
-    .room-eq-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.94rem;
-    }
-
-    .room-eq-table thead {
-        background: #f9fafb;
-    }
-
-    .room-eq-table th,
-    .room-eq-table td {
-        padding: 10px 12px;
-        text-align: left;
-        border-bottom: 1px solid #e5e7eb;
-        color: #111827;
-    }
-
-    .room-eq-table th {
-        font-weight: 600;
-        font-size: 0.88rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
+    .panel-subtitle {
+        margin: 0;
+        font-size: 0.9rem;
         color: #6b7280;
     }
 
-    .room-eq-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .room-eq-table tbody tr:hover {
-        background: #f3f4f6;
-    }
-
-    .room-eq-actions {
-        text-align: right;
+    .btn-back {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #e5e7eb;
+        color: #111827;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        transition: background 0.2s;
         white-space: nowrap;
     }
 
-    .room-eq-btn-outline {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 11px;
-        border-radius: 999px;
-        border: 1px solid #2563eb;
-        color: #1d4ed8;
-        background: transparent;
+    .btn-back:hover {
+        background: #d1d5db;
+    }
+
+    table.equipment-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+    }
+
+    table.equipment-table th,
+    table.equipment-table td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e3e6ec;
+        font-size: 0.95rem;
+    }
+
+    table.equipment-table th {
+        background: #f1f3f7;
+        font-weight: 600;
+        color: #1b2636;
+        white-space: nowrap;
+    }
+
+    table.equipment-table tbody tr:hover {
+        background: #f7f8fb;
+    }
+
+    .equipment-number {
+        font-weight: 600;
+        color: #1b2738;
+        white-space: nowrap;
+    }
+
+    .actions-cell {
+        white-space: nowrap;
+    }
+
+    .btn-details,
+    .btn-edit {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #193b6b;
+        color: white;
         text-decoration: none;
-        font-size: 0.86rem;
-        font-weight: 500;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+        margin-right: 6px;
+        white-space: nowrap;
     }
 
-    .room-eq-btn-outline:hover {
-        background: #eff6ff;
+    .btn-details:last-child,
+    .btn-edit:last-child {
+        margin-right: 0;
     }
 
-    .room-eq-empty {
-        padding: 18px 14px;
-        color: #4b5563;
+    .btn-details:hover,
+    .btn-edit:hover {
+        background: #102947;
     }
 
-    @media (max-width: 768px) {
-        .room-eq-page {
-            margin: 16px;
-            padding: 12px;
-        }
-
-        .room-eq-table th:nth-child(4),
-        .room-eq-table td:nth-child(4),
-        .room-eq-table th:nth-child(5),
-        .room-eq-table td:nth-child(5) {
-            display: none;
-        }
+    .room-empty {
+        margin-top: 8px;
+        font-size: 0.95rem;
+        color: #6b7280;
     }
 </style>
 
-<div class="room-eq-page">
-    <h2 class="room-eq-header-main">Sprzęt w pomieszczeniu</h2>
-    <h4 class="room-eq-header-sub">
-        {{ category_label }} – Budynek {{ building }}, sala {{ room }}
-    </h4>
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title-box">
+            <h1>Sprzęt w sali {{ building }} / {{ room }}</h1>
+            <p class="panel-subtitle">
+                Kategoria: <strong>{{ category_label }}</strong>.
+                Lista wszystkich kart sprzętu przypisanych do tego pomieszczenia.
+            </p>
+        </div>
 
-    <p class="room-eq-desc">
-        Poniżej znajduje się lista wszystkich kart sprzętu przypisanych do tego pomieszczenia.
-        Możesz przejść do konkretnej karty sprzętu, aby zobaczyć jej pełne szczegóły.
-    </p>
-
-    <div class="room-eq-topbar">
-        <a href="{% url 'equipment:rooms_category_detail' category_code %}" class="room-eq-back-btn">
-            &larr; Wróć do listy pomieszczeń
+        <a href="{% url 'equipment:rooms_category_detail' category_code %}" class="btn-back">
+            ← Wróć do listy pomieszczeń
         </a>
-
-        <span class="room-eq-count-pill">
-            Łączna liczba kart: {{ equipments|length }}
-        </span>
     </div>
 
-    <div class="room-eq-table-wrapper">
-        {% if equipments %}
-            <table class="room-eq-table">
-                <thead>
-                    <tr>
-                        <th>Nr inwentarzowy</th>
-                        <th>Nazwa sprzętu</th>
-                        <th>Typ sprzętu</th>
-                        <th>Użytkownik</th>
-                        <th>Uwagi</th>
-                        <th class="room-eq-actions">Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for eq in equipments %}
-                        <tr>
-                            <td>{{ eq.inventory_number }}</td>
-                            <td>{{ eq.equipment_name }}</td>
-                            <td>{{ eq.equipment_type }}</td>
-                            <td>{{ eq.user_full_name }}</td>
-                            <td>{{ eq.notes }}</td>
-                            <td class="room-eq-actions">
-                                <a href="{% url 'equipment:equipment_detail' eq.pk %}"
-                                   class="room-eq-btn-outline">
-                                    Otwórz kartę
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="room-eq-empty">
-                W tym pomieszczeniu nie znaleziono żadnych kart sprzętu.
-            </div>
-        {% endif %}
-    </div>
+    {% if equipments %}
+        <table class="equipment-table">
+            <thead>
+                <tr>
+                    <th>Nr inwentarzowy</th>
+                    <th>Nazwa</th>
+                    <th>Użytkownik</th>
+                    <th>Status</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for eq in equipments %}
+                <tr>
+                    <td class="equipment-number">{{ eq.inventory_number }}</td>
+                    <td>{{ eq.equipment_name }}</td>
+                    <td>{{ eq.user_full_name }}</td>
+                    <td>{{ eq.status }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'equipment:equipment_detail' eq.pk %}"
+                           class="btn-details">
+                            Szczegóły
+                        </a>
+                        <a href="{% url 'equipment:equipment_edit' eq.pk %}"
+                           class="btn-edit">
+                            Edytuj
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="room-empty">
+            Brak kart sprzętu przypisanych do tego pomieszczenia.
+        </p>
+    {% endif %}
 </div>
+
 {% endblock %}
