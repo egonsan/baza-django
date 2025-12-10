@@ -1,57 +1,53 @@
 {% extends "admin/base_site.html" %}
-{% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Import danych z Excela</h1>
+<h1>Import / Eksport kart sprzętu</h1>
 
 <p>
-    Wybierz plik XLSX, którego nagłówki odpowiadają polom w modelu
-    (np. <strong>inventory_number</strong>, <strong>equipment_name</strong>,
-    <strong>DATA_ZAKUP</strong> itd.).
+    Ta strona pozwala na zaimportowanie kart sprzętu z pliku Excel (XLSX)
+    oraz na wyeksportowanie aktualnych danych z bazy do Excela w tym samym formacie.
 </p>
+
+<hr>
+
+<h2>Import z pliku Excel (XLSX)</h2>
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <fieldset class="module aligned">
+        <div class="form-row">
+            <label for="id_file"><strong>Plik XLSX:</strong></label>
+            <input type="file" name="file" id="id_file" required>
+        </div>
+    </fieldset>
 
-    <p>
-        <label for="id_file"><strong>Plik Excel (.xlsx):</strong></label><br>
-        <input type="file" id="id_file" name="file" accept=".xlsx" required>
-    </p>
-
-    <p>
-        <button type="submit" class="default">Importuj dane</button>
-    </p>
+    <div class="submit-row">
+        <input type="submit" value="Importuj" class="default">
+    </div>
 </form>
 
 {% if import_done %}
-    <hr>
-    <h2>Wynik importu</h2>
-    <p>Przetworzono wierszy: <strong>{{ processed_rows }}</strong></p>
-    <p>Dodano nowych rekordów: <strong>{{ created_count }}</strong></p>
-    <p>Zaktualizowano istniejące: <strong>{{ updated_count }}</strong></p>
-{% endif %}
-
-{% if error %}
-    <hr>
-    <h2>Błąd importu</h2>
-    <p style="color: red;"><strong>{{ error }}</strong></p>
+    <h3>Wynik importu</h3>
+    <ul>
+        <li>Przetworzone niepuste wiersze: {{ processed_rows }}</li>
+        <li>Utworzone nowe karty: {{ created_count }}</li>
+        <li>Zaktualizowane istniejące karty: {{ updated_count }}</li>
+    </ul>
 {% endif %}
 
 <hr>
-<h2>Eksport danych do Excela</h2>
+
+<h2>Eksport danych do Excel</h2>
 
 <p>
-    Kliknij przycisk poniżej, aby pobrać plik XLSX z aktualnymi kartami sprzętu
-    w takim samym formacie, jak plik używany do importu
-    (<strong>NR_INWENTARZOWY</strong>, <strong>BUDYNEK</strong>, <strong>POMIESZCZENIE</strong>, itd.).
+    Możesz pobrać wszystkie karty sprzętu w formie pliku XLSX zgodnego ze strukturą importu.
 </p>
 
-<form method="get" action="{% url 'equipment:equipment_export' %}">
-    <p>
-        <button type="submit" class="default">
-            Eksportuj dane do Excela
-        </button>
-    </p>
-</form>
+<p>
+    <a href="{% url 'equipment:equipment_export' %}" class="default">
+        Eksportuj dane do Excela
+    </a>
+</p>
 
 {% endblock %}

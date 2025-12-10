@@ -5,35 +5,38 @@ from .views import (
     EquipmentDetailView,
     EquipmentUpdateView,
     equipment_import_view,
+    admin_equipment_export_view,
     attachment_upload_view,
     attachment_delete_view,
 )
-from .views_auth import oprogramowanie_view
 from . import views_rooms
 from . import views_workers
 
 app_name = "equipment"
 
 urlpatterns = [
-    # =========================
-    # OPROGRAMOWANIE – landing po zalogowaniu
-    # /baza/oprogramowanie/
-    # =========================
-    path("oprogramowanie/", oprogramowanie_view, name="oprogramowanie"),
-
-    # =========================
-    # MAGAZYN
-    # /baza/magazyn/
-    # =========================
+    # ====== MAGAZYN ======
+    # /baza/magazyn/ → lista sprzętu z room_category = "MAGAZYN"
     path("magazyn/", EquipmentListView.as_view(), name="equipment_list"),
+
+    # Szczegóły karty /baza/magazyn/<pk>/
     path("magazyn/<int:pk>/", EquipmentDetailView.as_view(), name="equipment_detail"),
-    path("magazyn/<int:pk>/edit/", EquipmentUpdateView.as_view(), name="equipment_edit"),
+
+    # Edycja karty /baza/magazyn/<int:pk>/edit/
+    path(
+        "magazyn/<int:pk>/edit/",
+        EquipmentUpdateView.as_view(),
+        name="equipment_edit",
+    ),
 
     # IMPORT Z EXCELA /baza/import/
     path("import/", equipment_import_view, name="equipment_import"),
 
-    # Upload załącznika /baza/magazyn/<pk>/upload/
-    path("magazyn/<int:pk>/upload/", attachment_upload_view, name="attachment_upload"),
+    # EKSPORT DO EXCELA /baza/export/
+    path("export/", admin_equipment_export_view, name="equipment_export"),
+
+    # Upload załącznika /baza/<pk>/upload/
+    path("<int:pk>/upload/", attachment_upload_view, name="attachment_upload"),
 
     # Usuwanie załącznika /baza/attachments/<id>/delete/
     path(
@@ -42,10 +45,7 @@ urlpatterns = [
         name="attachment_delete",
     ),
 
-    # =========================
-    # POMIESZCZENIA / SALE
-    # =========================
-    # Dashboard kategorii: Lab / Sala / Pokój / Inne
+    # ====== POMIESZCZENIA / SALE ======
     # /baza/pomieszczenia/
     path(
         "pomieszczenia/",
@@ -53,7 +53,6 @@ urlpatterns = [
         name="rooms_dashboard",
     ),
 
-    # Lista pomieszczeń dla danej kategorii
     # /baza/pomieszczenia/<category_code>/
     path(
         "pomieszczenia/<str:category_code>/",
@@ -61,7 +60,6 @@ urlpatterns = [
         name="rooms_category_detail",
     ),
 
-    # Sprzęt w konkretnym pomieszczeniu
     # /baza/pomieszczenia/<category_code>/<building>/<room>/
     path(
         "pomieszczenia/<str:category_code>/<str:building>/<str:room>/",
@@ -69,9 +67,7 @@ urlpatterns = [
         name="room_equipment_list",
     ),
 
-    # =========================
-    # PRACOWNICY
-    # =========================
+    # ====== PRACOWNICY ======
     # /baza/pracownicy/
     path(
         "pracownicy/",
