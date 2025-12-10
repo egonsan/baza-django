@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  {% if error %}
+      <p style="color: #b30000; font-weight: bold;">{{ error }}</p>
+  {% endif %}
+
+  <p>Podaj nazwę użytkownika, do którego mają zostać przypisane zaznaczone karty sprzętu.</p>
+
+  <form method="post">
+      {% csrf_token %}
+
+      {# Przekazujemy dalej zaznaczone obiekty #}
+      {% for obj in queryset %}
+          <input type="hidden" name="_selected_action" value="{{ obj.pk }}">
+      {% endfor %}
+
+      {# Nazwa akcji #}
+      <input type="hidden" name="action" value="{{ action }}">
+
+      {# Flaga: wykonaj akcję #}
+      <input type="hidden" name="apply" value="yes">
+
+      <div class="module">
+          <h2>Nowy użytkownik</h2>
+          <p>
+              <input type="text"
+                     name="new_user_full_name"
+                     style="width: 320px;"
+                     placeholder="Np. WOJNOWSKI ADRIAN">
+          </p>
+      </div>
+
+      <div class="module">
+          <h2>Wybrane karty sprzętu</h2>
+          <ul>
+              {% for obj in queryset %}
+                  <li>{{ obj }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+
+      <div style="margin-top: 15px;">
+          <input type="submit" value="{% trans 'Yes, I am sure' %}" class="default">
+          <a href="..">{% trans "Cancel" %}</a>
+      </div>
+  </form>
+{% endblock %}

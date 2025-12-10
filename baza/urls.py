@@ -7,20 +7,19 @@ from django.conf.urls.static import static
 from equipment.views_auth import login_view
 
 urlpatterns = [
-    # Panel administracyjny Django
     path("admin/", admin.site.urls),
 
-    # Główna strona /baza/ → okno logowania
+    # /baza/ → strona logowania
     path("baza/", login_view, name="login-root"),
 
-    # Alternatywny adres logowania (np. do linków)
+    # /baza/login/ → też strona logowania (drugi alias)
     path("baza/login/", login_view, name="login"),
 
-    # Aplikacja equipment (sprzęt, magazyn, pomieszczenia, oprogramowanie itd.)
-    # Wszystkie adresy typu /baza/..., które nie są powyżej, idą do equipment.urls
+    # Pozostałe adresy aplikacji (oprogramowanie, magazyn, pomieszczenia, pracownicy...)
     path("baza/", include("equipment.urls")),
 ]
 
-# Serwowanie statycznych plików w trybie DEBUG
+# Serwowanie statycznych plików i mediów w trybie DEBUG
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

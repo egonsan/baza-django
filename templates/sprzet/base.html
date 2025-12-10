@@ -12,16 +12,19 @@
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f5f7fa; /* jasne tło strony */
-            color: #111; /* naturalny tekst, nie biały */
         }
 
-        /* kontener na treść wszystkich zakładek */
-        .page-container {
-            max-width: 1300px;
-            margin: 40px auto;
-            padding: 20px;
-            min-height: 70vh;
+        /* GLOBALNE TŁO DLA ZWYKŁYCH STRON (OPRÓCZ LOGINU) */
+        #main-bg {
+            min-height: 100vh;
+            background: #ffffff;
+        }
+
+        /* TŁO DLA STRONY LOGINU */
+        #login-bg {
+            min-height: 100vh;
+            background: url("{% static 'sprzet/wallpaper.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
         }
     </style>
 </head>
@@ -29,7 +32,8 @@
 
 {% include "sprzet/header.html" %}
 
-<div class="page-container">
+{# Jeden blok content, ale różne tła w zależności od URL #}
+<div id="{% if request.resolver_match.url_name in 'login login-root' %}login-bg{% else %}main-bg{% endif %}">
     {% block content %}{% endblock %}
 </div>
 
