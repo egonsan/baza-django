@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 
@@ -22,7 +22,7 @@ def login_view(request):
             # ustawiamy flagę w sesji – w szablonach będzie można odróżnić gościa
             request.session["guest"] = True
             # docelowo przekierujemy na zakładkę "Oprogramowanie"
-            return redirect("/baza/oprogramowanie/")
+            return redirect("oprogramowanie")
 
         # -----------------------------
         # 2. NORMALNE LOGOWANIE
@@ -40,7 +40,7 @@ def login_view(request):
         login(request, user)
         # upewniamy się, że to nie „gość”
         request.session["guest"] = False
-        return redirect("/baza/oprogramowanie/")
+        return redirect("oprogramowanie")
 
     # -----------------------------
     # 3. METODA GET – wyświetl formularz logowania
@@ -54,3 +54,15 @@ def oprogramowanie_view(request):
     (zarówno dla gościa, jak i zwykłego użytkownika).
     """
     return render(request, "sprzet/oprogramowanie.html")
+
+
+def logout_view(request):
+    """
+    Wylogowanie użytkownika:
+    - czyści sesję logowania Django,
+    - usuwa flagę 'guest' z sesji (jeśli była),
+    - przekierowuje na stronę logowania (/baza/).
+    """
+    logout(request)
+    request.session.pop("guest", None)
+    return redirect("login-root")
