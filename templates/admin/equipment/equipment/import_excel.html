@@ -5,13 +5,18 @@
 <h1>Import / Eksport kart sprzętu</h1>
 
 <p>
-    Ta strona pozwala na zaimportowanie kart sprzętu z pliku Excel (XLSX)
-    oraz na wyeksportowanie aktualnych danych z bazy do Excela w tym samym formacie.
+    Ta strona pozwala na:
 </p>
+
+<ul>
+    <li>import kart sprzętu z pliku Excel (XLSX),</li>
+    <li>eksport kart sprzętu do Excela,</li>
+    <li>import danych oprogramowania (zakładka „Oprogramowanie”).</li>
+</ul>
 
 <hr>
 
-<h2>Import z pliku Excel (XLSX) — SPRZĘT</h2>
+<h2>Import kart sprzętu z pliku Excel (XLSX)</h2>
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -23,12 +28,12 @@
     </fieldset>
 
     <div class="submit-row">
-        <input type="submit" value="Importuj" class="default">
+        <input type="submit" value="Importuj karty sprzętu" class="default">
     </div>
 </form>
 
 {% if import_done %}
-    <h3>Wynik importu</h3>
+    <h3>Wynik importu kart sprzętu</h3>
     <ul>
         <li>Przetworzone niepuste wiersze: {{ processed_rows }}</li>
         <li>Utworzone nowe karty: {{ created_count }}</li>
@@ -38,29 +43,26 @@
 
 <hr>
 
-<h2>Import — OPROGRAMOWANIE (Excel)</h2>
+<h2>Eksport kart sprzętu do Excela</h2>
 
 <p>
-    Import oprogramowania działa niezależnie od kart sprzętu i nie wpływa na import/eksport sprzętu.
-</p>
-
-<p>
-    <a href="{% url 'software_import' %}" class="default">
-        Importuj oprogramowanie z Excela
+    <a href="{% url 'equipment:equipment_export' %}" class="default">
+        Eksportuj karty sprzętu do Excela
     </a>
 </p>
 
 <hr>
 
-<h2>Eksport danych do Excel</h2>
+<h2>Import danych do zakładki „Oprogramowanie”</h2>
 
 <p>
-    Możesz pobrać wszystkie karty sprzętu w formie pliku XLSX zgodnego ze strukturą importu.
+    Importuje dane z arkusza <strong>„Zmienne programy”</strong>  
+    i <strong>całkowicie nadpisuje</strong> stan oprogramowania w bazie.
 </p>
 
 <p>
-    <a href="{% url 'equipment:equipment_export' %}" class="default">
-        Eksportuj dane do Excela
+    <a href="{% url 'educational_software:software_import' %}" class="default">
+        Importuj oprogramowanie z Excela
     </a>
 </p>
 

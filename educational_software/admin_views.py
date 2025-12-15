@@ -7,6 +7,45 @@ from openpyxl import load_workbook
 from .models import Laboratory, Software, SoftwareInstallation
 
 
+def _is_installed_cell(cell) -> bool:
+    """
+    Zwraca True tylko dla komórek oznaczonych kolorem (zielony/żółty itp.).
+    Kluczowe: odrzucamy białe wypełnienia (Excel często zapisuje białe jako "solid").
+    """
+    fill = getattr(cell, "fill", None)
+    if not fill:
+        return False
+
+    # Jeżeli brak wzoru wypełnienia -> traktujemy jako brak instalacji
+    if not getattr(fill, "patternType", None):
+        return False
+
+    fg = getattr(fill, "fgColor", None)
+    if not fg:
+        return False
+
+    # Najczęściej interesuje nas RGB. Jeżeli brak RGB (np. theme), nie uznajemy za instalację.
+    rgb = getattr(fg, "rgb", None)
+    if not rgb:
+        return False
+
+    rgb = str(rgb).upper()
+
+    # Odrzucamy "białe" i "puste" warianty, które często robią fałszywe pozytywy.
+    WHITE_SET = {
+        "FFFFFFFF",  # biały
+        "00FFFFFF",  # czasem bez alfa
+        "00000000",  # przezroczysty/pusty
+        "FF000000",  # czarny (gdyby Excel stylował tabelę)
+        "000000",    # czasem krótszy zapis
+        "FFFFFF",
+    }
+    if rgb in WHITE_SET:
+        return False
+
+    return True
+
+
 @staff_member_required(login_url="/admin/login/")
 def software_excel_import_view(request):
     """
@@ -75,12 +114,7 @@ def software_excel_import_view(request):
                 if not lab:
                     continue
 
-                # Logika koloru: jak jest wypełnienie (zielone/żółte), to traktujemy jako "installed"
-                if (
-                    cell.fill
-                    and cell.fill.fgColor
-                    and getattr(cell.fill.fgColor, "type", None) != "indexed"
-                ):
+                if _is_installed_cell(cell):
                     SoftwareInstallation.objects.create(
                         software=software,
                         laboratory=lab,

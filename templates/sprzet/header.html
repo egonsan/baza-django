@@ -142,11 +142,12 @@
             <nav class="nav-links">
                 {# OPROGRAMOWANIE #}
                 <a href="{% url 'educational_software:software_list' %}"
-                   class="nav-link {% if current_url == 'oprogramowanie' %}nav-link-active{% endif %}">
+                   class="nav-link {% if current_url == 'software_list' or current_url == 'software_detail' or current_url == 'laboratory_detail' %}nav-link-active{% endif %}">
                     Oprogramowanie
                 </a>
 
-                {% if user.is_authenticated and user.is_staff %}
+                {# RESZTA ZAKŁADEK: dla zalogowanych (nie-gość) #}
+                {% if user.is_authenticated and not request.session.guest %}
                     {# POMIESZCZENIA / SALE #}
                     <a href="{% url 'equipment:rooms_dashboard' %}"
                        class="nav-link {% if current_url == 'rooms_dashboard' or current_url == 'rooms_category_detail' or current_url == 'room_equipment_list' %}nav-link-active{% endif %}">
