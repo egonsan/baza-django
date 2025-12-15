@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>Import Excela – Oprogramowanie</h1>
+
+<p>
+    Ten import dotyczy wyłącznie zakładki <strong>Oprogramowanie</strong> i czyta tylko arkusz
+    <strong>„Zmienne programy”</strong>.
+</p>
+
+<hr>
+
+<h2>Import z pliku Excel (XLSX)</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="module aligned">
+        <div class="form-row">
+            <label for="id_file"><strong>Plik XLSX:</strong></label>
+            <input type="file" name="file" id="id_file" required>
+        </div>
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Importuj oprogramowanie" class="default">
+    </div>
+</form>
+
+{% if error %}
+    <p style="color: #b30000;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+{% if import_done %}
+    <h3>Wynik importu</h3>
+    <ul>
+        <li>Nowe programy dodane do bazy: {{ software_created }}</li>
+        <li>Utworzone instalacje (powiązania program → laboratorium): {{ installations_created }}</li>
+    </ul>
+{% endif %}
+
+{% endblock %}

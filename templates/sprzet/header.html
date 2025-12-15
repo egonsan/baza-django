@@ -1,6 +1,7 @@
 {% load static %}
 
 <style>
+    /* HEADER z mocniejszym gradientem poziomym LEFT → RIGHT */
     .top-nav {
         position: sticky;
         top: 0;
@@ -13,8 +14,8 @@
             #233247 100%
         );
 
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 6px 22px rgba(0,0,0,0.45);
     }
 
     .nav-container {
@@ -24,8 +25,10 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 24px;
     }
 
+    /* LEWA STRONA – logo + tytuł */
     .nav-left {
         display: flex;
         align-items: center;
@@ -46,10 +49,21 @@
         letter-spacing: 0.5px;
     }
 
+    /* PRAWY BLOK – linki + użytkownik */
+    .nav-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 1;
+        gap: 24px;
+    }
+
+    /* LINKI */
     .nav-links {
         display: flex;
         gap: 26px;
         align-items: center;
+        margin-right: 36px;  /* dodatkowa przerwa przed blokiem użytkownika */
     }
 
     .nav-link {
@@ -58,27 +72,60 @@
         font-size: 0.97em;
         font-weight: 500;
         padding: 4px 2px;
-        transition: color 0.15s ease, border-color 0.15s ease;
-        border-bottom: 2px solid transparent;
+        transition: color 0.15s ease, font-weight 0.15s ease;
     }
 
     .nav-link:hover {
         color: #ffffff;
-        border-bottom-color: rgba(255, 255, 255, 0.35);
     }
 
+    /* AKTYWNA ZAKŁADKA = biały, wyraźnie pogrubiony tekst */
     .nav-link-active {
         color: #ffffff !important;
-        font-weight: 600 !important;
-        border-bottom-color: #ffffff;
+        font-weight: 700 !important;
     }
 
+    /* Disabled */
     .nav-link-disabled {
-        color: rgba(255, 255, 255, 0.38);
+        color: rgba(255,255,255,0.38);
         cursor: default;
         pointer-events: none;
-        border-bottom-color: transparent;
     }
+
+    /* UŻYTKOWNIK + WYLOGUJ */
+    .nav-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.88em;
+        color: #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .nav-user-name {
+        opacity: 0.9;
+    }
+
+    .nav-user-logout {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(248,250,252,0.6);
+        font-size: 0.82em;
+        font-weight: 500;
+        text-decoration: none;
+        color: #f9fafb;
+        background: transparent;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .nav-user-logout:hover {
+        background: #f9fafb;
+        color: #111827;
+        border-color: #f9fafb;
+    }
+
 </style>
 
 <header class="top-nav">
@@ -89,58 +136,59 @@
             <div class="nav-logo-title">WIMiO</div>
         </div>
 
-        <nav class="nav-links">
-            {% comment %}
-                Logika:
-                - Gość: tylko Oprogramowanie.
-                - Admin/staff: wszystkie zakładki.
-                - Aktywna zakładka rozpoznawana po fragmencie request.path.
-            {% endcomment %}
+        <div class="nav-right">
+            {% with current_url=request.resolver_match.url_name %}
 
-            {% if request.session.guest %}
-                {# GOŚĆ – tylko Oprogramowanie #}
-                <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link nav-link-active">
+            <nav class="nav-links">
+                {# OPROGRAMOWANIE #}
+                <a href="{% url 'educational_software:software_list' %}"
+                   class="nav-link {% if current_url == 'oprogramowanie' %}nav-link-active{% endif %}">
                     Oprogramowanie
                 </a>
 
-            {% elif user.is_authenticated and user.is_staff %}
-                {% with path=request.path %}
-
-                    {# OPROGRAMOWANIE #}
-                    <a href="{% url 'equipment:oprogramowanie' %}"
-                       class="nav-link {% if '/baza/oprogramowanie' in path %}nav-link-active{% endif %}">
-                        Oprogramowanie
-                    </a>
-
+                {% if user.is_authenticated and user.is_staff %}
                     {# POMIESZCZENIA / SALE #}
                     <a href="{% url 'equipment:rooms_dashboard' %}"
-                       class="nav-link {% if '/baza/pomieszczenia' in path %}nav-link-active{% endif %}">
+                       class="nav-link {% if current_url == 'rooms_dashboard' or current_url == 'rooms_category_detail' or current_url == 'room_equipment_list' %}nav-link-active{% endif %}">
                         Pomieszczenia / Sale
                     </a>
 
                     {# PRACOWNIK #}
                     <a href="{% url 'equipment:workers_list' %}"
-                       class="nav-link {% if '/baza/pracownicy' in path %}nav-link-active{% endif %}">
+                       class="nav-link {% if current_url == 'workers_list' or current_url == 'worker_detail' %}nav-link-active{% endif %}">
                         Pracownik
                     </a>
 
                     {# MAGAZYN #}
                     <a href="{% url 'equipment:equipment_list' %}"
-                       class="nav-link {% if '/baza/magazyn' in path %}nav-link-active{% endif %}">
+                       class="nav-link {% if current_url == 'equipment_list' or current_url == 'equipment_detail' or current_url == 'equipment_edit' %}nav-link-active{% endif %}">
                         Magazyn
                     </a>
+                {% endif %}
+            </nav>
 
-                {% endwith %}
+            {% endwith %}
 
-            {% else %}
-                {# Domyślnie – użytkownik zalogowany, ale nie-staff: tylko Oprogramowanie #}
-                <a href="{% url 'equipment:oprogramowanie' %}"
-                   class="nav-link nav-link-active">
-                    Oprogramowanie
-                </a>
-            {% endif %}
-        </nav>
+            <div class="nav-user">
+                <span class="nav-user-name">
+                    Zalogowany:
+                    {% if request.session.guest %}
+                        Gość
+                    {% elif user.is_authenticated %}
+                        {{ user.get_full_name|default:user.username }}
+                    {% else %}
+                        brak
+                    {% endif %}
+                </span>
+
+                {% if user.is_authenticated or request.session.guest %}
+                    <a href="{% url 'logout' %}" class="nav-user-logout">
+                        Wyloguj
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
 
     </div>
 </header>

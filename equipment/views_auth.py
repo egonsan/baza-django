@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 
@@ -9,7 +9,8 @@ def login_view(request):
     - normalne logowanie (username + password)
     - logowanie jako gość (bez hasła, z flagą w sesji)
 
-    Szablon: templates/sprzet/login.html
+    Po zalogowaniu ZAWSZE przechodzimy do:
+    /baza/oprogramowanie/ (educational_software)
     """
 
     if request.method == "POST":
@@ -19,10 +20,8 @@ def login_view(request):
         # 1. LOGOWANIE JAKO GOŚĆ
         # -----------------------------
         if action == "guest":
-            # ustawiamy flagę w sesji – w szablonach będzie można odróżnić gościa
             request.session["guest"] = True
-            # docelowo przekierujemy na zakładkę "Oprogramowanie"
-            return redirect("/baza/oprogramowanie/")
+            return redirect("educational_software:software_list")
 
         # -----------------------------
         # 2. NORMALNE LOGOWANIE
@@ -36,21 +35,23 @@ def login_view(request):
             messages.error(request, "Nieprawidłowy login lub hasło.")
             return render(request, "sprzet/login.html")
 
-        # logowanie poprawne
         login(request, user)
-        # upewniamy się, że to nie „gość”
         request.session["guest"] = False
-        return redirect("/baza/oprogramowanie/")
+        return redirect("educational_software:software_list")
 
     # -----------------------------
-    # 3. METODA GET – wyświetl formularz logowania
+    # 3. METODA GET – formularz logowania
     # -----------------------------
     return render(request, "sprzet/login.html")
 
 
-def oprogramowanie_view(request):
+def logout_view(request):
     """
-    Docelowa strona 'Oprogramowanie' – landing po zalogowaniu
-    (zarówno dla gościa, jak i zwykłego użytkownika).
+    Wylogowanie użytkownika:
+    - czyści sesję
+    - usuwa flagę guest
+    - wraca do strony logowania
     """
-    return render(request, "sprzet/oprogramowanie.html")
+    logout(request)
+    request.session.pop("guest", None)
+    return redirect("login-root")

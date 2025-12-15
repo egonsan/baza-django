@@ -1,148 +1,240 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista sprzętu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+{% extends "sprzet/base.html" %}
+{% block content %}
 
-        h1 {
-            margin-bottom: 10px;
-        }
+<style>
+    .panel {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        margin-bottom: 40px;
+    }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
 
-        .buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+    .panel-title-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 3px;
-            text-decoration: none;
-            border: 1px solid #333;
-            font-size: 13px;
-            background-color: #f4f4f4;
-        }
+    .panel h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #1d2a3a;
+    }
 
-        .btn-primary {
-            background-color: #e0e0e0;
-        }
+    .panel-subtitle {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
 
-        .btn-small {
-            padding: 3px 7px;
-            font-size: 11px;
-        }
+    .magazyn-search-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-        }
+    .magazyn-search-input {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        font-size: 0.9rem;
+        min-width: 220px;
+    }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 4px 6px;
-            font-size: 12px;
-            text-align: left;
-        }
+    .magazyn-search-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #193b6b;
+        background: #193b6b;
+        color: #ffffff;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+    }
 
-        th {
-            background-color: #f0f0f0;
-        }
+    .magazyn-search-btn:hover {
+        background: #102947;
+        border-color: #102947;
+    }
 
-        tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
+    table.equipment-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
 
-        .status-col {
-            white-space: nowrap;
-        }
+    table.equipment-table th,
+    table.equipment-table td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e3e6ec;
+        font-size: 0.95rem;
+    }
 
-        .actions-col {
-            white-space: nowrap;
-        }
+    table.equipment-table th {
+        background: #f1f3f7;
+        font-weight: 600;
+        color: #1b2636;
+        white-space: nowrap;
+    }
 
-        a {
-            color: #0645ad;
-        }
+    table.equipment-table tbody tr:hover {
+        background: #f7f8fb;
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    .equipment-number {
+        font-weight: 600;
+        color: #1b2738;
+        white-space: nowrap;
+    }
 
-        .no-data {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <div class="top-bar">
-        <h1>Lista sprzętu</h1>
-        <div class="buttons">
-            <a href="{% url 'equipment:equipment_import' %}" class="btn btn-primary">📥 Import z Excela</a>
+    .btn-details,
+    .btn-edit {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #193b6b;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+        margin-right: 6px;
+        white-space: nowrap;
+    }
+
+    .btn-details:last-child,
+    .btn-edit:last-child {
+        margin-right: 0;
+    }
+
+    .btn-details:hover,
+    .btn-edit:hover {
+        background: #102947;
+    }
+
+    .actions-cell {
+        white-space: nowrap;
+    }
+
+    .magazyn-empty {
+        margin-top: 8px;
+        font-size: 0.95rem;
+        color: #6b7280;
+    }
+
+    .magazyn-pagination {
+        margin-top: 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        font-size: 0.85rem;
+    }
+
+    .magazyn-pagination a,
+    .magazyn-pagination span {
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        text-decoration: none;
+        color: #111827;
+    }
+
+    .magazyn-pagination .current {
+        background: #193b6b;
+        color: #ffffff;
+        border-color: #193b6b;
+    }
+</style>
+
+<div class="panel">
+    <div class="panel-header">
+        <div class="panel-title-box">
+            <h1>Magazyn</h1>
+            <p class="panel-subtitle">
+                Lista sprzętu z kategorią <strong>MAGAZYN</strong>.
+                Możesz filtrować po numerze inwentarzowym, nazwie, użytkowniku, budynku lub pomieszczeniu.
+            </p>
         </div>
+
+        <form method="get" class="magazyn-search-form">
+            <input type="text"
+                   name="q"
+                   class="magazyn-search-input"
+                   placeholder="Szukaj po numerze, nazwie, użytkowniku..."
+                   value="{{ request.GET.q }}">
+            <button type="submit" class="magazyn-search-btn">
+                Szukaj
+            </button>
+        </form>
     </div>
 
     {% if equipments %}
-        <table>
+        <table class="equipment-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Numer inwentarzowy</th>
-                    <th>Nazwa sprzętu</th>
-                    <th>Użytkownik</th>
+                    <th>Nr inwentarzowy</th>
+                    <th>Nazwa</th>
                     <th>Budynek</th>
                     <th>Pokój</th>
-                    <th>Hostname</th>
-                    <th>Adres IP</th>
-                    <th class="status-col">Status</th>
-                    <th class="actions-col">Akcje</th>
+                    <th>Użytkownik</th>
+                    <th>Status</th>
+                    <th>Akcje</th>
                 </tr>
             </thead>
             <tbody>
                 {% for eq in equipments %}
-                    <tr>
-                        <td>{{ eq.id }}</td>
-                        <td>{{ eq.inventory_number }}</td>
-                        <td>{{ eq.equipment_name }}</td>
-                        <td>{{ eq.user_full_name }}</td>
-                        <td>{{ eq.building }}</td>
-                        <td>{{ eq.room }}</td>
-                        <td>{{ eq.hostname }}</td>
-                        <td>{{ eq.ip_address }}</td>
-                        <td class="status-col">{{ eq.status }}</td>
-                        <td class="actions-col">
-                            <a href="{% url 'equipment:equipment_detail' eq.pk %}" class="btn btn-small">
-                                Szczegóły
-                            </a>
-                            <a href="{% url 'equipment:equipment_edit' eq.pk %}" class="btn btn-small">
-                                Edytuj
-                            </a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="equipment-number">{{ eq.inventory_number }}</td>
+                    <td>{{ eq.equipment_name }}</td>
+                    <td>{{ eq.building }}</td>
+                    <td>{{ eq.room }}</td>
+                    <td>{{ eq.user_full_name }}</td>
+                    <td>{{ eq.status }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'equipment:equipment_detail' eq.pk %}"
+                           class="btn-details">
+                            Szczegóły
+                        </a>
+                        <a href="{% url 'equipment:equipment_edit' eq.pk %}"
+                           class="btn-edit">
+                            Edytuj
+                        </a>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if is_paginated %}
+            <div class="magazyn-pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; Poprzednia</a>
+                {% endif %}
+
+                <span class="current">
+                    Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Następna &raquo;</a>
+                {% endif %}
+            </div>
+        {% endif %}
     {% else %}
-        <p class="no-data">
-            Brak wpisów w bazie sprzętu.
+        <p class="magazyn-empty">
+            Brak kart sprzętu w kategorii MAGAZYN dla podanego filtra.
         </p>
     {% endif %}
-</body>
-</html>
+</div>
+
+{% endblock %}
