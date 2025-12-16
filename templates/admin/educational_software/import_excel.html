@@ -2,41 +2,194 @@
 {% load i18n %}
 
 {% block content %}
-<h1>Import Excela – Oprogramowanie</h1>
 
-<p>
-    Ten import dotyczy wyłącznie zakładki <strong>Oprogramowanie</strong> i czyta tylko arkusz
-    <strong>„Zmienne programy”</strong>.
-</p>
+<style>
+  .page-wrap{ max-width: 1100px; }
 
-<hr>
+  .page-title{
+    margin: 0 0 16px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: 0.2px;
+  }
 
-<h2>Import z pliku Excel (XLSX)</h2>
+  .page-lead{
+    margin: 0 0 18px;
+    color: #374151;
+    line-height: 1.5;
+  }
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <fieldset class="module aligned">
-        <div class="form-row">
-            <label for="id_file"><strong>Plik XLSX:</strong></label>
-            <input type="file" name="file" id="id_file" required>
-        </div>
-    </fieldset>
+  .card{
+    background: #fff;
+    border: 1px solid #e6e8ee;
+    border-radius: 14px;
+    padding: 18px 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
 
-    <div class="submit-row">
-        <input type="submit" value="Importuj oprogramowanie" class="default">
+  .card h2{
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .muted{
+    color: #4b5563;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin: 0 0 12px;
+  }
+
+  .file-wrap{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .file-label{
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .file-input{
+    padding: 10px 12px;
+    border: 1px solid #d7dbe4;
+    border-radius: 10px;
+    background: #fbfcfe;
+    color: #111827;
+  }
+
+  .actions{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #d7dbe4;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .04s ease, box-shadow .15s ease, background .15s ease;
+  }
+
+  .btn:hover{
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary{
+    background: #1f4b8f;
+    border-color: #1f4b8f;
+    color: #fff !important;
+  }
+
+  .btn-secondary{
+    background: #ffffff;
+    color: #111827 !important;
+  }
+
+  .results{
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f0f7ff;
+    border: 1px solid #bfd7ff;
+    color: #111827;
+  }
+
+  .results h3{
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .results ul{
+    margin: 0;
+    padding-left: 18px;
+    color: #111827;
+  }
+
+  .results li{ margin: 4px 0; color: #111827; }
+  .results strong{ color: #0b1220; }
+
+  .note{
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff7e6;
+    border: 1px solid #ffd79a;
+    color: #6a4a00;
+    line-height: 1.45;
+  }
+
+  .error{
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff5f5;
+    border: 1px solid #ffd0d0;
+    color: #8a1f1f;
+  }
+</style>
+
+<div class="page-wrap">
+  <h1 class="page-title">Import oprogramowania</h1>
+  <p class="page-lead">
+    Import z arkusza <strong>„Zmienne programy”</strong>. Import <strong>całkowicie nadpisuje</strong> stan instalacji oprogramowania w bazie
+    (czyści instalacje i odtwarza je z Excela).
+  </p>
+
+  {% if error %}
+    <div class="error">
+      <strong>Błąd:</strong> {{ error }}
     </div>
-</form>
+  {% endif %}
 
-{% if error %}
-    <p style="color: #b30000;"><strong>{{ error }}</strong></p>
-{% endif %}
+  <div class="card">
+    <h2>Import oprogramowania (XLSX)</h2>
+    <p class="muted">
+      Wybierz plik Excel i kliknij „Importuj oprogramowanie”.
+    </p>
 
-{% if import_done %}
-    <h3>Wynik importu</h3>
-    <ul>
-        <li>Nowe programy dodane do bazy: {{ software_created }}</li>
-        <li>Utworzone instalacje (powiązania program → laboratorium): {{ installations_created }}</li>
-    </ul>
-{% endif %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="file-wrap">
+        <label class="file-label" for="id_file">Plik XLSX</label>
+        <input class="file-input" type="file" name="file" id="id_file" required>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Importuj oprogramowanie</button>
+        <a href="/baza/import/" class="btn btn-secondary">Powrót</a>
+      </div>
+    </form>
+
+    {% if import_done %}
+      <div class="results">
+        <h3>Wynik importu oprogramowania</h3>
+        <ul>
+          <li>Utworzone nowe programy: <strong>{{ software_created }}</strong></li>
+          <li>Utworzone instalacje: <strong>{{ installations_created }}</strong></li>
+        </ul>
+      </div>
+    {% endif %}
+
+    <div class="note">
+      Wskazówka: instalacja jest wykrywana na podstawie wypełnienia komórki (kolor) w arkuszu „Zmienne programy”.
+    </div>
+  </div>
+</div>
 
 {% endblock %}

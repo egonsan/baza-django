@@ -199,10 +199,17 @@ def admin_equipment_import_view(request):
         updated_count = 0
         processed_rows = 0
 
+        # NOWE LICZNIKI
+        skipped_empty_rows = 0
+        skipped_no_inventory = 0
+        duplicate_inventory_in_file = 0
+        seen_inventory_numbers = set()
+
         # Wiersze danych (od drugiego wiersza)
         for row in rows[1:]:
             # Pomijamy całkowicie puste wiersze
             if all(cell is None for cell in row):
+                skipped_empty_rows += 1
                 continue
 
             processed_rows += 1
@@ -233,7 +240,14 @@ def admin_equipment_import_view(request):
 
             if not inventory_number:
                 # Bez numeru inwentarzowego nie zapisujemy wiersza
+                skipped_no_inventory += 1
                 continue
+
+            # Duplikaty NR_INWENTARZOWY w samym pliku (liczymy kolejne wystąpienia)
+            if inventory_number in seen_inventory_numbers:
+                duplicate_inventory_in_file += 1
+            else:
+                seen_inventory_numbers.add(inventory_number)
 
             # Czyszczenie stringów
             clean_data = {}
@@ -260,6 +274,10 @@ def admin_equipment_import_view(request):
                 "processed_rows": processed_rows,
                 "created_count": created_count,
                 "updated_count": updated_count,
+                # NOWE POLA DO WYŚWIETLENIA (jutro dopniemy w template)
+                "skipped_empty_rows": skipped_empty_rows,
+                "skipped_no_inventory": skipped_no_inventory,
+                "duplicate_inventory_in_file": duplicate_inventory_in_file,
             }
         )
 
@@ -352,7 +370,7 @@ def admin_equipment_export_view(request):
             "spreadsheetml.sheet"
         )
     )
-    response["Content-Disposition"] = 'attachment; filename=\"karty_sprzetu.xlsx\"'
+    response["Content-Disposition"] = 'attachment; filename="karty_sprzetu.xlsx"'
 
     output = BytesIO()
     wb.save(output)
