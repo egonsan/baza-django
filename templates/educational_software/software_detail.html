@@ -3,192 +3,152 @@
 
 <style>
   .panel {
-    background: #ffffff;
     border-radius: 12px;
     padding: 25px 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     margin-bottom: 40px;
     width: 100%;
     box-sizing: border-box;
-  }
 
-  .title-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 16px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--panel-shadow);
   }
 
   .panel h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1d2a3a;
+    margin: 0 0 14px;
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text);
   }
 
-  .muted { color: #6b7788; font-size: 0.95rem; }
-
-  .section-title {
+  .section {
     margin-top: 18px;
-    margin-bottom: 10px;
+  }
+
+  .section h3 {
+    margin: 0 0 10px;
     font-size: 1.05rem;
-    font-weight: 700;
-    color: #1d2a3a;
+    font-weight: 800;
+    color: var(--text);
   }
 
-  .group {
-    border: 1px solid #e3e6ec;
+  .labs-group {
+    margin: 0 0 14px;
+    padding: 12px 14px;
     border-radius: 12px;
-    padding: 14px 14px 10px;
-    margin-bottom: 12px;
-    background: #fff;
+    border: 1px solid var(--panel-border);
+    background: var(--panel);
   }
 
-  .group-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border: 1px solid #d8dee8;
-    background: #f7f9fc;
-    color: #1f2b3a;
-  }
-
-  .badge.b40 { background: #e8f0ff; border-color: #cfe0ff; color: #123a78; }
-  .badge.b30 { background: #eaf7ee; border-color: #cfead6; color: #145c2e; }
-  .badge.inne { background: #fff3e6; border-color: #ffe2c2; color: #7a3b00; }
-
-  .labs-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  .labs-group h4 {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.2px;
   }
 
   .lab-btn {
-    display: inline-block;
-    padding: 7px 10px;
-    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    margin: 4px 6px 0 0;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-decoration: none;
-    font-size: 0.92rem;
-    border: 1px solid #d8dee8;
-    background: #ffffff;
-    color: #1d2a3a;
-    transition: transform 0.05s ease, background 0.2s ease;
+    white-space: nowrap;
+
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--input-border);
   }
-  .lab-btn:hover { background: #f5f7fb; }
 
-  /* delikatne rozróżnienie kolorystyczne dla przycisków */
-  .lab-btn.b40 { border-color: #cfe0ff; background: #f2f6ff; }
-  .lab-btn.b30 { border-color: #cfead6; background: #f2fbf5; }
-  .lab-btn.inne { border-color: #ffe2c2; background: #fff8f0; }
+  .lab-btn:hover {
+    filter: brightness(1.05);
+  }
 
-  .divider {
-    height: 1px;
-    background: #e8ecf3;
-    margin: 18px 0;
+  .row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--input-border);
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+
+    background: var(--panel);
+    color: var(--text);
+  }
+
+  .btn:hover { filter: brightness(1.05); }
+
+  .empty {
+    color: var(--muted);
   }
 </style>
 
 <div class="panel">
-  <div class="title-row">
-    <h1>{{ software.name }}</h1>
+  <h1>{{ software.name }}</h1>
+
+  <div class="row">
+    <a class="btn" href="{% url 'educational_software:software_list' %}">
+      ← Wróć do listy
+    </a>
   </div>
 
-  <div class="divider"></div>
+  <div class="section">
+    <h3>Laboratoria, w których program jest zainstalowany</h3>
 
-  <div class="section-title">Laboratoria</div>
+    {% if grouped_labs.Budynek_30 or grouped_labs.Budynek_40 or grouped_labs.Inne %}
 
-  {% if grouped_labs %}
-    {# Budynek 40 #}
-    <div class="group">
-      <div class="group-header">
-        <span class="badge b40">Budynek 40</span>
-        <span class="muted">
-          {% if grouped_labs.Budynek_40 %}
-            {{ grouped_labs.Budynek_40|length }} lokalizacji
-          {% else %}
-            0 lokalizacji
-          {% endif %}
-        </span>
-      </div>
-
-      <div class="labs-wrap">
-        {% if grouped_labs.Budynek_40 %}
-          {% for lab in grouped_labs.Budynek_40 %}
-            <a class="lab-btn b40" href="{% url 'educational_software:laboratory_detail' lab|urlencode %}">
-              {{ lab }}
-            </a>
-          {% endfor %}
-        {% else %}
-          <span class="muted">—</span>
-        {% endif %}
-      </div>
-    </div>
-
-    {# Budynek 30 #}
-    <div class="group">
-      <div class="group-header">
-        <span class="badge b30">Budynek 30</span>
-        <span class="muted">
-          {% if grouped_labs.Budynek_30 %}
-            {{ grouped_labs.Budynek_30|length }} lokalizacji
-          {% else %}
-            0 lokalizacji
-          {% endif %}
-        </span>
-      </div>
-
-      <div class="labs-wrap">
-        {% if grouped_labs.Budynek_30 %}
+      {% if grouped_labs.Budynek_30 %}
+        <div class="labs-group">
+          <h4>Budynek 30</h4>
           {% for lab in grouped_labs.Budynek_30 %}
-            <a class="lab-btn b30" href="{% url 'educational_software:laboratory_detail' lab|urlencode %}">
+            <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">
               {{ lab }}
             </a>
           {% endfor %}
-        {% else %}
-          <span class="muted">—</span>
-        {% endif %}
-      </div>
-    </div>
+        </div>
+      {% endif %}
 
-    {# Inne #}
-    <div class="group">
-      <div class="group-header">
-        <span class="badge inne">Inne</span>
-        <span class="muted">
-          {% if grouped_labs.Inne %}
-            {{ grouped_labs.Inne|length }} lokalizacji
-          {% else %}
-            0 lokalizacji
-          {% endif %}
-        </span>
-      </div>
+      {% if grouped_labs.Budynek_40 %}
+        <div class="labs-group">
+          <h4>Budynek 40</h4>
+          {% for lab in grouped_labs.Budynek_40 %}
+            <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">
+              {{ lab }}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-      <div class="labs-wrap">
-        {% if grouped_labs.Inne %}
+      {% if grouped_labs.Inne %}
+        <div class="labs-group">
+          <h4>Inne</h4>
           {% for lab in grouped_labs.Inne %}
-            <a class="lab-btn inne" href="{% url 'educational_software:laboratory_detail' lab|urlencode %}">
+            <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">
               {{ lab }}
             </a>
           {% endfor %}
-        {% else %}
-          <span class="muted">—</span>
-        {% endif %}
-      </div>
-    </div>
+        </div>
+      {% endif %}
 
-  {% else %}
-    <p class="muted">Brak przypisanych laboratoriów do tego programu.</p>
-  {% endif %}
+    {% else %}
+      <p class="empty">Brak przypisanych laboratoriów.</p>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}

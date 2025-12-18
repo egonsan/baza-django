@@ -92,7 +92,7 @@
         pointer-events: none;
     }
 
-    /* UŻYTKOWNIK + WYLOGUJ */
+    /* UŻYTKOWNIK + WYLOGUJ + TOGGLE */
     .nav-user {
         display: flex;
         align-items: center;
@@ -124,6 +124,28 @@
         background: #f9fafb;
         color: #111827;
         border-color: #f9fafb;
+    }
+
+    /* Wrapper tylko dla odstępu przełącznika */
+    .theme-toggle-wrap {
+        margin-left: 18px; /* WYRAŹNY ODSTĘP od Wyloguj */
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Sam przełącznik (kółko pół na pół) – zakładam, że masz już JS, który go obsługuje */
+    .theme-toggle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(248,250,252,0.55);
+        background: linear-gradient(90deg, rgba(248,250,252,0.85) 50%, #0e1b2f 50%);
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .theme-toggle:hover {
+        border-color: rgba(248,250,252,0.80);
     }
 
 </style>
@@ -186,6 +208,11 @@
                     <a href="{% url 'logout' %}" class="nav-user-logout">
                         Wyloguj
                     </a>
+
+                    <!-- TOGGLE MUSI BYĆ ZA WYLOGUJ + ODSTĘP -->
+                    <span class="theme-toggle-wrap">
+                        <span class="theme-toggle" id="themeToggle" title="Zmień motyw" aria-label="Zmień motyw"></span>
+                    </span>
                 {% endif %}
             </div>
 

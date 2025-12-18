@@ -3,120 +3,151 @@
 
 <style>
   .panel {
-    background: #ffffff;
     border-radius: 12px;
     padding: 25px 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     margin-bottom: 40px;
     width: 100%;
     box-sizing: border-box;
-  }
 
-  .title-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 14px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--panel-shadow);
   }
 
   .panel h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1d2a3a;
+    margin: 0 0 8px;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .meta {
+    margin: 0 0 14px;
+    color: var(--muted);
   }
 
   .badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 4px 10px;
     border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid #d8dee8;
-    background: #f7f9fc;
-    color: #1f2b3a;
+    border: 1px solid var(--input-border);
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: var(--panel);
+    color: var(--text);
+    margin-left: 8px;
   }
 
-  .badge.b40 { background: #e8f0ff; border-color: #cfe0ff; color: #123a78; }
-  .badge.b30 { background: #eaf7ee; border-color: #cfead6; color: #145c2e; }
-  .badge.inne { background: #fff3e6; border-color: #ffe2c2; color: #7a3b00; }
+  .row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 14px 0 18px;
+  }
 
-  .muted { color: #6b7788; font-size: 0.95rem; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--input-border);
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+
+    background: var(--panel);
+    color: var(--text);
+  }
+  .btn:hover { filter: brightness(1.05); }
 
   table.soft-table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    margin-top: 14px;
+    background: transparent;
   }
 
-  table.soft-table th, table.soft-table td {
-    padding: 14px 12px;
+  table.soft-table th,
+  table.soft-table td {
+    padding: 12px 10px;
     text-align: left;
-    border-bottom: 1px solid #e3e6ec;
+    border-bottom: 1px solid var(--panel-border);
     font-size: 0.95rem;
     vertical-align: top;
+    color: var(--text);
   }
 
   table.soft-table th {
-    background: #f1f3f7;
-    font-weight: 600;
-    color: #1b2636;
+    background: var(--panel);
+    font-weight: 800;
+  }
+
+  .soft-name {
+    font-weight: 700;
   }
 
   .btn-details {
-    display: inline-block;
-    padding: 6px 12px;
-    background: #193b6b;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 10px;
+    border-radius: 10px;
     text-decoration: none;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    transition: background 0.2s;
+    font-weight: 800;
+    border: 1px solid var(--btn);
+    background: var(--btn);
+    color: var(--btn-text);
     white-space: nowrap;
   }
-  .btn-details:hover { background: #102947; }
+  .btn-details:hover {
+    background: var(--btn-hover);
+    border-color: var(--btn-hover);
+  }
+
+  .empty { color: var(--muted); }
 </style>
 
 <div class="panel">
-  <div class="title-row">
-    <h1>Laboratorium: {{ laboratory.number }}</h1>
-
+  <h1>
+    Laboratorium: {{ laboratory.number }}
     {% if building %}
-      {% if building == "Budynek 40" %}
-        <span class="badge b40">{{ building }}</span>
-      {% elif building == "Budynek 30" %}
-        <span class="badge b30">{{ building }}</span>
-      {% else %}
-        <span class="badge inne">{{ building }}</span>
-      {% endif %}
+      <span class="badge">{{ building }}</span>
     {% endif %}
+  </h1>
+
+  <p class="meta">
+    Lista oprogramowania zainstalowanego w tym laboratorium.
+  </p>
+
+  <div class="row">
+    <a class="btn" href="{% url 'educational_software:software_list' %}">← Wróć do listy</a>
   </div>
 
   {% if softwares %}
     <table class="soft-table">
       <thead>
         <tr>
-          <th>Oprogramowanie zainstalowane w tym laboratorium</th>
-          <th style="width: 140px;">Akcja</th>
+          <th>Program</th>
+          <th style="width: 160px;">Akcja</th>
         </tr>
       </thead>
       <tbody>
         {% for s in softwares %}
           <tr>
-            <td><strong>{{ s.name }}</strong></td>
+            <td class="soft-name">{{ s.name }}</td>
             <td>
-              <a class="btn-details" href="{% url 'educational_software:software_detail' s.id %}">
-                Szczegóły
-              </a>
+              <a class="btn-details" href="{% url 'educational_software:software_detail' s.id %}">Szczegóły</a>
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   {% else %}
-    <p class="muted">Brak oprogramowania przypisanego do tego laboratorium.</p>
+    <p class="empty">Brak danych o oprogramowaniu w tym laboratorium.</p>
   {% endif %}
 </div>
 

@@ -1,0 +1,376 @@
+{% extends "sprzet/base.html" %}
+{% block content %}
+
+<style>
+  :root{
+    --panel-bg:#ffffff;
+    --panel-shadow:0 2px 10px rgba(0,0,0,0.07);
+    --text-main:#1d2a3a;
+    --text-muted:#6b7280;
+
+    --border:#e3e6ec;
+    --border-strong:#cbd5e1;
+
+    --table-bg:#ffffff;
+    --table-head-bg:#f1f3f7;
+    --row-hover:#f7f8fb;
+
+    --btn-bg:#193b6b;
+    --btn-bg-hover:#102947;
+    --btn-text:#ffffff;
+    --btn-border:#193b6b;
+
+    --btn-secondary-bg:#ffffff;
+    --btn-secondary-text:#1b2738;
+    --btn-secondary-border:#cbd5e1;
+
+    --input-bg:#ffffff;
+    --input-text:#111827;
+    --input-border:#cbd5e1;
+
+    --chip-bg:#f1f3f7;
+    --chip-text:#1b2636;
+
+    --link:#193b6b;
+  }
+
+  body.dark,
+  html[data-theme="dark"] body,
+  body[data-theme="dark"]{
+    --panel-bg:#0b1220;
+    --panel-shadow:0 2px 14px rgba(0,0,0,0.45);
+    --text-main:#e5e7eb;
+    --text-muted:#aab2c0;
+
+    --border:rgba(255,255,255,0.10);
+    --border-strong:rgba(255,255,255,0.16);
+
+    --table-bg:#0b1220;
+    --table-head-bg:#111b2f;
+    --row-hover:rgba(255,255,255,0.04);
+
+    --btn-bg:#1f4b8f;
+    --btn-bg-hover:#173a6f;
+    --btn-text:#ffffff;
+    --btn-border:#1f4b8f;
+
+    --btn-secondary-bg:#0f1a2e;
+    --btn-secondary-text:#e5e7eb;
+    --btn-secondary-border:rgba(255,255,255,0.16);
+
+    --input-bg:#0f1a2e;
+    --input-text:#e5e7eb;
+    --input-border:rgba(255,255,255,0.16);
+
+    --chip-bg:#111b2f;
+    --chip-text:#e5e7eb;
+
+    --link:#8fb4ff;
+  }
+
+  .panel{
+    background:var(--panel-bg);
+    border-radius:12px;
+    padding:25px 30px;
+    box-shadow:var(--panel-shadow);
+    margin-bottom:40px;
+    border:1px solid var(--border);
+  }
+
+  .panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+
+  .panel h1{
+    margin:0;
+    font-size:1.6rem;
+    font-weight:600;
+    color:var(--text-main);
+  }
+
+  .subtitle{
+    margin:6px 0 0;
+    color:var(--text-muted);
+    font-size:0.92rem;
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:0.9rem;
+    font-weight:600;
+    border:1px solid transparent;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .2s, border-color .2s, color .2s;
+  }
+
+  .btn-primary{
+    background:var(--btn-bg);
+    border-color:var(--btn-border);
+    color:var(--btn-text);
+  }
+  .btn-primary:hover{
+    background:var(--btn-bg-hover);
+    border-color:var(--btn-bg-hover);
+  }
+
+  .btn-secondary{
+    background:var(--btn-secondary-bg);
+    border-color:var(--btn-secondary-border);
+    color:var(--btn-secondary-text);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:16px;
+  }
+  @media (min-width: 980px){
+    .grid{
+      grid-template-columns: 1.35fr 0.65fr;
+      align-items:start;
+    }
+  }
+
+  table.detail-table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--table-bg);
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+
+  table.detail-table th,
+  table.detail-table td{
+    padding:12px 12px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+    font-size:0.95rem;
+    color:var(--text-main);
+  }
+
+  table.detail-table th{
+    width:240px;
+    background:var(--table-head-bg);
+    font-weight:700;
+    border-bottom:1px solid var(--border-strong);
+    white-space:nowrap;
+  }
+
+  .muted{
+    color:var(--text-muted);
+  }
+
+  .chip{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--chip-bg);
+    color:var(--chip-text);
+    border:1px solid var(--border);
+    font-size:0.85rem;
+    font-weight:600;
+  }
+
+  .card{
+    background:var(--panel-bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 16px;
+  }
+
+  .card h2{
+    margin:0 0 10px;
+    font-size:1.05rem;
+    color:var(--text-main);
+  }
+
+  .attachments{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .att-item{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--table-bg);
+  }
+
+  .att-left{
+    min-width: 0;
+  }
+
+  .att-name{
+    font-weight:700;
+    color:var(--text-main);
+    word-break:break-word;
+  }
+
+  .att-meta{
+    margin-top:4px;
+    color:var(--text-muted);
+    font-size:0.85rem;
+  }
+
+  .att-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .btn-danger{
+    background:transparent;
+    border:1px solid rgba(239,68,68,0.35);
+    color:#ef4444;
+  }
+
+  .form-grid{
+    display:grid;
+    gap:10px;
+  }
+
+  .field label{
+    display:block;
+    font-weight:700;
+    color:var(--text-main);
+    margin-bottom:6px;
+    font-size:0.9rem;
+  }
+
+  .field input[type="text"],
+  .field input[type="file"]{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--input-border);
+    background:var(--input-bg);
+    color:var(--input-text);
+    outline:none;
+  }
+
+  .field input::placeholder{
+    color:var(--text-muted);
+  }
+
+  .note{
+    margin-top:10px;
+    color:var(--text-muted);
+    font-size:0.88rem;
+    line-height:1.35;
+  }
+</style>
+
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <h1>Szczegóły sprzętu</h1>
+      <p class="subtitle">
+        Nr inwentarzowy: <span class="chip">{{ equipment.inventory_number|default:"—" }}</span>
+      </p>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-secondary" href="{% url 'equipment:equipment_list' %}">Wróć do magazynu</a>
+      <a class="btn btn-primary" href="{% url 'equipment:equipment_edit' equipment.pk %}">Edytuj</a>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div>
+      <table class="detail-table">
+        <tbody>
+          <tr><th>Nr inwentarzowy</th><td>{{ equipment.inventory_number|default:"—" }}</td></tr>
+          <tr><th>Nazwa</th><td>{{ equipment.equipment_name|default:"—" }}</td></tr>
+          <tr><th>Typ sprzętu</th><td>{{ equipment.equipment_type|default:"—" }}</td></tr>
+          <tr><th>Status</th><td>{{ equipment.status|default:"—" }}</td></tr>
+          <tr><th>Budynek</th><td>{{ equipment.building|default:"—" }}</td></tr>
+          <tr><th>Pomieszczenie</th><td>{{ equipment.room|default:"—" }}</td></tr>
+          <tr><th>Kategoria</th><td>{{ equipment.room_category|default:"—" }}</td></tr>
+          <tr><th>Użytkownik</th><td>{{ equipment.user_full_name|default:"—" }}</td></tr>
+          <tr><th>Uwagi</th><td>{{ equipment.notes|default:"—" }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Załączniki</h2>
+
+        <div class="attachments">
+          {% if attachments %}
+            {% for att in attachments %}
+              <div class="att-item">
+                <div class="att-left">
+                  <div class="att-name">
+                    <a href="{{ att.file.url }}" style="color:var(--link); text-decoration:none;">
+                      {{ att.file.name }}
+                    </a>
+                  </div>
+                  <div class="att-meta">
+                    {% if att.description %}Opis: {{ att.description }}<br>{% endif %}
+                    Dodano: {{ att.uploaded_at|date:"Y-m-d H:i" }}
+                  </div>
+                </div>
+
+                <div class="att-actions">
+                  <form method="post" action="{% url 'equipment:attachment_delete' att.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="muted">Brak załączników.</div>
+          {% endif %}
+        </div>
+
+        <hr style="border:none; border-top:1px solid var(--border); margin:14px 0;">
+
+        <form class="form-grid" method="post" enctype="multipart/form-data"
+              action="{% url 'equipment:attachment_upload' equipment.pk %}">
+          {% csrf_token %}
+          <div class="field">
+            <label>Plik</label>
+            <input type="file" name="file" required>
+          </div>
+          <div class="field">
+            <label>Opis (opcjonalnie)</label>
+            <input type="text" name="description">
+          </div>
+          <button type="submit" class="btn btn-primary">Dodaj załącznik</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -3,7 +3,6 @@
 
 <style>
     .panel {
-        background: #ffffff;
         padding: 25px 24px;
         width: 100%;
         margin: 20px 0;
@@ -21,13 +20,13 @@
         margin: 0 0 4px;
         font-size: 1.6rem;
         font-weight: 600;
-        color: #1d2a3a;
+        color: var(--text);
     }
 
     .panel-subtitle {
         margin: 0;
         font-size: 0.9rem;
-        color: #6b7280;
+        color: var(--muted);
     }
 
     .category-list {
@@ -44,8 +43,8 @@
         gap: 12px;
         padding: 14px 16px;
         border-radius: 10px;
-        border: 1px solid #e3e6ec;
-        background: #f9fafb;
+        border: 1px solid var(--panel-border);
+        background: transparent;
     }
 
     .category-main {
@@ -57,12 +56,12 @@
     .category-name {
         font-size: 1.05rem;
         font-weight: 600;
-        color: #111827;
+        color: var(--text);
     }
 
     .category-meta {
         font-size: 0.9rem;
-        color: #4b5563;
+        color: var(--muted);
     }
 
     .category-meta span {
@@ -72,8 +71,8 @@
     .btn-category {
         display: inline-block;
         padding: 6px 14px;
-        background: #193b6b;
-        color: #ffffff;
+        background: var(--btn);
+        color: var(--btn-text);
         text-decoration: none;
         border-radius: 6px;
         font-size: 0.9rem;
@@ -83,7 +82,7 @@
     }
 
     .btn-category:hover {
-        background: #102947;
+        background: var(--btn-hover);
     }
 </style>
 
@@ -120,7 +119,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>Brak danych o pomieszczeniach w kategoriach.</p>
+        <p class="muted">Brak danych o pomieszczeniach w kategoriach.</p>
     {% endif %}
 </div>
 

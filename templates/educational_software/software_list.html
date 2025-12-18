@@ -3,118 +3,127 @@
 
 <style>
   .panel {
-    background: #fff;
     border-radius: 12px;
     padding: 25px 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     margin-bottom: 40px;
+    width: 100%;
+    box-sizing: border-box;
+
+    /* motyw */
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--panel-shadow);
   }
 
   .panel h1 {
-    margin-bottom: 18px;
+    margin: 0 0 18px;
     font-size: 1.6rem;
-    font-weight: 600;
-  }
-
-  /* SEARCH */
-  .searchwrap{
-    position: relative;
-    max-width: 520px;
-    margin-bottom: 18px;
+    font-weight: 700;
+    color: var(--text);
   }
 
   .searchbar {
     display: flex;
     gap: 10px;
+    margin: 0 0 18px;
     align-items: center;
+    max-width: 520px; /* żeby nie było “rozjechane” */
   }
 
-  .searchbar input {
+  .searchbar input[type="text"]{
     flex: 1;
     padding: 10px 12px;
-    border: 1px solid #d7dbe4;
     border-radius: 8px;
+    font-size: 0.95rem;
     outline: none;
+
+    background: var(--input-bg);
+    color: var(--text);
+    border: 1px solid var(--input-border);
   }
 
-  .searchbar button {
-    padding: 10px 16px;
+  .searchbar button{
+    padding: 10px 14px;
     border: none;
     border-radius: 8px;
-    background: #193b6b;
-    color: #fff;
     cursor: pointer;
-    white-space: nowrap;
-  }
-
-  /* SUGGEST DROPDOWN */
-  .suggest {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 6px);
-    background: #fff;
-    border: 1px solid #d7dbe4;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    overflow: hidden;
-    display: none;
-    z-index: 50;
-  }
-
-  .suggest a {
-    display: block;
-    padding: 10px 12px;
-    text-decoration: none;
-    color: #1b2738;
-    border-bottom: 1px solid #eef1f6;
     font-size: 0.95rem;
+    font-weight: 600;
+
+    background: var(--btn);
+    color: var(--btn-text);
+  }
+  .searchbar button:hover{
+    background: var(--btn-hover);
   }
 
-  .suggest a:last-child { border-bottom: none; }
-  .suggest a:hover { background: #f5f8ff; }
-  .suggest .muted { color: #6b7788; }
-
-  /* TABLE */
   table.soft-table {
     width: 100%;
     border-collapse: collapse;
+
+    background: var(--panel);
+    color: var(--text);
   }
 
-  th, td {
+  table.soft-table th, table.soft-table td {
     padding: 14px 12px;
-    border-bottom: 1px solid #e3e6ec;
-    vertical-align: middle;
+    text-align: left;
+    border-bottom: 1px solid var(--table-row-border);
+    font-size: 0.95rem;
+    vertical-align: top;
   }
 
-  th {
-    background: #f1f3f7;
-    font-weight: 600;
+  table.soft-table th {
+    background: var(--table-head);
+    font-weight: 700;
+    color: var(--text);
   }
 
-  .soft-name { font-weight: 600; }
+  .soft-name {
+    font-weight: 700;
+    color: var(--text);
+  }
 
   .btn-details {
-    padding: 6px 12px;
-    background: #193b6b;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.85rem;
     display: inline-block;
-  }
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+    white-space: nowrap;
 
-  /* LABS */
+    background: var(--btn);
+    color: var(--btn-text);
+  }
+  .btn-details:hover { background: var(--btn-hover); }
+
+  .labs-wrap { line-height: 1.35; }
+
   .labs-group {
-    margin-bottom: 8px;
+    margin: 0 0 8px;
     padding: 8px 10px;
     border-radius: 10px;
-    border: 1px solid #e3e6ec;
+    border: 1px solid var(--panel-border);
   }
 
-  .bg-b30 { background: #f7fbff; }
-  .bg-b40 { background: #fffaf3; }
-  .bg-inne { background: #f8f8f8; }
+  .labs-group h4{
+    margin: 0 0 6px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: var(--text);
+  }
+
+  /* Lekko różne tła dla grup – zależne od motywu */
+  html[data-theme="light"] .bg-b30 { background: #f7fbff; }
+  html[data-theme="light"] .bg-b40 { background: #fffaf3; }
+  html[data-theme="light"] .bg-inne{ background: #f8f8f8; }
+
+  html[data-theme="dark"] .bg-b30 { background: rgba(47,106,216,0.10); }
+  html[data-theme="dark"] .bg-b40 { background: rgba(255,224,179,0.10); }
+  html[data-theme="dark"] .bg-inne{ background: rgba(255,255,255,0.06); }
 
   .lab-btn {
     display: inline-block;
@@ -123,165 +132,92 @@
     border-radius: 999px;
     font-size: 0.85rem;
     text-decoration: none;
-    border: 1px solid #d7dbe4;
-    background: #fff;
-    color: #1b2738;
+    white-space: nowrap;
+
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--input-border);
   }
+
+  /* minimalnie inne akcenty */
+  .lab-btn.b30 { border-color: rgba(47,106,216,0.45); }
+  .lab-btn.b40 { border-color: rgba(255,224,179,0.55); }
+  .lab-btn.inne { border-color: rgba(255,255,255,0.25); }
+
+  .empty { color: var(--muted); }
 </style>
 
 <div class="panel">
   <h1>Oprogramowanie</h1>
 
-  <div class="searchwrap">
-    <form class="searchbar" method="get" id="searchForm">
-      <input id="qInput" type="text" name="q" placeholder="Szukaj programu…" value="{{ q|default:'' }}" autocomplete="off">
-      <button type="submit">Szukaj</button>
-    </form>
+  <form class="searchbar" method="get" action="">
+    <input type="text" name="q" placeholder="Szukaj programu…" value="{{ q|default:'' }}">
+    <button type="submit">Szukaj</button>
+  </form>
 
-    <div id="suggestBox" class="suggest"></div>
-  </div>
+  {% if items %}
+    <table class="soft-table">
+      <thead>
+        <tr>
+          <th style="width: 35%;">Program</th>
+          <th>Laboratoria</th>
+          <th style="width: 140px;">Akcja</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+          <tr>
+            <td class="soft-name">{{ it.name }}</td>
 
-  <table class="soft-table" id="softTable">
-    <thead>
-      <tr>
-        <th style="width:35%">Program</th>
-        <th>Laboratoria</th>
-        <th style="width:140px; text-align:center;">Akcja</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for it in items %}
-      <tr class="soft-row" data-name="{{ it.name|lower }}">
-        <td class="soft-name">{{ it.name }}</td>
+            <td class="labs-wrap">
+              {% with g=it.grouped_labs %}
+                {% if g.Budynek_30|length == 0 and g.Budynek_40|length == 0 and g.Inne|length == 0 %}
+                  <span class="empty">—</span>
+                {% else %}
 
-        <td>
-          {% with g=it.grouped_labs %}
-            {% if g.Budynek_30 %}
-              <div class="labs-group bg-b30">
-                <strong>Budynek 30</strong><br>
-                {% for lab in g.Budynek_30 %}
-                  <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
-                {% endfor %}
-              </div>
-            {% endif %}
+                  {% if g.Budynek_30|length > 0 %}
+                    <div class="labs-group bg-b30">
+                      <h4>Budynek 30</h4>
+                      {% for lab in g.Budynek_30 %}
+                        <a class="lab-btn b30" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
 
-            {% if g.Budynek_40 %}
-              <div class="labs-group bg-b40">
-                <strong>Budynek 40</strong><br>
-                {% for lab in g.Budynek_40 %}
-                  <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
-                {% endfor %}
-              </div>
-            {% endif %}
+                  {% if g.Budynek_40|length > 0 %}
+                    <div class="labs-group bg-b40">
+                      <h4>Budynek 40</h4>
+                      {% for lab in g.Budynek_40 %}
+                        <a class="lab-btn b40" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
 
-            {% if g.Inne %}
-              <div class="labs-group bg-inne">
-                <strong>Inne</strong><br>
-                {% for lab in g.Inne %}
-                  <a class="lab-btn" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
-                {% endfor %}
-              </div>
-            {% endif %}
-          {% endwith %}
-        </td>
+                  {% if g.Inne|length > 0 %}
+                    <div class="labs-group bg-inne">
+                      <h4>Inne</h4>
+                      {% for lab in g.Inne %}
+                        <a class="lab-btn inne" href="{% url 'educational_software:laboratory_detail' lab %}">{{ lab }}</a>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
 
-        <td style="text-align:center;">
-          <a class="btn-details" href="{% url 'educational_software:software_detail' it.id %}">
-            Szczegóły
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+                {% endif %}
+              {% endwith %}
+            </td>
+
+            <td>
+              <a class="btn-details" href="{% url 'educational_software:software_detail' it.id %}">
+                Szczegóły
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">Brak danych o oprogramowaniu. Wykonaj import Excela.</p>
+  {% endif %}
 </div>
-
-<script>
-(function () {
-  const input = document.getElementById('qInput');
-  const rows = Array.from(document.querySelectorAll('.soft-row'));
-  const box = document.getElementById('suggestBox');
-
-  if (!input || !box) return;
-
-  // 1) filtrowanie tabeli "na żywo"
-  function applyFilter() {
-    const q = (input.value || '').trim().toLowerCase();
-    rows.forEach(row => {
-      const name = row.getAttribute('data-name') || '';
-      row.style.display = (q === '' || name.includes(q)) ? '' : 'none';
-    });
-  }
-
-  // 2) dropdown z sugestiami (z backendu)
-  let timer = null;
-  async function fetchSuggest(q) {
-    if (!q || q.length < 2) {
-      box.style.display = 'none';
-      box.innerHTML = '';
-      return;
-    }
-
-    try {
-      const resp = await fetch("{% url 'educational_software:software_suggest' %}?q=" + encodeURIComponent(q), {
-        headers: { "X-Requested-With": "XMLHttpRequest" }
-      });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const data = await resp.json();
-
-      const results = (data && data.results) ? data.results : [];
-      if (results.length === 0) {
-        box.innerHTML = '<a href="#" class="muted" onclick="return false;">Brak wyników</a>';
-        box.style.display = 'block';
-        return;
-      }
-
-      box.innerHTML = results.map(r => {
-        const url = "{% url 'educational_software:software_detail' 0 %}".replace('/0/', '/' + r.id + '/');
-        return `<a href="${url}">${escapeHtml(r.name)}</a>`;
-      }).join('');
-
-      box.style.display = 'block';
-    } catch (e) {
-      // jak coś się wysypie, nie blokuj strony
-      box.style.display = 'none';
-      box.innerHTML = '';
-    }
-  }
-
-  function escapeHtml(s) {
-    return String(s)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-
-  input.addEventListener('input', () => {
-    applyFilter();
-
-    clearTimeout(timer);
-    const q = input.value.trim();
-    timer = setTimeout(() => fetchSuggest(q), 120);
-  });
-
-  // klik poza dropdownem zamyka
-  document.addEventListener('click', (e) => {
-    if (!box.contains(e.target) && e.target !== input) {
-      box.style.display = 'none';
-    }
-  });
-
-  // ESC zamyka
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') box.style.display = 'none';
-  });
-
-  // jeśli strona weszła już z ?q=...
-  applyFilter();
-  if ((input.value || '').trim().length >= 2) fetchSuggest(input.value.trim());
-})();
-</script>
 
 {% endblock %}
