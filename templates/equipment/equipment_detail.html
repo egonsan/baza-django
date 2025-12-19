@@ -2,84 +2,14 @@
 {% block content %}
 
 <style>
-  :root{
-    --panel-bg:#ffffff;
-    --panel-shadow:0 2px 10px rgba(0,0,0,0.07);
-    --text-main:#1d2a3a;
-    --text-muted:#6b7280;
-
-    --border:#e3e6ec;
-    --border-strong:#cbd5e1;
-
-    --table-bg:#ffffff;
-    --table-head-bg:#f1f3f7;
-    --row-hover:#f7f8fb;
-
-    --link:#193b6b;
-
-    --btn-bg:#193b6b;
-    --btn-bg-hover:#102947;
-    --btn-text:#ffffff;
-    --btn-border:#193b6b;
-
-    --btn-secondary-bg:#ffffff;
-    --btn-secondary-text:#1b2738;
-    --btn-secondary-border:#cbd5e1;
-
-    --input-bg:#ffffff;
-    --input-text:#111827;
-    --input-border:#cbd5e1;
-
-    --chip-bg:#f1f3f7;
-    --chip-text:#1b2636;
-
-    --danger:#ef4444;
-    --success:#16a34a;
-  }
-
-  html[data-theme="dark"] body,
-  body[data-theme="dark"]{
-    --panel-bg:#0b1220;
-    --panel-shadow:0 2px 14px rgba(0,0,0,0.45);
-    --text-main:#e5e7eb;
-    --text-muted:#aab2c0;
-
-    --border:rgba(255,255,255,0.10);
-    --border-strong:rgba(255,255,255,0.16);
-
-    --table-bg:#0b1220;
-    --table-head-bg:#111b2f;
-    --row-hover:rgba(255,255,255,0.04);
-
-    --link:#8fb4ff;
-
-    --btn-bg:#1f4b8f;
-    --btn-bg-hover:#173a6f;
-    --btn-text:#ffffff;
-    --btn-border:#1f4b8f;
-
-    --btn-secondary-bg:#0f1a2e;
-    --btn-secondary-text:#e5e7eb;
-    --btn-secondary-border:rgba(255,255,255,0.16);
-
-    --input-bg:#0f1a2e;
-    --input-text:#e5e7eb;
-    --input-border:rgba(255,255,255,0.16);
-
-    --chip-bg:#111b2f;
-    --chip-text:#e5e7eb;
-
-    --danger:#fb7185;
-    --success:#22c55e;
-  }
-
   .panel{
-    background:var(--panel-bg);
+    background: var(--panel);
     border-radius:12px;
     padding:25px 30px;
-    box-shadow:var(--panel-shadow);
+    box-shadow: var(--panel-shadow);
     margin-bottom:40px;
-    border:1px solid var(--border);
+    border:1px solid var(--panel-border);
+    color: var(--text);
   }
 
   .panel-header{
@@ -95,12 +25,12 @@
     margin:0;
     font-size:1.6rem;
     font-weight:700;
-    color:var(--text-main);
+    color: var(--text);
   }
 
   .subtitle{
     margin:6px 0 0;
-    color:var(--text-muted);
+    color: var(--muted);
     font-size:0.92rem;
     line-height:1.35;
   }
@@ -133,25 +63,25 @@
   }
 
   .btn-primary{
-    background:var(--btn-bg);
-    border-color:var(--btn-border);
-    color:var(--btn-text);
+    background: var(--btn);
+    border-color: var(--btn);
+    color: var(--btn-text);
   }
   .btn-primary:hover{
-    background:var(--btn-bg-hover);
-    border-color:var(--btn-bg-hover);
+    background: var(--btn-hover);
+    border-color: var(--btn-hover);
   }
 
   .btn-secondary{
-    background:var(--btn-secondary-bg);
-    border-color:var(--btn-secondary-border);
-    color:var(--btn-secondary-text);
+    background: var(--panel);
+    border-color: var(--panel-border);
+    color: var(--text);
   }
 
   .btn-danger{
-    background:transparent;
-    border:1px solid rgba(239,68,68,0.35);
-    color:var(--danger);
+    background: transparent;
+    border: 1px solid rgba(239,68,68,0.35);
+    color: var(--danger);
   }
 
   .btn-xs{
@@ -162,8 +92,8 @@
   }
 
   .btn-copy-ok{
-    background:var(--success) !important;
-    border-color:var(--success) !important;
+    background: var(--success) !important;
+    border-color: var(--success) !important;
     color:#fff !important;
   }
 
@@ -182,47 +112,46 @@
   table.detail-table{
     width:100%;
     border-collapse:collapse;
-    background:var(--table-bg);
+    background: var(--panel);
     border-radius:12px;
     overflow:hidden;
-    border:1px solid var(--border);
+    border:1px solid var(--panel-border);
   }
 
   table.detail-table th,
   table.detail-table td{
     padding:12px 12px;
-    border-bottom:1px solid var(--border);
+    border-bottom:1px solid var(--table-row-border);
     vertical-align:top;
     font-size:0.95rem;
-    color:var(--text-main);
+    color: var(--text);
   }
 
   table.detail-table th{
     width:240px;
-    background:var(--table-head-bg);
+    background: var(--table-head);
     font-weight:800;
-    border-bottom:1px solid var(--border-strong);
     white-space:nowrap;
   }
 
   .muted{
-    color:var(--text-muted);
+    color: var(--muted);
   }
 
   .chip{
     display:inline-block;
     padding:4px 10px;
     border-radius:999px;
-    background:var(--chip-bg);
-    color:var(--chip-text);
-    border:1px solid var(--border);
+    background: var(--table-head);
+    color: var(--text);
+    border:1px solid var(--panel-border);
     font-size:0.85rem;
     font-weight:800;
   }
 
   .card{
-    background:var(--panel-bg);
-    border:1px solid var(--border);
+    background: var(--panel);
+    border:1px solid var(--panel-border);
     border-radius:12px;
     padding:16px 16px;
   }
@@ -230,14 +159,14 @@
   .card h2{
     margin:0 0 10px;
     font-size:1.05rem;
-    color:var(--text-main);
+    color: var(--text);
     font-weight:800;
   }
 
   .photo{
-    border:1px solid var(--border);
+    border:1px solid var(--panel-border);
     border-radius:12px;
-    background:var(--table-bg);
+    background: var(--panel);
     padding:10px;
     text-align:center;
     overflow:hidden;
@@ -259,11 +188,10 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    color:var(--text-muted);
-    font-size:0.95rem;
+    color: var(--muted);
+    font-size:0.92rem;
     border-radius:10px;
-    border:1px dashed var(--border);
-    background:transparent;
+    border:1px dashed var(--panel-border);
   }
 
   .attachments{
@@ -279,29 +207,33 @@
     gap:12px;
     padding:10px 12px;
     border-radius:12px;
-    border:1px solid var(--border);
-    background:var(--table-bg);
+    border:1px solid var(--panel-border);
+    background: var(--panel);
   }
 
-  .att-left{ min-width:0; }
+  .att-left{
+    min-width: 0;
+  }
 
   .att-name{
-    font-weight:900;
-    color:var(--text-main);
+    font-weight:800;
+    color: var(--text);
     word-break:break-word;
-    line-height:1.25;
   }
 
   .att-name a{
-    color:var(--link);
+    color: var(--link);
     text-decoration:none;
+    font-weight:900;
   }
 
-  .att-name a:hover{ text-decoration:underline; }
+  .att-name a:hover{
+    text-decoration:underline;
+  }
 
   .att-meta{
     margin-top:4px;
-    color:var(--text-muted);
+    color: var(--muted);
     font-size:0.85rem;
   }
 
@@ -319,8 +251,8 @@
 
   .field label{
     display:block;
-    font-weight:900;
-    color:var(--text-main);
+    font-weight:800;
+    color: var(--text);
     margin-bottom:6px;
     font-size:0.9rem;
   }
@@ -332,29 +264,20 @@
     padding:10px 12px;
     border-radius:10px;
     border:1px solid var(--input-border);
-    background:var(--input-bg);
-    color:var(--input-text);
+    background: var(--input-bg);
+    color: var(--text);
     outline:none;
   }
 
-  .field input::placeholder{ color:var(--text-muted); }
+  .field input::placeholder{
+    color: var(--muted);
+  }
 
   .note{
     margin-top:10px;
-    color:var(--text-muted);
+    color: var(--muted);
     font-size:0.88rem;
     line-height:1.35;
-  }
-
-  .meta-footer{
-    margin-top:14px;
-    padding-top:10px;
-    border-top:1px solid var(--border);
-    color:var(--text-muted);
-    font-size:0.88rem;
-    display:flex;
-    flex-wrap:wrap;
-    gap:14px;
   }
 </style>
 
@@ -382,77 +305,26 @@
           <tr><th>Nr inwentarzowy</th><td>{{ equipment.inventory_number|default:"—" }}</td></tr>
           <tr><th>Nazwa</th><td>{{ equipment.equipment_name|default:"—" }}</td></tr>
           <tr><th>Typ sprzętu</th><td>{{ equipment.equipment_type|default:"—" }}</td></tr>
-
-          <tr>
-            <th>Status</th>
-            <td>
-              {{ equipment.status|default:"—" }}
-            </td>
-          </tr>
-
-          <tr>
-            <th>Kategoria pomieszczenia</th>
-            <td>
-              {% if equipment.room_category %}
-                {{ equipment.get_room_category_display }}
-              {% else %}
-                —
-              {% endif %}
-            </td>
-          </tr>
-
+          <tr><th>Status</th><td>{{ equipment.status|default:"—" }}</td></tr>
           <tr><th>Budynek</th><td>{{ equipment.building|default:"—" }}</td></tr>
           <tr><th>Pomieszczenie</th><td>{{ equipment.room|default:"—" }}</td></tr>
+          <tr><th>Kategoria</th><td>{{ equipment.room_category|default:"—" }}</td></tr>
 
           <tr><th>Użytkownik</th><td>{{ equipment.user_full_name|default:"—" }}</td></tr>
           <tr><th>Wypożyczone do</th><td>{{ equipment.borrowed_to|default:"—" }}</td></tr>
 
           <tr><th>Hostname</th><td>{{ equipment.hostname|default:"—" }}</td></tr>
-
-          <tr>
-            <th>IP</th>
-            <td>
-              {% if equipment.ip_address %}
-                <span style="font-weight:800;">{{ equipment.ip_address }}</span>
-                <button type="button" class="btn btn-xs btn-secondary btn-copy" data-copy="{{ equipment.ip_address }}">Kopiuj</button>
-              {% else %}
-                —
-              {% endif %}
-            </td>
-          </tr>
-
+          <tr><th>IP</th><td>{{ equipment.ip_address|default:"—" }}</td></tr>
           <tr><th>MAC</th><td>{{ equipment.mac_address|default:"—" }}</td></tr>
 
           <tr><th>Nr seryjny jednostki</th><td>{{ equipment.unit_serial_number|default:"—" }}</td></tr>
           <tr><th>Nr seryjny monitora</th><td>{{ equipment.monitor_serial_number|default:"—" }}</td></tr>
 
           <tr><th>System</th><td>{{ equipment.os_name|default:"—" }}{% if equipment.os_version %} ({{ equipment.os_version }}){% endif %}</td></tr>
-
-          <tr>
-            <th>Klucz Windows</th>
-            <td>
-              {% if equipment.os_serial_key %}
-                <span style="font-weight:800;">{{ equipment.os_serial_key }}</span>
-                <button type="button" class="btn btn-xs btn-secondary btn-copy" data-copy="{{ equipment.os_serial_key }}">Kopiuj</button>
-              {% else %}
-                —
-              {% endif %}
-            </td>
-          </tr>
+          <tr><th>Klucz Windows</th><td>{{ equipment.os_serial_key|default:"—" }}</td></tr>
 
           <tr><th>Office</th><td>{{ equipment.office_name|default:"—" }}{% if equipment.office_version %} ({{ equipment.office_version }}){% endif %}</td></tr>
-
-          <tr>
-            <th>Klucz Office</th>
-            <td>
-              {% if equipment.office_serial_key %}
-                <span style="font-weight:800;">{{ equipment.office_serial_key }}</span>
-                <button type="button" class="btn btn-xs btn-secondary btn-copy" data-copy="{{ equipment.office_serial_key }}">Kopiuj</button>
-              {% else %}
-                —
-              {% endif %}
-            </td>
-          </tr>
+          <tr><th>Klucz Office</th><td>{{ equipment.office_serial_key|default:"—" }}</td></tr>
 
           <tr><th>Dostawca</th><td>{{ equipment.supplier|default:"—" }}</td></tr>
           <tr><th>Data zakupu</th><td>{{ equipment.purchase_date|date:"Y-m-d"|default:"—" }}</td></tr>
@@ -461,35 +333,24 @@
           <tr><th>Uwagi</th><td>{{ equipment.notes|default:"—" }}</td></tr>
         </tbody>
       </table>
-
-      <div class="meta-footer">
-        <div>
-          Ostatnio modyfikował:
-          {% if equipment.last_modified_by %}<strong>{{ equipment.last_modified_by }}</strong>{% else %}<strong>brak danych</strong>{% endif %}
-        </div>
-        <div>
-          Data modyfikacji:
-          {% if equipment.last_modified_at %}<strong>{{ equipment.last_modified_at|date:"Y-m-d H:i" }}</strong>{% else %}<strong>brak danych</strong>{% endif %}
-        </div>
-      </div>
     </div>
 
-    <!-- PRAWA: ZDJĘCIE + ZAŁĄCZNIKI -->
+    <!-- PRAWA: ZAŁĄCZNIKI -->
     <div>
-
-      <div class="photo">
-        {% if attachments %}
-          {% with main_attachment=attachments.0 %}
-            <a href="{{ main_attachment.file.url }}" target="_blank" rel="noopener">
-              <img src="{{ main_attachment.file.url }}" alt="Zdjęcie sprzętu">
-            </a>
-          {% endwith %}
-        {% else %}
-          <div class="photo-placeholder">Brak zdjęcia – dodaj jako załącznik</div>
-        {% endif %}
-      </div>
-
       <div class="card">
+
+        <div class="photo">
+          {% if attachments %}
+            {% with main_attachment=attachments.0 %}
+              <a href="{{ main_attachment.file.url }}" target="_blank">
+                <img src="{{ main_attachment.file.url }}" alt="Zdjęcie sprzętu">
+              </a>
+            {% endwith %}
+          {% else %}
+            <div class="photo-placeholder">Brak zdjęcia – dodaj jako załącznik</div>
+          {% endif %}
+        </div>
+
         <h2>Załączniki</h2>
 
         <div class="attachments">
@@ -498,21 +359,18 @@
               <div class="att-item">
                 <div class="att-left">
                   <div class="att-name">
-                    <a href="{{ att.file.url }}" target="_blank" rel="noopener">
-                      {% if att.description %}{{ att.description }}{% else %}{{ att.file.name }}{% endif %}
-                    </a>
+                    <a href="{{ att.file.url }}" target="_blank">{{ att.file.name|default:"Plik" }}</a>
                   </div>
                   <div class="att-meta">
+                    {% if att.description %}Opis: {{ att.description }}<br>{% endif %}
                     Dodano: {{ att.uploaded_at|date:"Y-m-d H:i" }}
                   </div>
                 </div>
 
                 <div class="att-actions">
-                  <a class="btn btn-xs btn-secondary" href="{{ att.file.url }}" target="_blank" rel="noopener">Podgląd</a>
-
                   <form method="post" action="{% url 'equipment:attachment_delete' att.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('Na pewno usunąć załącznik?');">Usuń</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Na pewno usunąć załącznik?');">Usuń</button>
                   </form>
                 </div>
               </div>
@@ -522,7 +380,7 @@
           {% endif %}
         </div>
 
-        <hr style="border:none; border-top:1px solid var(--border); margin:14px 0;">
+        <hr style="border:none; border-top:1px solid var(--panel-border); margin:14px 0;">
 
         <form class="form-grid" method="post" enctype="multipart/form-data" action="{% url 'equipment:attachment_upload' equipment.pk %}">
           {% csrf_token %}
@@ -534,7 +392,7 @@
 
           <div class="field">
             <label for="id_desc">Opis (opcjonalnie)</label>
-            <input id="id_desc" type="text" name="description" maxlength="255" placeholder="Np. faktura, zdjęcie tabliczki, protokół…">
+            <input id="id_desc" type="text" name="description" placeholder="Np. faktura, zdjęcie tabliczki, protokół…">
           </div>
 
           <div class="actions">
@@ -545,36 +403,11 @@
             Załączniki są przypisane do tej karty sprzętu i widoczne w szczegółach.
           </div>
         </form>
+
       </div>
     </div>
 
   </div>
 </div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  var buttons = document.querySelectorAll(".btn-copy[data-copy]");
-  buttons.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var text = btn.getAttribute("data-copy");
-      if (!text) return;
-
-      var onSuccess = function () {
-        var oldText = btn.textContent;
-        btn.textContent = "Skopiowano";
-        btn.classList.add("btn-copy-ok");
-        setTimeout(function () {
-          btn.textContent = oldText;
-          btn.classList.remove("btn-copy-ok");
-        }, 1200);
-      };
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(onSuccess);
-      }
-    });
-  });
-});
-</script>
 
 {% endblock %}

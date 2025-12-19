@@ -2,125 +2,104 @@
 {% block content %}
 
 <style>
-    .panel {
-        padding: 25px 24px;
-        width: 100%;
-        margin: 20px 0;
-        border: 1px solid #e5e7eb;
-        box-sizing: border-box;
-        max-width: 100%;
-        overflow-x: auto;
-    }
+  /* C3: Rooms overview (dashboard) – UI-kit */
 
-    .panel-header {
-        margin-bottom: 18px;
-    }
+  .panel{ margin: 20px 0; }
 
-    .panel-header h1 {
-        margin: 0 0 4px;
-        font-size: 1.6rem;
-        font-weight: 600;
-        color: var(--text);
-    }
+  .panel-header{ margin-bottom: 14px; }
 
-    .panel-subtitle {
-        margin: 0;
-        font-size: 0.9rem;
-        color: var(--muted);
-    }
+  .panel-title{
+    margin:0 0 6px;
+    font-size:1.6rem;
+    font-weight:600;
+    color:var(--text);
+  }
 
-    .category-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        margin-top: 16px;
-    }
+  .panel-subtitle{
+    margin:0;
+    font-size:0.9rem;
+    color:var(--muted);
+    line-height:1.35;
+  }
 
-    .category-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 10px;
-        border: 1px solid var(--panel-border);
-        background: transparent;
-    }
+  .category-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:16px;
+  }
 
-    .category-main {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
+  .category-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--panel-border);
+    background: transparent;
+  }
 
-    .category-name {
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: var(--text);
-    }
+  .category-main{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    min-width:0;
+  }
 
-    .category-meta {
-        font-size: 0.9rem;
-        color: var(--muted);
-    }
+  .category-name{
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--text);
+  }
 
-    .category-meta span {
-        margin-right: 14px;
-    }
+  .category-meta{
+    font-size:0.9rem;
+    color:var(--muted);
+    line-height:1.35;
+  }
 
-    .btn-category {
-        display: inline-block;
-        padding: 6px 14px;
-        background: var(--btn);
-        color: var(--btn-text);
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        white-space: nowrap;
-        transition: background 0.2s;
-    }
+  .category-meta span{ margin-right:14px; }
 
-    .btn-category:hover {
-        background: var(--btn-hover);
-    }
+  .empty{
+    margin:0;
+    color:var(--muted);
+  }
 </style>
 
-<div class="panel">
-    <div class="panel-header">
-        <h1>Pomieszczenia / Sale</h1>
-        <p class="panel-subtitle">
-            Zestawienie kategorii pomieszczeń. Dla każdej kategorii widać liczbę sal
-            oraz liczbę kart sprzętu przypisanych do tej kategorii.
-        </p>
-    </div>
+<div class="ui-panel panel">
+  <div class="panel-header">
+    <h1 class="panel-title">Pomieszczenia / Sale</h1>
+    <p class="panel-subtitle">
+      Zestawienie kategorii pomieszczeń. Dla każdej kategorii widać liczbę sal
+      oraz liczbę kart sprzętu przypisanych do tej kategorii.
+    </p>
+  </div>
 
-    {% if categories %}
-        <div class="category-list">
-            {% for cat in categories %}
-                <div class="category-item">
-                    <div class="category-main">
-                        <div class="category-name">
-                            {{ cat.label }}
-                        </div>
-                        <div class="category-meta">
-                            <span>Pomieszczeń: <strong>{{ cat.rooms_count }}</strong></span>
-                            <span>Kart sprzętu: <strong>{{ cat.equipment_count }}</strong></span>
-                        </div>
-                    </div>
+  {% if categories %}
+    <div class="category-list">
+      {% for cat in categories %}
+        <div class="category-item">
+          <div class="category-main">
+            <div class="category-name">{{ cat.label }}</div>
+            <div class="category-meta">
+              <span>Pomieszczeń: <strong>{{ cat.rooms_count }}</strong></span>
+              <span>Kart sprzętu: <strong>{{ cat.equipment_count }}</strong></span>
+            </div>
+          </div>
 
-                    <div>
-                        <a href="{% url 'equipment:rooms_category_detail' cat.code %}"
-                           class="btn-category">
-                            Przejdź do listy
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
+          <div>
+            <a href="{% url 'equipment:rooms_category_detail' cat.code %}"
+               class="ui-btn ui-btn-primary">
+              Przejdź do listy
+            </a>
+          </div>
         </div>
-    {% else %}
-        <p class="muted">Brak danych o pomieszczeniach w kategoriach.</p>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">Brak danych o pomieszczeniach w kategoriach.</p>
+  {% endif %}
 </div>
 
 {% endblock %}

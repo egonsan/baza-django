@@ -52,6 +52,11 @@
 
             --input-bg: #fbfcfe;
             --input-border: #d7dbe4;
+
+            /* Globalne */
+            --link: #193b6b;
+            --danger: #ef4444;
+            --success: #16a34a;
         }
 
         html[data-theme="dark"]{
@@ -60,29 +65,38 @@
             --muted: #a9b2c2;
 
             --panel: #111827;
-            --panel-border: rgba(255,255,255,0.10);
+            --panel-border: rgba(255,255,255,0.16);
             --panel-shadow: 0 2px 16px rgba(0,0,0,0.55);
 
-            --table-head: #0f172a;
-            --table-row-border: rgba(255,255,255,0.10);
+            /* ⬇️ delikatnie JAŚNIEJSZY nagłówek tabeli
+               żeby linia nad pierwszym wierszem była widoczna */
+            --table-head: #162036;
+            --table-row-border: rgba(255,255,255,0.18);
 
             --btn: #2f6ad8;
             --btn-text: #ffffff;
             --btn-hover: #2456b3;
 
             --input-bg: #0f172a;
-            --input-border: rgba(255,255,255,0.18);
+            --input-border: rgba(255,255,255,0.25);
+
+            /* Globalne */
+            --link: #8fb4ff;
+            --danger: #fb7185;
+            --success: #22c55e;
         }
 
-        /* GLOBALNE TŁO DLA ZWYKŁYCH STRON (OPRÓCZ LOGINU) */
+        /* =========================
+           TŁA STRON
+           ========================= */
+
         #main-bg {
             min-height: 100vh;
             background: var(--bg);
             color: var(--text);
-             padding-top: 16px; /* usuwa pasek pod headerem */
+            padding-top: 16px;
         }
 
-        /* TŁO DLA STRONY LOGINU */
         #login-bg {
             min-height: 100vh;
             background: url("{% static 'sprzet/wallpaper.jpg' %}") no-repeat center center fixed;
@@ -91,11 +105,9 @@
         }
 
         /* =========================
-           Ujednolicenie typowych paneli/tabel/przycisków
-           (żeby nie było białych “tabelek” w dark)
+           BAZOWE ELEMENTY
            ========================= */
 
-        /* Najczęściej używany kontener (np. Twoje .panel) */
         .panel{
             background: var(--panel) !important;
             color: var(--text) !important;
@@ -103,26 +115,27 @@
             box-shadow: var(--panel-shadow) !important;
         }
 
-        /* Typowe tabele w projekcie */
         table.soft-table{
             background: var(--panel) !important;
             color: var(--text) !important;
         }
+
         table.soft-table th{
             background: var(--table-head) !important;
             color: var(--text) !important;
+            text-align: left;
         }
+
         table.soft-table td{
             border-bottom: 1px solid var(--table-row-border) !important;
             color: var(--text) !important;
+            text-align: left;
         }
 
-        /* Teksty pomocnicze */
         .muted, .empty, small{
             color: var(--muted) !important;
         }
 
-        /* Przyciski (Twoje) */
         .btn-details{
             background: var(--btn) !important;
             color: var(--btn-text) !important;
@@ -131,19 +144,104 @@
             background: var(--btn-hover) !important;
         }
 
-        /* Inputy (np. wyszukiwarki) */
-        input[type="text"], input[type="search"], select, textarea{
+        input[type="text"],
+        input[type="search"],
+        select,
+        textarea{
             background: var(--input-bg);
             color: var(--text);
             border: 1px solid var(--input-border);
         }
+
+        /* Bazowy styl linków (opcjonalny) */
+        a.theme-link{
+            color: var(--link);
+        }
+    </style>
+
+    <!-- =========================
+         UI KIT – C3
+         ========================= -->
+    <style>
+      .ui-panel{
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--panel-border);
+        box-shadow: var(--panel-shadow);
+        border-radius: 12px;
+        padding: 22px 24px;
+      }
+
+      .ui-table{
+        width:100%;
+        border-collapse: collapse;
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--panel-border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .ui-table th{
+        background: var(--table-head);
+        color: var(--text);
+        font-weight: 700;
+        padding: 12px 12px;
+        white-space: nowrap;
+        text-align: left;   /* 🔧 FIX */
+        border-bottom: 1px solid var(--table-row-border);
+      }
+
+      .ui-table td{
+        border-bottom: 1px solid var(--table-row-border);
+        padding: 12px 12px;
+        text-align: left;   /* 🔧 FIX */
+      }
+
+      .ui-actions{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        align-items:center;
+      }
+
+      .ui-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:8px 12px;
+        border-radius:10px;
+        border:1px solid transparent;
+        text-decoration:none;
+        cursor:pointer;
+        user-select:none;
+        white-space:nowrap;
+        transition: background .15s ease, border-color .15s ease;
+        font-weight:600;
+      }
+
+      .ui-btn-primary{
+        background: var(--btn);
+        color: var(--btn-text);
+        border-color: var(--btn);
+      }
+
+      .ui-btn-primary:hover{
+        background: var(--btn-hover);
+        border-color: var(--btn-hover);
+      }
+
+      .ui-btn-secondary{
+        background: transparent;
+        color: var(--text);
+        border-color: var(--panel-border);
+      }
     </style>
 </head>
 <body>
 
 {% include "sprzet/header.html" %}
 
-{# Jeden blok content, ale różne tła w zależności od URL #}
 <div id="{% if request.resolver_match.url_name in 'login login-root' %}login-bg{% else %}main-bg{% endif %}">
     {% block content %}{% endblock %}
 </div>

@@ -8,3 +8,6 @@ media/
 .idea/
 .vscode/
 NOTATKI.md
+
+# Local backups
+*.bak
