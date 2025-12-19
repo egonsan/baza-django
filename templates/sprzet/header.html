@@ -63,7 +63,7 @@
         display: flex;
         gap: 26px;
         align-items: center;
-        margin-right: 36px;  /* dodatkowa przerwa przed blokiem użytkownika */
+        margin-right: 36px;
     }
 
     .nav-link {
@@ -79,20 +79,18 @@
         color: #ffffff;
     }
 
-    /* AKTYWNA ZAKŁADKA = biały, wyraźnie pogrubiony tekst */
     .nav-link-active {
         color: #ffffff !important;
         font-weight: 700 !important;
     }
 
-    /* Disabled */
     .nav-link-disabled {
         color: rgba(255,255,255,0.38);
         cursor: default;
         pointer-events: none;
     }
 
-    /* UŻYTKOWNIK + WYLOGUJ + TOGGLE */
+    /* UŻYTKOWNIK */
     .nav-user {
         display: flex;
         align-items: center;
@@ -126,27 +124,58 @@
         border-color: #f9fafb;
     }
 
-    /* Wrapper tylko dla odstępu przełącznika */
+    /* ===== THEME TOGGLE ===== */
+
     .theme-toggle-wrap {
-        margin-left: 18px; /* WYRAŹNY ODSTĘP od Wyloguj */
+        margin-left: 18px;
         display: inline-flex;
         align-items: center;
     }
 
-    /* Sam przełącznik (kółko pół na pół) – zakładam, że masz już JS, który go obsługuje */
     .theme-toggle {
-        width: 18px;
-        height: 18px;
-        border-radius: 999px;
-        border: 1px solid rgba(248,250,252,0.55);
-        background: linear-gradient(90deg, rgba(248,250,252,0.85) 50%, #0e1b2f 50%);
+        background: none;
+        border: none;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        display: inline-block;
+        line-height: 0;
     }
 
-    .theme-toggle:hover {
-        border-color: rgba(248,250,252,0.80);
+    /* Lokalna paleta tylko dla ikon */
+    :root{
+        --toggle-sun: rgba(220,225,235,0.95);   /* JAŚNIEJSZE słońce */
+        --toggle-moon: var(--muted);             /* księżyc bez zmian */
     }
+
+    .theme-toggle svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        opacity: 0.95;
+        transition: opacity 0.15s ease;
+    }
+
+    .theme-toggle:hover svg {
+        opacity: 1;
+    }
+
+    /* Słońce */
+    .theme-toggle .icon-sun {
+        stroke: var(--toggle-sun);
+    }
+
+    /* Księżyc */
+    .theme-toggle .icon-moon {
+        display: none;
+        fill: var(--toggle-moon);
+        stroke: none;
+    }
+
+    html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 
 </style>
 
@@ -162,27 +191,22 @@
             {% with current_url=request.resolver_match.url_name %}
 
             <nav class="nav-links">
-                {# OPROGRAMOWANIE #}
                 <a href="{% url 'educational_software:software_list' %}"
                    class="nav-link {% if current_url == 'software_list' or current_url == 'software_detail' or current_url == 'laboratory_detail' %}nav-link-active{% endif %}">
                     Oprogramowanie
                 </a>
 
-                {# RESZTA ZAKŁADEK: dla zalogowanych (nie-gość) #}
                 {% if user.is_authenticated and not request.session.guest %}
-                    {# POMIESZCZENIA / SALE #}
                     <a href="{% url 'equipment:rooms_dashboard' %}"
                        class="nav-link {% if current_url == 'rooms_dashboard' or current_url == 'rooms_category_detail' or current_url == 'room_equipment_list' %}nav-link-active{% endif %}">
                         Pomieszczenia / Sale
                     </a>
 
-                    {# PRACOWNIK #}
                     <a href="{% url 'equipment:workers_list' %}"
                        class="nav-link {% if current_url == 'workers_list' or current_url == 'worker_detail' %}nav-link-active{% endif %}">
                         Pracownik
                     </a>
 
-                    {# MAGAZYN #}
                     <a href="{% url 'equipment:equipment_list' %}"
                        class="nav-link {% if current_url == 'equipment_list' or current_url == 'equipment_detail' or current_url == 'equipment_edit' %}nav-link-active{% endif %}">
                         Magazyn
@@ -209,14 +233,31 @@
                         Wyloguj
                     </a>
 
-                    <!-- TOGGLE MUSI BYĆ ZA WYLOGUJ + ODSTĘP -->
                     <span class="theme-toggle-wrap">
-                        <span class="theme-toggle" id="themeToggle" title="Zmień motyw" aria-label="Zmień motyw"></span>
+                        <button class="theme-toggle" id="themeToggle" title="Zmień motyw" type="button">
+                            <!-- SUN -->
+                            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+
+                            <!-- MOON -->
+                            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3
+                                         7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </button>
                     </span>
                 {% endif %}
             </div>
 
         </div>
-
     </div>
 </header>
