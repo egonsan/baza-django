@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from .decorators import login_required_no_next
 from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render
@@ -11,7 +11,7 @@ from .models import Equipment, ROOM_CATEGORY_CHOICES
 # /baza/pomieszczenia/
 # ============================================
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def rooms_dashboard(request):
     """
     Widok POZIOM 1:
@@ -64,7 +64,7 @@ def rooms_dashboard(request):
 # /baza/pomieszczenia/<category_code>/
 # ============================================
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def rooms_category_detail(request, category_code):
     """
     Widok POZIOM 2:
@@ -112,7 +112,7 @@ def rooms_category_detail(request, category_code):
 # /baza/pomieszczenia/<category_code>/<building>/<room>/
 # ============================================
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def room_equipment_list(request, category_code, building, room):
     """
     Widok POZIOM 3:

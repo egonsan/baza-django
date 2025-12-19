@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.contrib.auth.decorators import login_required
+from .decorators import login_required_no_next
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
@@ -20,7 +20,7 @@ from .models import Equipment, EquipmentAttachment
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/baza/"), name="dispatch")
+@method_decorator(login_required_no_next(login_url="/baza/"), name="dispatch")
 class EquipmentListView(ListView):
     """
     Lista sprzętu w MAGAZYNIE – /baza/magazyn/
@@ -59,7 +59,7 @@ class EquipmentListView(ListView):
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/baza/"), name="dispatch")
+@method_decorator(login_required_no_next(login_url="/baza/"), name="dispatch")
 class EquipmentDetailView(DetailView):
     """
     Szczegóły sprzętu /baza/magazyn/<pk>/
@@ -84,7 +84,7 @@ class EquipmentDetailView(DetailView):
 # ============================================================
 
 
-@method_decorator(login_required(login_url="/baza/"), name="dispatch")
+@method_decorator(login_required_no_next(login_url="/baza/"), name="dispatch")
 class EquipmentUpdateView(UpdateView):
     """
     Edycja sprzętu /baza/magazyn/<pk>/edit/
@@ -295,7 +295,7 @@ def admin_equipment_import_view(request):
     )
 
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def equipment_import_view(request):
     """
     STARSZA wersja importu (nie używana przez admin change_list).
@@ -384,7 +384,7 @@ def admin_equipment_export_view(request):
 # ============================================================
 
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def attachment_upload_view(request, pk):
     """
     Upload pojedynczego załącznika do sprzętu.
@@ -413,7 +413,7 @@ def attachment_upload_view(request, pk):
 # ============================================================
 
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def attachment_delete_view(request, attachment_id):
     """
     Usuwanie pojedynczego załącznika.

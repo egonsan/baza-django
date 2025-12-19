@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from .decorators import login_required_no_next
 from django.shortcuts import render
 from .models import Equipment
 
@@ -22,7 +22,7 @@ def _normalize_worker_name(name: str) -> str:
     return " ".join(parts)
 
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def workers_list_view(request):
     """
     Lista unikalnych pracowników:
@@ -70,7 +70,7 @@ def workers_list_view(request):
     return render(request, "equipment/workers_list.html", context)
 
 
-@login_required(login_url="/baza/")
+@login_required_no_next(login_url="/baza/")
 def worker_detail_view(request, worker_name):
     """
     Lista kart sprzętu przypisanych do pracownika.
