@@ -1,98 +1,55 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  /* C3 / Pracownicy – Krok 5 (worker_detail)
-     Przechodzimy na UI-kit z base.html.
-  */
+<div class="ui-panel panel">
 
-  .page-header{
-    display:flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
-  .page-title{
-    margin: 0;
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--text);
-  }
-
-  .subtitle{
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 0.92rem;
-    line-height: 1.35;
-  }
-
-  .empty{
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .mono{
-    font-weight: 800;
-    white-space: nowrap;
-  }
-
-  .actions-top{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-  }
-</style>
-
-<div class="ui-panel">
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Pracownik: {{ worker_name }}</h1>
-      <p class="subtitle">Lista kart sprzętu przypisanych do tego pracownika.</p>
+  <div class="panel-header">
+    <div class="panel-title-box">
+      <h1 class="panel-title">Sprzęt przypisany do pracownika</h1>
+      <p class="panel-subtitle">
+        {{ worker_name }}
+      </p>
     </div>
 
-    <div class="actions-top">
-      <a href="{% url 'equipment:workers_list' %}" class="ui-btn ui-btn-secondary">
-        ← Wróć do listy
-      </a>
-    </div>
+    <a href="{% url 'equipment:workers_list' %}" class="ui-btn ui-btn-secondary">
+      ← Wróć do listy pracowników
+    </a>
   </div>
 
-  {% if items %}
+  {% if equipments %}
     <table class="ui-table">
       <thead>
         <tr>
           <th>Nr inwentarzowy</th>
-          <th>Nazwa sprzętu</th>
-          <th>Budynek</th>
-          <th>Pokój</th>
+          <th>Nazwa</th>
           <th>Status</th>
-          <th>Akcja</th>
+          <th>Budynek</th>
+          <th>Pomieszczenie</th>
+          <th>Akcje</th>
         </tr>
       </thead>
       <tbody>
-        {% for eq in items %}
-        <tr>
-          <td class="mono">{{ eq.inventory_number }}</td>
-          <td>{{ eq.equipment_name }}</td>
-          <td>{{ eq.building }}</td>
-          <td>{{ eq.room }}</td>
-          <td>{{ eq.status }}</td>
-          <td>
-            <a href="{% url 'equipment:equipment_detail' pk=eq.pk %}" class="ui-btn ui-btn-primary">
-              Szczegóły sprzętu
-            </a>
-          </td>
-        </tr>
+        {% for eq in equipments %}
+          <tr>
+            <td>{{ eq.inventory_number }}</td>
+            <td>{{ eq.equipment_name }}</td>
+            <td>{{ eq.status }}</td>
+            <td>{{ eq.building }}</td>
+            <td>{{ eq.room }}</td>
+            <td class="actions-cell">
+              <a href="{% url 'equipment:equipment_detail' eq.pk %}"
+                 class="ui-btn ui-btn-primary">
+                Szczegóły
+              </a>
+            </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
   {% else %}
-    <p class="empty">Ten pracownik nie ma przypisanego żadnego sprzętu.</p>
+    <p class="empty">Brak sprzętu przypisanego do tego pracownika.</p>
   {% endif %}
+
 </div>
 
 {% endblock %}

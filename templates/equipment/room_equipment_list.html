@@ -1,66 +1,11 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  /* C3: Room equipment list – UI-kit */
-
-  .panel{ margin: 20px 0; }
-
-  .panel-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:16px;
-    margin-bottom:16px;
-    flex-wrap:wrap;
-  }
-
-  .panel-title-box{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    min-width: 0;
-  }
-
-  .panel-title{
-    margin:0;
-    font-size:1.6rem;
-    font-weight:600;
-    color:var(--text);
-  }
-
-  .panel-subtitle{
-    margin:0;
-    font-size:0.9rem;
-    color:var(--muted);
-    line-height:1.35;
-  }
-
-  .room-empty{
-    margin:0;
-    font-size:0.95rem;
-    color:var(--muted);
-  }
-
-  /* Akcje w tabeli */
-  .actions-cell{
-    white-space:nowrap;
-    text-align:right;
-  }
-
-  /* Wyrównania w tabeli */
-  .ui-table th, .ui-table td{ text-align:left; }
-  .ui-table th:last-child, .ui-table td:last-child{ text-align:right; }
-
-  /* Czytelny numer */
-  .equipment-number{ white-space:nowrap; font-weight:600; }
-</style>
-
-<div class="ui-panel panel">
-  <div class="panel-header">
-    <div class="panel-title-box">
-      <h1 class="panel-title">Sprzęt w sali {{ building }} / {{ room }}</h1>
-      <p class="panel-subtitle">
+<div class="ui-panel room-eq-panel">
+  <div class="room-eq-header">
+    <div class="room-eq-title-box">
+      <h1 class="room-eq-title">Sprzęt w sali {{ building }} / {{ room }}</h1>
+      <p class="room-eq-subtitle">
         Kategoria: <strong>{{ category_label }}</strong>.
         Lista wszystkich kart sprzętu przypisanych do tego pomieszczenia.
       </p>
@@ -85,11 +30,11 @@
       <tbody>
         {% for eq in equipments %}
           <tr>
-            <td class="equipment-number">{{ eq.inventory_number }}</td>
+            <td class="room-eq-number">{{ eq.inventory_number }}</td>
             <td>{{ eq.equipment_name }}</td>
             <td>{{ eq.user_full_name }}</td>
             <td>{{ eq.status }}</td>
-            <td class="actions-cell">
+            <td class="room-eq-actions">
               <a href="{% url 'equipment:equipment_detail' eq.pk %}" class="ui-btn ui-btn-secondary">
                 Szczegóły
               </a>
@@ -102,7 +47,7 @@
       </tbody>
     </table>
   {% else %}
-    <p class="room-empty">Brak kart sprzętu przypisanych do tego pomieszczenia.</p>
+    <p class="room-eq-empty">Brak kart sprzętu przypisanych do tego pomieszczenia.</p>
   {% endif %}
 </div>
 

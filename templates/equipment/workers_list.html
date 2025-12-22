@@ -1,50 +1,14 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  /* C3 / Pracownicy – Krok 4
-     Widok oparty na UI-kit z base.html.
-     Zostawiamy tylko nagłówek + drobne dopasowania.
-  */
+<div class="ui-panel panel">
 
-  .page-header{
-    display:flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
-  .page-title{
-    margin: 0;
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--text);
-  }
-
-  .subtitle{
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 0.92rem;
-    line-height: 1.35;
-  }
-
-  .worker-name{
-    font-weight: 700;
-  }
-
-  .empty{
-    margin: 0;
-    color: var(--muted);
-  }
-</style>
-
-<div class="ui-panel">
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Pracownicy</h1>
-      <p class="subtitle">Lista unikalnych pracowników i liczba przypisanych kart sprzętu.</p>
+  <div class="panel-header">
+    <div class="panel-title-box">
+      <h1 class="panel-title">Pracownicy</h1>
+      <p class="panel-subtitle">
+        Lista pracowników, którym przypisany jest sprzęt.
+      </p>
     </div>
   </div>
 
@@ -54,27 +18,28 @@
         <tr>
           <th>Pracownik</th>
           <th>Liczba kart sprzętu</th>
-          <th>Akcja</th>
+          <th>Akcje</th>
         </tr>
       </thead>
       <tbody>
         {% for w in workers %}
-        <tr>
-          <td class="worker-name">{{ w.display_name }}</td>
-          <td>{{ w.item_count }}</td>
-          <td>
-            <a href="{% url 'equipment:worker_detail' worker_name=w.key %}"
-               class="ui-btn ui-btn-primary">
-              Szczegóły
-            </a>
-          </td>
-        </tr>
+          <tr>
+            <td>{{ w.user_full_name }}</td>
+            <td>{{ w.equipment_count }}</td>
+            <td class="actions-cell">
+              <a href="{% url 'equipment:worker_detail' w.user_full_name %}"
+                 class="ui-btn ui-btn-primary">
+                Zobacz sprzęt
+              </a>
+            </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
   {% else %}
-    <p class="empty">Brak pracowników w bazie.</p>
+    <p class="empty">Brak danych o pracownikach.</p>
   {% endif %}
+
 </div>
 
 {% endblock %}

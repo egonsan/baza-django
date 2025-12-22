@@ -1,169 +1,32 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  /* =========================================================
-     THEME TOKENS (tylko dla tej strony)
-     - Light: wartości domyślne w :root
-     - Dark: nadpisania w html[data-theme="dark"]
-     ========================================================= */
-
-  :root{
-    --panel-bg: var(--panel);
-    --panel-border-local: var(--panel-border);
-    --panel-shadow-local: var(--panel-shadow);
-
-    --text-main: var(--text);
-    --text-muted: var(--muted);
-
-    --field-bg: var(--input-bg);
-    --field-border: var(--input-border);
-    --field-text: var(--text);
-
-    --btn-primary-bg: var(--btn);
-    --btn-primary-text: var(--btn-text);
-    --btn-primary-hover: var(--btn-hover);
-
-    --btn-secondary-bg: transparent;
-    --btn-secondary-text: var(--text);
-    --btn-secondary-border: var(--panel-border);
-  }
-
-  .panel{
-    border-radius: 12px;
-    padding: 22px 24px;
-    margin: 20px 0 40px;
-    background: var(--panel-bg) !important;
-    border: 1px solid var(--panel-border-local) !important;
-    box-shadow: var(--panel-shadow-local) !important;
-  }
-
-  .panel-header{
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-
-  .panel-title{
-    margin: 0;
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--text-main);
-  }
-
-  .panel-subtitle{
-    margin: 2px 0 0;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-  }
-
-  /* Django form.as_p */
-  form p{
-    margin: 0 0 12px;
-  }
-
-  label{
-    display:block;
-    margin-bottom: 4px;
-    font-size: 0.86rem;
-    font-weight: 600;
-    color: var(--text-main);
-  }
-
-  input, textarea, select{
-    width: 100%;
-    box-sizing: border-box;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--field-border);
-    background: var(--field-bg);
-    color: var(--field-text);
-    font-size: 0.95rem;
-    outline: none;
-  }
-
-  textarea{
-    min-height: 90px;
-    resize: vertical;
-  }
-
-  .helptext{
-    display:block;
-    margin-top: 4px;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-
-  .btn-row{
-    margin-top: 16px;
-    display:flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding: 9px 14px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration:none;
-    cursor:pointer;
-    user-select:none;
-    transition: background .15s ease, border-color .15s ease, transform .04s ease, box-shadow .15s ease;
-  }
-
-  .btn:hover{
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary{
-    background: var(--btn-primary-bg);
-    color: var(--btn-primary-text);
-    border-color: var(--btn-primary-bg);
-  }
-  .btn-primary:hover{
-    background: var(--btn-primary-hover);
-    border-color: var(--btn-primary-hover);
-  }
-
-  .btn-secondary{
-    background: var(--btn-secondary-bg);
-    color: var(--btn-secondary-text);
-    border-color: var(--btn-secondary-border);
-  }
-
-  /* ograniczenie szerokości dla komfortu */
-  .panel-inner{
-    max-width: 980px;
-  }
-</style>
-
-<div class="panel">
-  <div class="panel-inner">
-    <div class="panel-header">
-      <div>
-        <h1 class="panel-title">Edytuj kartę – {{ equipment.inventory_number }}</h1>
-        <p class="panel-subtitle">Zmiany zapiszą się po kliknięciu „Zapisz zmiany”.</p>
-      </div>
-    </div>
-
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-
-      <div class="btn-row">
-        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-        <a href="{% url 'equipment:equipment_detail' equipment.pk %}" class="btn btn-secondary">Anuluj</a>
-      </div>
-    </form>
+<div class="ui-panel panel">
+  <div class="panel-header">
+    <h1 class="panel-title">
+      Edytuj kartę – {{ equipment.inventory_number }}
+    </h1>
+    <p class="panel-subtitle">
+      Zmiany zapiszą się po kliknięciu „Zapisz zmiany”.
+    </p>
   </div>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <div class="ui-actions" style="margin-top:16px;">
+      <button type="submit" class="ui-btn ui-btn-primary">
+        Zapisz zmiany
+      </button>
+
+      <a href="{% url 'equipment:equipment_detail' equipment.pk %}"
+         class="ui-btn ui-btn-secondary">
+        Anuluj
+      </a>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

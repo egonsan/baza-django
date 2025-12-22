@@ -1,72 +1,17 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  /* C3: Rooms category detail – UI-kit */
-
-  .panel{ margin: 20px 0; }
-
-  .panel-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:16px;
-    margin-bottom:16px;
-    flex-wrap:wrap;
-  }
-
-  .panel-title-box{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    min-width: 0;
-  }
-
-  .panel-title{
-    margin:0;
-    font-size:1.6rem;
-    font-weight:600;
-    color:var(--text);
-  }
-
-  .panel-subtitle{
-    margin:0;
-    font-size:0.9rem;
-    color:var(--muted);
-    line-height:1.35;
-  }
-
-  .rooms-empty{
-    margin:0;
-    font-size:0.95rem;
-    color:var(--muted);
-  }
-
-  /* Akcje w tabeli */
-  .actions-cell{
-    white-space:nowrap;
-    text-align:right;
-  }
-
-  /* Wyrównania w tabeli */
-  .ui-table th, .ui-table td{ text-align:left; }
-  .ui-table th:last-child, .ui-table td:last-child{ text-align:right; }
-
-  /* Link w przycisku (spójny wygląd) */
-  .ui-btn{ font-size:0.9rem; }
-</style>
-
-<div class="ui-panel panel">
-  <div class="panel-header">
-    <div class="panel-title-box">
-      <h1 class="panel-title">Pomieszczenia – {{ category_label }}</h1>
-      <p class="panel-subtitle">
+<div class="ui-panel rooms-cat-panel">
+  <div class="rooms-cat-header">
+    <div class="rooms-cat-titlebox">
+      <h1 class="rooms-cat-title">Pomieszczenia – {{ category_label }}</h1>
+      <p class="rooms-cat-subtitle">
         Lista pomieszczeń (budynek + numer sali) dla wybranej kategorii.
         Dla każdej sali pokazana jest liczba kart sprzętu.
       </p>
     </div>
 
-    <a href="{% url 'equipment:rooms_dashboard' %}" class="ui-btn ui-btn-secondary">
+    <a href="{% url 'equipment:rooms_dashboard' %}" class="ui-btn ui-btn-secondary rooms-cat-btn">
       ← Wróć do kategorii
     </a>
   </div>
@@ -87,9 +32,9 @@
             <td>{{ r.building }}</td>
             <td>{{ r.room }}</td>
             <td>{{ r.equipment_count }}</td>
-            <td class="actions-cell">
+            <td class="rooms-cat-actions-cell">
               <a href="{% url 'equipment:room_equipment_list' category_code r.building r.room %}"
-                 class="ui-btn ui-btn-primary">
+                 class="ui-btn ui-btn-primary rooms-cat-btn">
                 Sprzęt w tej sali
               </a>
             </td>
@@ -98,7 +43,7 @@
       </tbody>
     </table>
   {% else %}
-    <p class="rooms-empty">Brak pomieszczeń w tej kategorii.</p>
+    <p class="rooms-cat-empty">Brak pomieszczeń w tej kategorii.</p>
   {% endif %}
 </div>
 

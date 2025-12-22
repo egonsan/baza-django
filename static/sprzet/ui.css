@@ -1,0 +1,432 @@
+/* =========================================================
+   WIMiO – UI CSS (C6)
+   ========================================================= */
+
+/* =========================
+   Zmienne motywu (light/dark)
+   ========================= */
+
+html[data-theme="light"]{
+  --bg: #ffffff;
+  --text: #111827;
+  --muted: #5b6473;
+
+  --panel: #ffffff;
+  --panel-border: #e6e8ee;
+  --panel-shadow: 0 2px 10px rgba(0,0,0,0.07);
+
+  --table-head: #f1f3f7;
+  --table-row-border: #e3e6ec;
+
+  --btn: #193b6b;
+  --btn-text: #ffffff;
+  --btn-hover: #102947;
+
+  --input-bg: #fbfcfe;
+  --input-border: #d7dbe4;
+
+  --link: #193b6b;
+  --danger: #ef4444;
+  --success: #16a34a;
+}
+
+html[data-theme="dark"]{
+  --bg: #0b0f16;
+  --text: #e6e9ef;
+  --muted: #a9b2c2;
+
+  --panel: #111827;
+  --panel-border: rgba(255,255,255,0.16);
+  --panel-shadow: 0 2px 16px rgba(0,0,0,0.55);
+
+  /* delikatnie jaśniejsze, żeby linie w tabelach były widoczne */
+  --table-head: #162036;
+  --table-row-border: rgba(255,255,255,0.18);
+
+  --btn: #2f6ad8;
+  --btn-text: #ffffff;
+  --btn-hover: #2456b3;
+
+  --input-bg: #0f172a;
+  --input-border: rgba(255,255,255,0.25);
+
+  --link: #8fb4ff;
+  --danger: #fb7185;
+  --success: #22c55e;
+}
+
+/* =========================
+   Podstawy
+   ========================= */
+
+html, body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:'Segoe UI', Arial, sans-serif;
+}
+
+/* =========================
+   Tła
+   ========================= */
+
+#main-bg{
+  min-height:100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding-top:16px;
+}
+
+/* TŁO DLA STRONY LOGINU */
+#login-bg{
+  min-height:100vh;
+  background: url("/static/sprzet/wallpaper.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+}
+
+/* =========================
+   Elementy bazowe
+   ========================= */
+
+.panel{
+  background: var(--panel);
+  color: var(--text);
+  border:1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+}
+
+table.soft-table{
+  background: var(--panel);
+  color: var(--text);
+}
+
+table.soft-table th{
+  background: var(--table-head);
+  color: var(--text);
+  text-align:left;
+  border-bottom:1px solid var(--table-row-border);
+}
+
+table.soft-table td{
+  border-bottom:1px solid var(--table-row-border);
+  color: var(--text);
+}
+
+.muted, .empty, small{
+  color: var(--muted);
+}
+
+.btn-details{
+  background: var(--btn);
+  color: var(--btn-text);
+}
+.btn-details:hover{
+  background: var(--btn-hover);
+}
+
+input[type="text"],
+input[type="search"],
+select,
+textarea{
+  background: var(--input-bg);
+  color: var(--text);
+  border:1px solid var(--input-border);
+}
+
+/* =========================
+   UI KIT
+   ========================= */
+
+.ui-panel{
+  background: var(--panel);
+  color: var(--text);
+  border:1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+  border-radius:12px;
+  padding:22px 24px;
+}
+
+.ui-table{
+  width:100%;
+  border-collapse:collapse;
+  background: var(--panel);
+  color: var(--text);
+  border:1px solid var(--panel-border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.ui-table th{
+  background: var(--table-head);
+  color: var(--text);
+  font-weight:700;
+  padding:12px;
+  text-align:left;
+  border-bottom:1px solid var(--table-row-border);
+}
+
+.ui-table td{
+  padding:12px;
+  text-align:left;
+  border-bottom:1px solid var(--table-row-border);
+}
+
+.ui-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.ui-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid transparent;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:none;
+  user-select:none;
+  white-space:nowrap;
+}
+
+.ui-btn-primary{
+  background: var(--btn);
+  color: var(--btn-text);
+  border-color: var(--btn);
+}
+.ui-btn-primary:hover{
+  background: var(--btn-hover);
+  border-color: var(--btn-hover);
+}
+
+.ui-btn-secondary{
+  background: transparent;
+  color: var(--text);
+  border-color: var(--panel-border);
+}
+/* =========================================================
+   HEADER / TOP NAV
+   ========================================================= */
+
+.top-nav{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(
+    90deg,
+    #08101d 0%,
+    #152234 50%,
+    #233247 100%
+  );
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+}
+
+.nav-container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-left{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo-img{
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.nav-logo-title{
+  font-size: 1.10em;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.nav-right{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 24px;
+}
+
+.nav-links{
+  display: flex;
+  gap: 26px;
+  align-items: center;
+  margin-right: 36px;
+}
+
+.nav-link{
+  color: #d4dbee;
+  text-decoration: none;
+  font-size: 0.97em;
+  font-weight: 500;
+  padding: 4px 2px;
+  transition: color 0.15s ease, font-weight 0.15s ease;
+}
+
+.nav-link:hover{
+  color: #ffffff;
+}
+
+.nav-link-active{
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.nav-link-disabled{
+  color: rgba(255,255,255,0.38);
+  cursor: default;
+  pointer-events: none;
+}
+
+.nav-user{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88em;
+  color: #e5e7eb;
+  white-space: nowrap;
+}
+
+.nav-user-name{
+  opacity: 0.9;
+}
+
+.nav-user-logout{
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(248,250,252,0.6);
+  font-size: 0.82em;
+  font-weight: 500;
+  text-decoration: none;
+  color: #f9fafb;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-user-logout:hover{
+  background: #f9fafb;
+  color: #111827;
+  border-color: #f9fafb;
+}
+
+.theme-toggle-wrap{
+  margin-left: 18px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ikony słońce / księżyc */
+.theme-toggle{
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfd6e6; /* słońce – minimalnie jaśniejsze */
+}
+
+html[data-theme="dark"] .theme-toggle{
+  color: #9aa4b8; /* księżyc – ciemniejszy */
+}
+
+/* =========================================================
+   FIX: Theme toggle icons (sun/moon) – show one, not both
+   ========================================================= */
+
+.theme-toggle svg{
+  width:16px;
+  height:16px;
+  display:block;
+}
+
+/* domyślnie pokazuj słońce */
+.theme-toggle .icon-sun{ display:block; }
+.theme-toggle .icon-moon{ display:none; }
+
+/* w dark pokazuj księżyc */
+html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+
+
+/* =========================================================
+   FIX: Rooms overview (Pomieszczenia / Sale) – missing styles
+   ========================================================= */
+
+.panel{ margin:20px 0; }
+
+.panel-header{ margin-bottom:14px; }
+
+.panel-title{
+  margin:0 0 6px;
+  font-size:1.6rem;
+  font-weight:600;
+  color:var(--text);
+}
+
+.panel-subtitle{
+  margin:0;
+  font-size:0.9rem;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+.category-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:16px;
+}
+
+.category-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid var(--panel-border);
+  background: transparent;
+}
+
+.category-main{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+}
+
+.category-name{
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--text);
+}
+
+.category-meta{
+  font-size:0.9rem;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+.category-meta span{ margin-right:14px; }
+
+.empty{ margin:0; color:var(--muted); }

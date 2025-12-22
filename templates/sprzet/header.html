@@ -67,7 +67,7 @@
     }
 
     .nav-link {
-        color: #d4dbee;
+        color: #d4dbee; /* kolor niepodświetlonych kart/linków */
         text-decoration: none;
         font-size: 0.97em;
         font-weight: 500;
@@ -90,7 +90,7 @@
         pointer-events: none;
     }
 
-    /* UŻYTKOWNIK */
+    /* UŻYTKOWNIK + WYLOGUJ + TOGGLE */
     .nav-user {
         display: flex;
         align-items: center;
@@ -124,59 +124,57 @@
         border-color: #f9fafb;
     }
 
-    /* ===== THEME TOGGLE ===== */
-
     .theme-toggle-wrap {
         margin-left: 18px;
         display: inline-flex;
         align-items: center;
     }
 
-    .theme-toggle {
-        background: none;
-        border: none;
-        padding: 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        line-height: 0;
+    /* PRZEŁĄCZNIK: ikony (sun/moon) */
+.theme-toggle{
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    border: none;          /* USUNIĘCIE OTACZKI */
+    background: none;      /* USUNIĘCIE TŁA */
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+    .theme-toggle:hover{
+        border-color: rgba(248,250,252,0.80);
     }
 
-    /* Lokalna paleta tylko dla ikon */
-    :root{
-        --toggle-sun: rgba(220,225,235,0.95);   /* JAŚNIEJSZE słońce */
-        --toggle-moon: var(--muted);             /* księżyc bez zmian */
-    }
-
-    .theme-toggle svg {
-        width: 16px;
-        height: 16px;
-        fill: none;
+    /* Bazowe SVG – kluczowe, żeby nie robił się “kwadrat” */
+    .theme-toggle svg{
+        width: 14px;          /* minimalnie mniejsze od “kółka” */
+        height: 14px;
+        display: block;
+        fill: none;            /* ważne: bez wypełnienia */
+        stroke-linecap: round;
+        stroke-linejoin: round;
         stroke-width: 2;
-        opacity: 0.95;
-        transition: opacity 0.15s ease;
     }
 
-    .theme-toggle:hover svg {
-        opacity: 1;
+    /* Kolory ikon: księżyc OK, słońce minimalnie jaśniejsze */
+    .theme-toggle .icon-moon{
+        stroke: #d4dbee; /* jak niepodświetlone linki */
     }
 
-    /* Słońce */
-    .theme-toggle .icon-sun {
-        stroke: var(--toggle-sun);
+    .theme-toggle .icon-sun{
+        stroke: #e2e8f6; /* minimalnie jaśniejsze niż #d4dbee */
     }
 
-    /* Księżyc */
-    .theme-toggle .icon-moon {
-        display: none;
-        fill: var(--toggle-moon);
-        stroke: none;
-    }
+    /* Pokazuj jedną ikonę naraz w zależności od data-theme */
+    html[data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+    html[data-theme="light"] .theme-toggle .icon-moon{ display:none; }
 
-    html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
-    html[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
-
+    html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+    html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 </style>
 
 <header class="top-nav">
@@ -234,7 +232,7 @@
                     </a>
 
                     <span class="theme-toggle-wrap">
-                        <button class="theme-toggle" id="themeToggle" title="Zmień motyw" type="button">
+                        <button class="theme-toggle" id="themeToggle" title="Zmień motyw" type="button" aria-label="Zmień motyw">
                             <!-- SUN -->
                             <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
                                 <circle cx="12" cy="12" r="5"></circle>
