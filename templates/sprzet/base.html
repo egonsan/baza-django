@@ -2,36 +2,46 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="utf-8">
-    <title>WIMiO</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>WIMiO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Ustawiamy motyw PRZED renderem (bez “mignięcia”) -->
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("theme");
-          if (t === "dark" || t === "light") {
-            document.documentElement.setAttribute("data-theme", t);
-          } else {
-            document.documentElement.setAttribute("data-theme", "light");
-          }
-        } catch (e) {
+  <!-- Ustawiamy motyw PRZED renderem (bez “mignięcia”) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || t === "light") {
+          document.documentElement.setAttribute("data-theme", t);
+        } else {
           document.documentElement.setAttribute("data-theme", "light");
         }
-      })();
-    </script>
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
 
-    <!-- Globalny CSS UI -->
-    <link rel="stylesheet" href="{% static 'sprzet/ui.css' %}">
+  <!-- Globalny CSS UI -->
+  <link rel="stylesheet" href="{% static 'sprzet/ui.css' %}">
 </head>
 <body>
 
-{% include "sprzet/header.html" %}
+{% with urlname=request.resolver_match.url_name %}
+  {% if urlname == "login" or urlname == "login_root" or urlname == "login-root" %}
+    {# LOGIN: bez headera #}
+  {% else %}
+    {% include "sprzet/header.html" %}
+  {% endif %}
 
-<div id="{% if request.resolver_match.url_name in 'login login-root' %}login-bg{% else %}main-bg{% endif %}">
-    {% block content %}{% endblock %}
-</div>
+  {% if urlname == "login" or urlname == "login_root" or urlname == "login-root" %}
+    <div id="login-bg">
+  {% else %}
+    <div id="main-bg">
+  {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+{% endwith %}
 
 <script>
   (function () {

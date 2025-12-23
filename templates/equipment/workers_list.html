@@ -7,7 +7,7 @@
     <div class="panel-title-box">
       <h1 class="panel-title">Pracownicy</h1>
       <p class="panel-subtitle">
-        Lista pracowników, którym przypisany jest sprzęt.
+        Lista pracowników, którym przypisany jest sprzęt (grupowanie po nazwie).
       </p>
     </div>
   </div>
@@ -24,10 +24,10 @@
       <tbody>
         {% for w in workers %}
           <tr>
-            <td>{{ w.user_full_name }}</td>
-            <td>{{ w.equipment_count }}</td>
+            <td>{{ w.display_name }}</td>
+            <td>{{ w.item_count }}</td>
             <td class="actions-cell">
-              <a href="{% url 'equipment:worker_detail' w.user_full_name %}"
+              <a href="{% url 'equipment:worker_detail' w.key %}"
                  class="ui-btn ui-btn-primary">
                 Zobacz sprzęt
               </a>

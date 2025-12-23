@@ -83,6 +83,11 @@ html, body{
   background: url("/static/sprzet/wallpaper.jpg") no-repeat center center fixed;
   background-size: cover;
   color: #ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  box-sizing:border-box;
 }
 
 /* =========================
@@ -208,180 +213,11 @@ textarea{
   color: var(--text);
   border-color: var(--panel-border);
 }
-/* =========================================================
-   HEADER / TOP NAV
-   ========================================================= */
-
-.top-nav{
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(
-    90deg,
-    #08101d 0%,
-    #152234 50%,
-    #233247 100%
-  );
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 6px 22px rgba(0,0,0,0.45);
-}
-
-.nav-container{
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.nav-left{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.nav-logo-img{
-  width: 34px;
-  height: 34px;
-  border-radius: 6px;
-  object-fit: contain;
-}
-
-.nav-logo-title{
-  font-size: 1.10em;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.nav-right{
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 1;
-  gap: 24px;
-}
-
-.nav-links{
-  display: flex;
-  gap: 26px;
-  align-items: center;
-  margin-right: 36px;
-}
-
-.nav-link{
-  color: #d4dbee;
-  text-decoration: none;
-  font-size: 0.97em;
-  font-weight: 500;
-  padding: 4px 2px;
-  transition: color 0.15s ease, font-weight 0.15s ease;
-}
-
-.nav-link:hover{
-  color: #ffffff;
-}
-
-.nav-link-active{
-  color: #ffffff !important;
-  font-weight: 700 !important;
-}
-
-.nav-link-disabled{
-  color: rgba(255,255,255,0.38);
-  cursor: default;
-  pointer-events: none;
-}
-
-.nav-user{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.88em;
-  color: #e5e7eb;
-  white-space: nowrap;
-}
-
-.nav-user-name{
-  opacity: 0.9;
-}
-
-.nav-user-logout{
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(248,250,252,0.6);
-  font-size: 0.82em;
-  font-weight: 500;
-  text-decoration: none;
-  color: #f9fafb;
-  background: transparent;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.nav-user-logout:hover{
-  background: #f9fafb;
-  color: #111827;
-  border-color: #f9fafb;
-}
-
-.theme-toggle-wrap{
-  margin-left: 18px;
-  display: inline-flex;
-  align-items: center;
-}
-
-/* ikony słońce / księżyc */
-.theme-toggle{
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #cfd6e6; /* słońce – minimalnie jaśniejsze */
-}
-
-html[data-theme="dark"] .theme-toggle{
-  color: #9aa4b8; /* księżyc – ciemniejszy */
-}
-
-/* =========================================================
-   FIX: Theme toggle icons (sun/moon) – show one, not both
-   ========================================================= */
-
-.theme-toggle svg{
-  width:16px;
-  height:16px;
-  display:block;
-}
-
-/* domyślnie pokazuj słońce */
-.theme-toggle .icon-sun{ display:block; }
-.theme-toggle .icon-moon{ display:none; }
-
-/* w dark pokazuj księżyc */
-html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
-html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
-
 
 /* =========================================================
    FIX: Rooms overview (Pomieszczenia / Sale) – missing styles
    ========================================================= */
 
-.panel{ margin:20px 0; }
-
-.panel-header{ margin-bottom:14px; }
-
-.panel-title{
-  margin:0 0 6px;
-  font-size:1.6rem;
-  font-weight:600;
-  color:var(--text);
-}
 
 .panel-subtitle{
   margin:0;
@@ -430,3 +266,683 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .category-meta span{ margin-right:14px; }
 
 .empty{ margin:0; color:var(--muted); }
+/* =========================================================
+   C7 / LOGIN – styles moved from login.html (scoped, safe)
+   ========================================================= */
+
+/* Kontener tylko dla loginu – nie dotyka innych stron */
+.ui-login-page{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+/* Okno logowania */
+.ui-login-card{
+  width: 100%;
+  max-width: 380px;
+  padding: 28px 32px 38px 32px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.65);
+  color: #fff;
+  text-align: center;
+  animation: uiLoginFadeIn 0.5s ease-out;
+}
+
+@keyframes uiLoginFadeIn{
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.ui-login-logo{
+  max-width: 210px;
+  margin: 0 auto 18px auto;
+  display: block;
+}
+
+.ui-login-label{
+  text-align: left;
+  display: block;
+  margin: 12px 0 4px 3px;
+  color: #dbeafe;
+  font-size: 0.92em;
+  font-weight: 500;
+}
+
+.ui-login-input{
+  width: 96%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 1em;
+  outline: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.ui-login-input:focus{
+  background: rgba(255,255,255,0.32);
+  border-color: #60a5fa;
+}
+
+.ui-login-btn{
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.05em;
+  font-weight: 600;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ui-login-btn-primary{
+  background: #3b82f6;
+}
+.ui-login-btn-primary:hover{
+  background: #1e3a8a;
+}
+
+.ui-login-btn-guest{
+  background: rgba(255,255,255,0.24);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: #e2e8f0;
+  font-size: 1.02em;
+  margin-top: 10px;
+}
+.ui-login-btn-guest:hover{
+  background: rgba(255,255,255,0.34);
+}
+
+.ui-login-message-error{
+  color: #ffdddd;
+  background: rgba(255,60,60,0.25);
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   C7 / LOGIN – layout (bez wpływu na inne widoki)
+   ========================================================= */
+
+/* tło jest już ustawiane w login.html przez #main-bg -> wallpaper w base/login,
+   więc NIE ruszamy #main-bg ani #login-bg tutaj. */
+
+
+/* HEADER z mocniejszym gradientem poziomym LEFT → RIGHT */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: linear-gradient(
+    90deg,
+    #08101d 0%,
+    #152234 50%,
+    #233247 100%
+  );
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* LEWA STRONA – logo + tytuł */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.nav-logo-title {
+  font-size: 1.10em;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* PRAWY BLOK – linki + użytkownik */
+.nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 24px;
+}
+
+/* LINKI */
+.nav-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+  margin-right: 36px;
+}
+
+.nav-link {
+  color: #d4dbee; /* kolor niepodświetlonych kart/linków */
+  text-decoration: none;
+  font-size: 0.97em;
+  font-weight: 500;
+  padding: 4px 2px;
+  transition: color 0.15s ease, font-weight 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link-active {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.nav-link-disabled {
+  color: rgba(255,255,255,0.38);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* UŻYTKOWNIK + WYLOGUJ + TOGGLE */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88em;
+  color: #e5e7eb;
+  white-space: nowrap;
+}
+
+.nav-user-name {
+  opacity: 0.9;
+}
+
+.nav-user-logout {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(248,250,252,0.6);
+  font-size: 0.82em;
+  font-weight: 500;
+  text-decoration: none;
+  color: #f9fafb;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-user-logout:hover {
+  background: #f9fafb;
+  color: #111827;
+  border-color: #f9fafb;
+}
+
+.theme-toggle-wrap {
+  margin-left: 18px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* PRZEŁĄCZNIK: ikony (sun/moon) */
+.theme-toggle{
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin: 0;
+  border: none;          /* USUNIĘCIE OTACZKI */
+  background: none;      /* USUNIĘCIE TŁA */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.theme-toggle:hover{
+  border-color: rgba(248,250,252,0.80);
+}
+
+/* Bazowe SVG – kluczowe, żeby nie robił się “kwadrat” */
+.theme-toggle svg{
+  width: 14px;          /* minimalnie mniejsze od “kółka” */
+  height: 14px;
+  display: block;
+  fill: none;            /* ważne: bez wypełnienia */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* Kolory ikon: księżyc OK, słońce minimalnie jaśniejsze */
+.theme-toggle .icon-moon{
+  stroke: #d4dbee; /* jak niepodświetlone linki */
+}
+
+.theme-toggle .icon-sun{
+  stroke: #e2e8f6; /* minimalnie jaśniejsze niż #d4dbee */
+}
+
+/* Pokazuj jedną ikonę naraz w zależności od data-theme */
+html[data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+html[data-theme="light"] .theme-toggle .icon-moon{ display:none; }
+
+html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+
+
+
+/* =========================================================
+   C7: Equipment detail (scoped) – przeniesione z template
+   ========================================================= */
+.eq-detail .panel{
+  background: var(--panel);
+  border-radius:12px;
+  padding:25px 30px;
+  box-shadow: var(--panel-shadow);
+  margin-bottom:40px;
+  border:1px solid var(--panel-border);
+  color: var(--text);
+}
+
+.eq-detail .panel-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+.eq-detail .panel h1{
+  margin:0;
+  font-size:1.6rem;
+  font-weight:700;
+  color: var(--text);
+}
+
+.eq-detail .subtitle{
+  margin:6px 0 0;
+  color: var(--muted);
+  font-size:0.92rem;
+  line-height:1.35;
+}
+
+.eq-detail .actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.eq-detail .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-size:0.9rem;
+  font-weight:700;
+  border:1px solid transparent;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .2s, border-color .2s, color .2s, box-shadow .2s, transform .04s;
+}
+
+.eq-detail .btn:hover{
+  box-shadow:0 8px 18px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+}
+
+.eq-detail .btn-primary{
+  background: var(--btn);
+  border-color: var(--btn);
+  color: var(--btn-text);
+}
+.eq-detail .btn-primary:hover{
+  background: var(--btn-hover);
+  border-color: var(--btn-hover);
+}
+
+.eq-detail .btn-secondary{
+  background: var(--panel);
+  border-color: var(--panel-border);
+  color: var(--text);
+}
+
+.eq-detail .btn-danger{
+  background: transparent;
+  border: 1px solid rgba(239,68,68,0.35);
+  color: var(--danger);
+}
+
+.eq-detail .btn-xs{
+  padding:4px 8px;
+  font-size:0.82rem;
+  border-radius:8px;
+  font-weight:700;
+}
+
+.eq-detail .grid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:16px;
+}
+@media (min-width: 980px){
+  .eq-detail .grid{
+    grid-template-columns: 1.35fr 0.65fr;
+    align-items:start;
+  }
+}
+
+.eq-detail table.detail-table{
+  width:100%;
+  border-collapse:collapse;
+  background: var(--panel);
+
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid var(--panel-border);
+}
+
+.eq-detail table.detail-table th,
+.eq-detail table.detail-table td{
+  padding:12px 12px;
+  border-bottom:1px solid var(--table-row-border);
+  vertical-align:top;
+  font-size:0.95rem;
+  color: var(--text);
+}
+
+.eq-detail table.detail-table th{
+  width:240px;
+  background: var(--table-head);
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.eq-detail .muted{ color: var(--muted); }
+
+.eq-detail .chip{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background: var(--table-head);
+  color: var(--text);
+  border:1px solid var(--panel-border);
+  font-size:0.85rem;
+  font-weight:800;
+}
+
+.eq-detail .badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:0.85rem;
+  font-weight:800;
+  border:1px solid transparent;
+  white-space:nowrap;
+}
+.eq-detail .badge-ok{
+  color: var(--success);
+  border-color: rgba(34,197,94,0.35);
+  background: rgba(34,197,94,0.10);
+}
+.eq-detail .badge-bad{
+  color: var(--danger);
+  border-color: rgba(239,68,68,0.35);
+  background: rgba(239,68,68,0.10);
+}
+
+.eq-detail .card{
+  background: var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:12px;
+  padding:16px 16px;
+}
+
+.eq-detail .card h2{
+  margin:0 0 10px;
+  font-size:1.05rem;
+  color: var(--text);
+  font-weight:800;
+}
+
+.eq-detail .photo{
+  border:1px solid var(--panel-border);
+  border-radius:12px;
+  background: var(--panel);
+  padding:10px;
+  text-align:center;
+  overflow:hidden;
+  margin-bottom:12px;
+}
+
+.eq-detail .photo img{
+  max-width:100%;
+  max-height:260px;
+  border-radius:10px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+  background:transparent;
+}
+
+.eq-detail .photo-placeholder{
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: var(--muted);
+  font-size:0.92rem;
+  border-radius:10px;
+  border:1px dashed var(--panel-border);
+}
+
+.eq-detail .attachments{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.eq-detail .att-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--panel-border);
+  background: var(--panel);
+}
+
+.eq-detail .att-left{ min-width: 0; }
+
+.eq-detail .att-name{
+  font-weight:900;
+  color: var(--text);
+  word-break:break-word;
+}
+
+.eq-detail .att-name a{
+  color: var(--link);
+  text-decoration:none;
+  font-weight:900;
+}
+.eq-detail .att-name a:hover{ text-decoration:underline; }
+
+.eq-detail .att-meta{
+  margin-top:4px;
+  color: var(--muted);
+  font-size:0.85rem;
+}
+
+.eq-detail .att-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+  flex-shrink: 0;
+}
+
+.eq-detail .form-grid{
+  display:grid;
+  gap:10px;
+}
+
+.eq-detail .field label{
+  display:block;
+  font-weight:800;
+  color: var(--text);
+  margin-bottom:6px;
+  font-size:0.9rem;
+}
+
+.eq-detail .field input[type="text"],
+.eq-detail .field input[type="file"]{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+  outline:none;
+}
+
+.eq-detail .field input::placeholder{ color: var(--muted); }
+
+.eq-detail .note{
+  margin-top:10px;
+  color: var(--muted);
+  font-size:0.88rem;
+  line-height:1.35;
+}
+
+/* =========================================================
+   C7: Worker detail (sprzęt pracownika)
+   ========================================================= */
+
+.ui-worker-panel{ margin: 20px 0; }
+
+.ui-worker-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+
+.ui-worker-title-box{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+}
+
+.ui-worker-title{
+  margin:0;
+  font-size:1.6rem;
+  font-weight:600;
+  color:var(--text);
+}
+
+.ui-worker-subtitle{
+  margin:0;
+  font-size:0.9rem;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+.ui-actions-cell{
+  white-space:nowrap;
+  text-align:right;
+}
+
+.ui-table th, .ui-table td{ text-align:left; }
+.ui-table th:last-child, .ui-table td:last-child{ text-align:right; }
+
+.ui-equipment-number{
+  white-space:nowrap;
+  font-weight:600;
+}
+
+
+/* =========================================================
+   C7: Equipment edit – RÓWNY FORMULARZ (NO CHAOS)
+   ========================================================= */
+
+.eq-form{
+  max-width: 900px;
+}
+
+.eq-form p{
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.eq-form label{
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.eq-form input,
+.eq-form select,
+.eq-form textarea{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+.eq-form textarea{
+  min-height: 120px;
+  resize: vertical;
+}
+
+.eq-form .helptext{
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.eq-form input:focus,
+.eq-form select:focus,
+.eq-form textarea:focus{
+  border-color: var(--btn);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+  outline: none;
+}

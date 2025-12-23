@@ -1,449 +1,153 @@
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<style>
-  .panel{
-    background: var(--panel);
-    border-radius:12px;
-    padding:25px 30px;
-    box-shadow: var(--panel-shadow);
-    margin-bottom:40px;
-    border:1px solid var(--panel-border);
-    color: var(--text);
-  }
+<div class="eq-detail">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h1>Szczegóły sprzętu</h1>
+        <p class="subtitle">
+          Nr inwentarzowy: <span class="chip">{{ equipment.inventory_number|default:"—" }}</span>
+        </p>
+      </div>
 
-  .panel-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:16px;
-    margin-bottom:18px;
-    flex-wrap:wrap;
-  }
-
-  .panel h1{
-    margin:0;
-    font-size:1.6rem;
-    font-weight:700;
-    color: var(--text);
-  }
-
-  .subtitle{
-    margin:6px 0 0;
-    color: var(--muted);
-    font-size:0.92rem;
-    line-height:1.35;
-  }
-
-  .actions{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-  }
-
-  .btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px 12px;
-    border-radius:8px;
-    text-decoration:none;
-    font-size:0.9rem;
-    font-weight:700;
-    border:1px solid transparent;
-    cursor:pointer;
-    white-space:nowrap;
-    transition:background .2s, border-color .2s, color .2s, box-shadow .2s, transform .04s;
-  }
-
-  .btn:hover{
-    box-shadow:0 8px 18px rgba(0,0,0,0.10);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary{
-    background: var(--btn);
-    border-color: var(--btn);
-    color: var(--btn-text);
-  }
-  .btn-primary:hover{
-    background: var(--btn-hover);
-    border-color: var(--btn-hover);
-  }
-
-  .btn-secondary{
-    background: var(--panel);
-    border-color: var(--panel-border);
-    color: var(--text);
-  }
-
-  .btn-danger{
-    background: transparent;
-    border: 1px solid rgba(239,68,68,0.35);
-    color: var(--danger);
-  }
-
-  .btn-xs{
-    padding:4px 8px;
-    font-size:0.82rem;
-    border-radius:8px;
-    font-weight:700;
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:16px;
-  }
-  @media (min-width: 980px){
-    .grid{
-      grid-template-columns: 1.35fr 0.65fr;
-      align-items:start;
-    }
-  }
-
-  table.detail-table{
-    width:100%;
-    border-collapse:collapse;
-    background: var(--panel);
-    border-radius:12px;
-    overflow:hidden;
-    border:1px solid var(--panel-border);
-  }
-
-  table.detail-table th,
-  table.detail-table td{
-    padding:12px 12px;
-    border-bottom:1px solid var(--table-row-border);
-    vertical-align:top;
-    font-size:0.95rem;
-    color: var(--text);
-  }
-
-  table.detail-table th{
-    width:240px;
-    background: var(--table-head);
-    font-weight:800;
-    white-space:nowrap;
-  }
-
-  .muted{
-    color: var(--muted);
-  }
-
-  .chip{
-    display:inline-block;
-    padding:4px 10px;
-    border-radius:999px;
-    background: var(--table-head);
-    color: var(--text);
-    border:1px solid var(--panel-border);
-    font-size:0.85rem;
-    font-weight:800;
-  }
-
-  /* Badge gwarancji */
-  .badge{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:4px 10px;
-    border-radius:999px;
-    font-size:0.85rem;
-    font-weight:800;
-    border:1px solid transparent;
-    white-space:nowrap;
-  }
-  .badge-ok{
-    color: var(--success);
-    border-color: rgba(34,197,94,0.35);
-    background: rgba(34,197,94,0.10);
-  }
-  .badge-bad{
-    color: var(--danger);
-    border-color: rgba(239,68,68,0.35);
-    background: rgba(239,68,68,0.10);
-  }
-
-  .card{
-    background: var(--panel);
-    border:1px solid var(--panel-border);
-    border-radius:12px;
-    padding:16px 16px;
-  }
-
-  .card h2{
-    margin:0 0 10px;
-    font-size:1.05rem;
-    color: var(--text);
-    font-weight:800;
-  }
-
-  .photo{
-    border:1px solid var(--panel-border);
-    border-radius:12px;
-    background: var(--panel);
-    padding:10px;
-    text-align:center;
-    overflow:hidden;
-    margin-bottom:12px;
-  }
-
-  .photo img{
-    max-width:100%;
-    max-height:260px;
-    border-radius:10px;
-    object-fit:contain;
-    display:block;
-    margin:0 auto;
-    background:transparent;
-  }
-
-  .photo-placeholder{
-    height:220px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color: var(--muted);
-    font-size:0.92rem;
-    border-radius:10px;
-    border:1px dashed var(--panel-border);
-  }
-
-  .attachments{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-
-  .att-item{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:10px 12px;
-    border-radius:12px;
-    border:1px solid var(--panel-border);
-    background: var(--panel);
-  }
-
-  .att-left{
-    min-width: 0;
-  }
-
-  .att-name{
-    font-weight:900;
-    color: var(--text);
-    word-break:break-word;
-  }
-
-  .att-name a{
-    color: var(--link);
-    text-decoration:none;
-    font-weight:900;
-  }
-
-  .att-name a:hover{
-    text-decoration:underline;
-  }
-
-  .att-meta{
-    margin-top:4px;
-    color: var(--muted);
-    font-size:0.85rem;
-  }
-
-  .att-actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    align-items:center;
-    flex-shrink: 0;
-  }
-
-  .form-grid{
-    display:grid;
-    gap:10px;
-  }
-
-  .field label{
-    display:block;
-    font-weight:800;
-    color: var(--text);
-    margin-bottom:6px;
-    font-size:0.9rem;
-  }
-
-  .field input[type="text"],
-  .field input[type="file"]{
-    width:100%;
-    box-sizing:border-box;
-    padding:10px 12px;
-    border-radius:10px;
-    border:1px solid var(--input-border);
-    background: var(--input-bg);
-    color: var(--text);
-    outline:none;
-  }
-
-  .field input::placeholder{
-    color: var(--muted);
-  }
-
-  .note{
-    margin-top:10px;
-    color: var(--muted);
-    font-size:0.88rem;
-    line-height:1.35;
-  }
-</style>
-
-<div class="panel">
-  <div class="panel-header">
-    <div>
-      <h1>Szczegóły sprzętu</h1>
-      <p class="subtitle">
-        Nr inwentarzowy: <span class="chip">{{ equipment.inventory_number|default:"—" }}</span>
-      </p>
-    </div>
-
-    <div class="actions">
-      <a class="btn btn-secondary" href="{% url 'equipment:equipment_list' %}">Wróć do magazynu</a>
-      <a class="btn btn-primary" href="{% url 'equipment:equipment_edit' equipment.pk %}">Edytuj</a>
-    </div>
-  </div>
-
-  <div class="grid">
-
-    <!-- LEWA: DANE -->
-    <div>
-      <table class="detail-table">
-        <tbody>
-          <tr><th>Nr inwentarzowy</th><td>{{ equipment.inventory_number|default:"—" }}</td></tr>
-          <tr><th>Nazwa</th><td>{{ equipment.equipment_name|default:"—" }}</td></tr>
-          <tr><th>Typ sprzętu</th><td>{{ equipment.equipment_type|default:"—" }}</td></tr>
-          <tr><th>Status</th><td>{{ equipment.status|default:"—" }}</td></tr>
-          <tr><th>Budynek</th><td>{{ equipment.building|default:"—" }}</td></tr>
-          <tr><th>Pomieszczenie</th><td>{{ equipment.room|default:"—" }}</td></tr>
-          <tr><th>Kategoria</th><td>{{ equipment.room_category|default:"—" }}</td></tr>
-
-          <tr><th>Użytkownik</th><td>{{ equipment.user_full_name|default:"—" }}</td></tr>
-          <tr><th>Wypożyczone do</th><td>{{ equipment.borrowed_to|default:"—" }}</td></tr>
-
-          <tr><th>Hostname</th><td>{{ equipment.hostname|default:"—" }}</td></tr>
-          <tr><th>IP</th><td>{{ equipment.ip_address|default:"—" }}</td></tr>
-          <tr><th>MAC</th><td>{{ equipment.mac_address|default:"—" }}</td></tr>
-
-          <tr><th>Nr seryjny jednostki</th><td>{{ equipment.unit_serial_number|default:"—" }}</td></tr>
-          <tr><th>Nr seryjny monitora</th><td>{{ equipment.monitor_serial_number|default:"—" }}</td></tr>
-
-          <tr><th>System</th><td>{{ equipment.os_name|default:"—" }}{% if equipment.os_version %} ({{ equipment.os_version }}){% endif %}</td></tr>
-          <tr><th>Klucz Windows</th><td>{{ equipment.os_serial_key|default:"—" }}</td></tr>
-
-          <tr><th>Office</th><td>{{ equipment.office_name|default:"—" }}{% if equipment.office_version %} ({{ equipment.office_version }}){% endif %}</td></tr>
-          <tr><th>Klucz Office</th><td>{{ equipment.office_serial_key|default:"—" }}</td></tr>
-
-          <tr><th>Dostawca</th><td>{{ equipment.supplier|default:"—" }}</td></tr>
-          <tr><th>Data zakupu</th><td>{{ equipment.purchase_date|date:"Y-m-d"|default:"—" }}</td></tr>
-
-          <tr>
-            <th>Gwarancja do</th>
-            <td>
-              {% if equipment.warranty_until %}
-                {{ equipment.warranty_until|date:"Y-m-d" }}
-                {% now "U" as now_u %}
-                {% with wu=equipment.warranty_until|date:"U" %}
-                  {% if wu >= now_u %}
-                    <span class="badge badge-ok">Aktywna</span>
-                  {% else %}
-                    <span class="badge badge-bad">Wygasła</span>
-                  {% endif %}
-                {% endwith %}
-              {% else %}
-                —
-              {% endif %}
-            </td>
-          </tr>
-
-          <tr><th>Uwagi</th><td>{{ equipment.notes|default:"—" }}</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- PRAWA: ZAŁĄCZNIKI -->
-    <div>
-      <div class="card">
-
-        <div class="photo">
-          {% if attachments %}
-            {% with main_attachment=attachments.0 %}
-              <a href="{{ main_attachment.file.url }}" target="_blank">
-                <img src="{{ main_attachment.file.url }}" alt="Zdjęcie sprzętu">
-              </a>
-            {% endwith %}
-          {% else %}
-            <div class="photo-placeholder">Brak zdjęcia – dodaj jako załącznik</div>
-          {% endif %}
-        </div>
-
-        <h2>Załączniki</h2>
-
-        <div class="attachments">
-          {% if attachments %}
-            {% for att in attachments %}
-              <div class="att-item">
-                <div class="att-left">
-                  <div class="att-name">
-                    <a href="{{ att.file.url }}" target="_blank">
-                      {{ att.description|default:"Załącznik" }}
-                    </a>
-                  </div>
-                  <div class="att-meta">
-                    Dodano: {{ att.uploaded_at|date:"Y-m-d H:i" }}
-                  </div>
-                </div>
-
-                <div class="att-actions">
-                  <form method="post" action="{% url 'equipment:attachment_delete' att.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Na pewno usunąć załącznik?');">Usuń</button>
-                  </form>
-                </div>
-              </div>
-            {% endfor %}
-          {% else %}
-            <div class="muted">Brak załączników.</div>
-          {% endif %}
-        </div>
-
-        <hr style="border:none; border-top:1px solid var(--panel-border); margin:14px 0;">
-
-        <form class="form-grid" method="post" enctype="multipart/form-data" action="{% url 'equipment:attachment_upload' equipment.pk %}">
-          {% csrf_token %}
-
-          <div class="field">
-            <label for="id_file">Plik</label>
-            <input id="id_file" type="file" name="file" required>
-          </div>
-
-          <div class="field">
-            <label for="id_desc">Opis (opcjonalnie)</label>
-            <input id="id_desc" type="text" name="description" placeholder="Np. faktura, zdjęcie tabliczki, protokół…">
-          </div>
-
-          <div class="actions">
-            <button type="submit" class="btn btn-primary">Dodaj załącznik</button>
-          </div>
-
-          <div class="note">
-            Załączniki są przypisane do tej karty sprzętu i widoczne w szczegółach.
-          </div>
-        </form>
-
+      <div class="actions">
+        <a class="btn btn-secondary" href="{% url 'equipment:equipment_list' %}">Wróć do magazynu</a>
+        <a class="btn btn-primary" href="{% url 'equipment:equipment_edit' equipment.pk %}">Edytuj</a>
       </div>
     </div>
 
+    <div class="grid">
+
+      <!-- LEWA: DANE -->
+      <div>
+        <table class="detail-table">
+          <tbody>
+            <tr><th>Nr inwentarzowy</th><td>{{ equipment.inventory_number|default:"—" }}</td></tr>
+            <tr><th>Nazwa</th><td>{{ equipment.equipment_name|default:"—" }}</td></tr>
+            <tr><th>Typ sprzętu</th><td>{{ equipment.equipment_type|default:"—" }}</td></tr>
+            <tr><th>Status</th><td>{{ equipment.status|default:"—" }}</td></tr>
+            <tr><th>Budynek</th><td>{{ equipment.building|default:"—" }}</td></tr>
+            <tr><th>Pomieszczenie</th><td>{{ equipment.room|default:"—" }}</td></tr>
+            <tr><th>Kategoria</th><td>{{ equipment.room_category|default:"—" }}</td></tr>
+
+            <tr><th>Użytkownik</th><td>{{ equipment.user_full_name|default:"—" }}</td></tr>
+            <tr><th>Wypożyczone do</th><td>{{ equipment.borrowed_to|default:"—" }}</td></tr>
+
+            <tr><th>Hostname</th><td>{{ equipment.hostname|default:"—" }}</td></tr>
+            <tr><th>IP</th><td>{{ equipment.ip_address|default:"—" }}</td></tr>
+            <tr><th>MAC</th><td>{{ equipment.mac_address|default:"—" }}</td></tr>
+
+            <tr><th>Nr seryjny jednostki</th><td>{{ equipment.unit_serial_number|default:"—" }}</td></tr>
+            <tr><th>Nr seryjny monitora</th><td>{{ equipment.monitor_serial_number|default:"—" }}</td></tr>
+
+            <tr><th>System</th><td>{{ equipment.os_name|default:"—" }}{% if equipment.os_version %} ({{ equipment.os_version }}){% endif %}</td></tr>
+            <tr><th>Klucz Windows</th><td>{{ equipment.os_serial_key|default:"—" }}</td></tr>
+
+            <tr><th>Office</th><td>{{ equipment.office_name|default:"—" }}{% if equipment.office_version %} ({{ equipment.office_version }}){% endif %}</td></tr>
+            <tr><th>Klucz Office</th><td>{{ equipment.office_serial_key|default:"—" }}</td></tr>
+
+            <tr><th>Dostawca</th><td>{{ equipment.supplier|default:"—" }}</td></tr>
+            <tr><th>Data zakupu</th><td>{{ equipment.purchase_date|date:"Y-m-d"|default:"—" }}</td></tr>
+
+            <tr>
+              <th>Gwarancja do</th>
+              <td>
+                {% if equipment.warranty_until %}
+                  {{ equipment.warranty_until|date:"Y-m-d" }}
+                  {% now "U" as now_u %}
+                  {% with wu=equipment.warranty_until|date:"U" %}
+                    {% if wu >= now_u %}
+                      <span class="badge badge-ok">Aktywna</span>
+                    {% else %}
+                      <span class="badge badge-bad">Wygasła</span>
+                    {% endif %}
+                  {% endwith %}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+            </tr>
+
+            <tr><th>Uwagi</th><td>{{ equipment.notes|default:"—" }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PRAWA: ZAŁĄCZNIKI -->
+      <div>
+        <div class="card">
+
+          <div class="photo">
+            {% if attachments %}
+              {% with main_attachment=attachments.0 %}
+                <a href="{{ main_attachment.file.url }}" target="_blank">
+                  <img src="{{ main_attachment.file.url }}" alt="Zdjęcie sprzętu">
+                </a>
+              {% endwith %}
+            {% else %}
+              <div class="photo-placeholder">Brak zdjęcia – dodaj jako załącznik</div>
+            {% endif %}
+          </div>
+
+          <h2>Załączniki</h2>
+
+          <div class="attachments">
+            {% if attachments %}
+              {% for att in attachments %}
+                <div class="att-item">
+                  <div class="att-left">
+                    <div class="att-name">
+                      <a href="{{ att.file.url }}" target="_blank">
+                        {{ att.description|default:"Załącznik" }}
+                      </a>
+                    </div>
+                    <div class="att-meta">
+                      Dodano: {{ att.uploaded_at|date:"Y-m-d H:i" }}
+                    </div>
+                  </div>
+
+                  <div class="att-actions">
+                    <form method="post" action="{% url 'equipment:attachment_delete' att.id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Na pewno usunąć załącznik?');">Usuń</button>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="muted">Brak załączników.</div>
+            {% endif %}
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--panel-border); margin:14px 0;">
+
+          <form class="form-grid" method="post" enctype="multipart/form-data" action="{% url 'equipment:attachment_upload' equipment.pk %}">
+            {% csrf_token %}
+
+            <div class="field">
+              <label for="id_file">Plik</label>
+              <input id="id_file" type="file" name="file" required>
+            </div>
+
+            <div class="field">
+              <label for="id_desc">Opis (opcjonalnie)</label>
+              <input id="id_desc" type="text" name="description" placeholder="Np. faktura, zdjęcie tabliczki, protokół…">
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn btn-primary">Dodaj załącznik</button>
+            </div>
+
+            <div class="note">
+              Załączniki są przypisane do tej karty sprzętu i widoczne w szczegółach.
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 

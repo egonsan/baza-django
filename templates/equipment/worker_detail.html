@@ -1,13 +1,13 @@
+cd /var/www/baza && cat > templates/equipment/worker_detail.html <<'HTML'
 {% extends "sprzet/base.html" %}
 {% block content %}
 
-<div class="ui-panel panel">
-
-  <div class="panel-header">
-    <div class="panel-title-box">
-      <h1 class="panel-title">Sprzęt przypisany do pracownika</h1>
-      <p class="panel-subtitle">
-        {{ worker_name }}
+<div class="ui-panel ui-worker-panel">
+  <div class="ui-worker-header">
+    <div class="ui-worker-title-box">
+      <h1 class="ui-worker-title">Sprzęt przypisany do: {{ worker_name }}</h1>
+      <p class="ui-worker-subtitle">
+        Poniżej lista kart sprzętu, które mają tego pracownika w polu „Użytkownik”.
       </p>
     </div>
 
@@ -16,30 +16,32 @@
     </a>
   </div>
 
-  {% if equipments %}
+  {% if items %}
     <table class="ui-table">
       <thead>
         <tr>
           <th>Nr inwentarzowy</th>
           <th>Nazwa</th>
-          <th>Status</th>
           <th>Budynek</th>
           <th>Pomieszczenie</th>
+          <th>Status</th>
           <th>Akcje</th>
         </tr>
       </thead>
       <tbody>
-        {% for eq in equipments %}
+        {% for eq in items %}
           <tr>
-            <td>{{ eq.inventory_number }}</td>
+            <td class="ui-equipment-number">{{ eq.inventory_number }}</td>
             <td>{{ eq.equipment_name }}</td>
-            <td>{{ eq.status }}</td>
             <td>{{ eq.building }}</td>
             <td>{{ eq.room }}</td>
-            <td class="actions-cell">
-              <a href="{% url 'equipment:equipment_detail' eq.pk %}"
-                 class="ui-btn ui-btn-primary">
+            <td>{{ eq.status }}</td>
+            <td class="ui-actions-cell">
+              <a href="{% url 'equipment:equipment_detail' eq.pk %}" class="ui-btn ui-btn-secondary">
                 Szczegóły
+              </a>
+              <a href="{% url 'equipment:equipment_edit' eq.pk %}" class="ui-btn ui-btn-primary">
+                Edytuj
               </a>
             </td>
           </tr>
@@ -47,9 +49,9 @@
       </tbody>
     </table>
   {% else %}
-    <p class="empty">Brak sprzętu przypisanego do tego pracownika.</p>
+    <p class="empty">Brak kart sprzętu dla tego pracownika.</p>
   {% endif %}
-
 </div>
 
 {% endblock %}
+HTML
