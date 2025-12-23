@@ -40,4 +40,10 @@
   </div>
 </div>
 
+<div class="ui-login-meta" aria-live="polite">
+  <div class="ui-login-meta-row">Project Baza © egonsan · All rights reserved</div>
+  <div class="ui-login-meta-row">Python {{ APP_PYTHON_VERSION }} · Django {{ APP_DJANGO_VERSION }}</div>
+  <div class="ui-login-meta-row">{{ APP_UPDATE_LABEL }}{% if APP_UPDATE_CHECKED_AT %} · {{ APP_UPDATE_CHECKED_AT }}{% endif %}</div>
+</div>
+
 {% endblock %}
